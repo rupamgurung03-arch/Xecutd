@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Trade, TradeStats, TradeSide } from '../types/trade';
 import { EquityPoint, formatCurrency } from '../utils/calculations';
+import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 import type { WelcomeKind } from './SupabaseAuthGate';
 
 interface DashboardViewProps {
@@ -165,6 +166,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const winRatePercent = stats.winRate.toFixed(1);
   const winCount = stats.wins;
   const lossCount = stats.losses;
+  const excursionSummary = useMemo(() => {
+    const completed = trades.filter((trade) => trade.tradeStatus !== 'MISSED' && trade.status === 'Closed');
+    const values = completed.map(getTradeExcursionDisplay);
+    const mean = (numbers: number[]) => numbers.length ? numbers.reduce((sum, number) => sum + number, 0) / numbers.length : null;
+    const mfe = values.map((value) => value.mfeR).filter((value): value is number => value !== null);
+    const mae = values.map((value) => value.maeR).filter((value): value is number => value !== null);
+    const efficiency = values.map((value) => value.exitEfficiencyPct).filter((value): value is number => value !== null);
+    return { avgMfe: mean(mfe), avgMae: mean(mae), avgEfficiency: mean(efficiency), recorded: values.filter((value) => value.mfeR !== null || value.maeR !== null).length, gainedBack: values.filter((value) => value.gainedGivenBack).length };
+  }, [trades]);
   const chartAxis = filteredEquity.length > 1
     ? [0, 0.25, 0.5, 0.75, 1].map((fraction) => filteredEquity[Math.round((filteredEquity.length - 1) * fraction)].date)
     : [];
@@ -447,6 +457,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <span className="hidden sm:inline font-caption-mono text-caption-mono text-tertiary">Realized R average</span>
         </div>
 
+      </section>
+
+      {/* TRADE EXCURSION CARD */}
+      <section className="grid grid-cols-2 gap-3 border border-outline-variant bg-surface-container-lowest p-3 shadow-sm sm:grid-cols-4 sm:gap-4 sm:p-space-lg" aria-label="Trade excursion analytics">
+        <div className="col-span-2 flex items-center justify-between border-b border-outline-variant pb-2 sm:col-span-4">
+          <h2 className="font-caption-mono text-[10px] font-bold uppercase tracking-widest text-on-surface">Trade excursions</h2>
+          <span className="font-caption-mono text-[9px] uppercase text-tertiary">{excursionSummary.recorded} trades with recorded highs/lows</span>
+        </div>
+        <div><span className="block font-caption-mono text-[9px] uppercase tracking-wide text-tertiary">Average MFE</span><span className="font-numeric-stat text-lg font-bold text-cyan-700 dark:text-cyan-300">{excursionSummary.avgMfe === null ? '—' : `+${excursionSummary.avgMfe.toFixed(2)}R`}</span></div>
+        <div><span className="block font-caption-mono text-[9px] uppercase tracking-wide text-tertiary">Average MAE</span><span className="font-numeric-stat text-lg font-bold text-amber-700 dark:text-amber-300">{excursionSummary.avgMae === null ? '—' : `-${Math.abs(excursionSummary.avgMae).toFixed(2)}R`}</span></div>
+        <div><span className="block font-caption-mono text-[9px] uppercase tracking-wide text-tertiary">Exit efficiency</span><span className="font-numeric-stat text-lg font-bold text-on-surface">{excursionSummary.avgEfficiency === null ? '—' : `${excursionSummary.avgEfficiency.toFixed(1)}%`}</span></div>
+        <div><span className="block font-caption-mono text-[9px] uppercase tracking-wide text-tertiary">Gained given back</span><span className="font-numeric-stat text-lg font-bold text-secondary">{excursionSummary.gainedBack}</span></div>
       </section>
 
       {/* MAIN GRID LAYOUT */}

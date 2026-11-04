@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Trade } from '../types/trade';
 import { getJournalAuthHeaders } from '../lib/supabaseClient';
+import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 
 interface TradeDetailModalProps {
   trade: Trade | null;
@@ -26,6 +27,7 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
 
   const isWin = trade.pnl > 0;
   const isLoss = trade.pnl < 0;
+  const excursion = getTradeExcursionDisplay(trade);
   const riskDistance = Math.abs(trade.entryPrice - trade.stopLoss);
   const excursionR = (price: number, direction: 'adverse' | 'favorable') => {
     if (!riskDistance) return 0;
@@ -142,9 +144,11 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
             <p className="mt-2 font-caption-mono text-caption-mono text-tertiary">Weighted realized result: {(trade.realizedR || 0) >= 0 ? '+' : ''}{(trade.realizedR || 0).toFixed(2)}R</p>
           </section> : null}
 
-          {(trade.maxAdversePrice !== undefined || trade.maxFavorablePrice !== undefined) && <section className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-space-md sm:grid-cols-2">
-            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MAE · worst adverse price</span><p className="mt-1 font-table-data text-table-data text-on-surface">{trade.maxAdversePrice ?? '—'}{trade.maxAdversePrice !== undefined && riskDistance > 0 ? ` · ${excursionR(trade.maxAdversePrice, 'adverse').toFixed(2)}R` : ''}</p></div>
-            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MFE · best favorable price</span><p className="mt-1 font-table-data text-table-data text-on-surface">{trade.maxFavorablePrice ?? '—'}{trade.maxFavorablePrice !== undefined && riskDistance > 0 ? ` · ${excursionR(trade.maxFavorablePrice, 'favorable').toFixed(2)}R` : ''}</p></div>
+          {(excursion.mfeR !== null || excursion.maeR !== null) && <section className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-space-md sm:grid-cols-3">
+            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MFE · peak favorable excursion</span><p className="mt-1 font-table-data text-table-data font-bold text-cyan-700 dark:text-cyan-300">{excursion.mfeR === null ? '—' : `+${excursion.mfeR.toFixed(2)}R`}</p></div>
+            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MAE · maximum adverse excursion</span><p className="mt-1 font-table-data text-table-data font-bold text-amber-700 dark:text-amber-300">{excursion.maeR === null ? '—' : `-${Math.abs(excursion.maeR).toFixed(2)}R`}</p></div>
+            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">Exit efficiency</span><p className="mt-1 inline-flex border border-outline-variant bg-surface-container-lowest px-2 py-1 font-caption-mono text-caption-mono font-bold text-on-surface">{excursion.exitEfficiencyPct === null ? '—' : `${excursion.exitEfficiencyPct.toFixed(0)}% Exit Efficiency`}</p></div>
+            {excursion.gainedGivenBack && <p className="sm:col-span-3 border border-amber-500/40 bg-amber-500/10 px-3 py-2 font-caption-mono text-caption-mono font-bold uppercase text-amber-700 dark:text-amber-300">Gained Given Back · MFE exceeded +2R before this trade closed negative.</p>}
           </section>}
 
           {trade.tradeStatus === 'MISSED' && <div className="rounded-xl border border-outline-variant bg-surface-container-low p-space-md">

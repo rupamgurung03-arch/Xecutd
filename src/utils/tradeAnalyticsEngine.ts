@@ -9,6 +9,12 @@ export interface TradeMetrics {
   mae_r: number;
   mfe_r: number;
   realized_r: number;
+  planned_r: number;
+  /** Favorable-excursion capture: realized R divided by MFE R. */
+  realization_efficiency_pct: number;
+  /** Target realization: realized R divided by planned R. */
+  target_realization_rate_pct: number;
+  /** @deprecated Use realization_efficiency_pct. Kept for existing local callers. */
   efficiency_pct: number;
   pnl_usd: number;
 }
@@ -27,6 +33,8 @@ export interface AiSummaryPayload {
     avg_realized_r_per_win: number;
     avg_mfe_r_per_win: number;
     avg_mae_r_on_winners: number;
+    realization_efficiency_pct: number;
+    target_realization_rate_pct: number;
     profit_capture_efficiency_pct: number;
     mfe_distribution_pct: { at_least_1r: number; at_least_2r: number; at_least_3r: number; at_least_4r: number };
   };
@@ -38,6 +46,13 @@ export interface AiSummaryPayload {
     trades_giving_back_over_1_5r: number;
   };
   trade_metrics: TradeMetrics[];
+}
+
+export interface TradeExcursionDisplay {
+  mfeR: number | null;
+  maeR: number | null;
+  exitEfficiencyPct: number | null;
+  gainedGivenBack: boolean;
 }
 
 const round2 = (value: number): number => Number.isFinite(value) ? Number(value.toFixed(2)) : 0;
@@ -69,7 +84,8 @@ export function calculateTradeMetrics(trade: Trade): TradeMetrics {
   if (riskDist === 0) {
     return {
       trade_id: trade.id, symbol: trade.symbol, side: trade.side, entry_date: trade.entryDate,
-      duration_minutes: durationMinutes(trade), mae_r: 0, mfe_r: 0, realized_r: 0, efficiency_pct: 0, pnl_usd: round2(trade.pnl),
+      duration_minutes: durationMinutes(trade), mae_r: 0, mfe_r: 0, realized_r: 0, planned_r: round2(trade.plannedR),
+      realization_efficiency_pct: 0, target_realization_rate_pct: 0, efficiency_pct: 0, pnl_usd: round2(trade.pnl),
     };
   }
 
@@ -85,13 +101,36 @@ export function calculateTradeMetrics(trade: Trade): TradeMetrics {
   const maeR = round2(rawMae / riskDist);
   const mfeR = round2(rawMfe / riskDist);
   const realizedR = round2(realizedPnlInPoints / riskDist);
-  const efficiencyPct = mfeR > 0 ? round1((realizedR / mfeR) * 100) : 0;
+  const realizationEfficiencyPct = mfeR > 0 ? round1((realizedR / mfeR) * 100) : 0;
+  const targetRealizationRatePct = trade.plannedR > 0 ? round1((realizedR / trade.plannedR) * 100) : 0;
 
   return {
     trade_id: trade.id, symbol: trade.symbol, side: trade.side, entry_date: trade.entryDate,
-    duration_minutes: durationMinutes(trade), mae_r: maeR, mfe_r: mfeR, realized_r: realizedR,
-    efficiency_pct: efficiencyPct, pnl_usd: round2(trade.pnl),
+    duration_minutes: durationMinutes(trade), mae_r: maeR, mfe_r: mfeR, realized_r: realizedR, planned_r: round2(trade.plannedR),
+    realization_efficiency_pct: realizationEfficiencyPct,
+    target_realization_rate_pct: targetRealizationRatePct,
+    efficiency_pct: realizationEfficiencyPct, pnl_usd: round2(trade.pnl),
   };
+}
+
+/** Returns only recorded/derivable excursion values for journal displays. */
+export function getTradeExcursionDisplay(trade: Trade): TradeExcursionDisplay {
+  const metrics = calculateTradeMetrics(trade);
+  const hasMfe = trade.mfeR !== undefined || trade.maxFavorablePrice !== undefined ||
+    (trade.side === 'Long' ? trade.highestPrice !== undefined : trade.lowestPrice !== undefined);
+  const hasMae = trade.maeR !== undefined || trade.maxAdversePrice !== undefined ||
+    (trade.side === 'Long' ? trade.lowestPrice !== undefined : trade.highestPrice !== undefined);
+  const mfeR = hasMfe
+    ? round2(Math.max(0, trade.mfeR !== undefined ? trade.mfeR : metrics.mfe_r))
+    : null;
+  const maeR = hasMae
+    ? round2(-Math.abs(trade.maeR !== undefined ? trade.maeR : metrics.mae_r))
+    : null;
+  const realizedR = Number.isFinite(trade.realizedR) ? trade.realizedR : metrics.realized_r;
+  const exitEfficiencyPct = mfeR !== null && mfeR > 0
+    ? round1((realizedR / mfeR) * 100)
+    : null;
+  return { mfeR, maeR, exitEfficiencyPct, gainedGivenBack: mfeR !== null && mfeR > 2 && realizedR < 0 };
 }
 
 /** Builds the rounded, JSON-safe aggregate payload for a future AI summary model. */
@@ -104,6 +143,9 @@ export function generateAiSummaryPayload(trades: Trade[]): AiSummaryPayload {
   const thresholdPct = (threshold: number) => winners.length ? round1(winners.filter((metric) => metric.mfe_r >= threshold).length / winners.length * 100) : 0;
   const avgRealizedR = mean(winners.map((metric) => metric.realized_r));
   const avgMfeR = mean(winners.map((metric) => metric.mfe_r));
+  const avgPlannedR = mean(winners.map((metric) => metric.planned_r));
+  const realizationEfficiencyPct = avgMfeR > 0 ? round1((avgRealizedR / avgMfeR) * 100) : 0;
+  const targetRealizationRatePct = avgPlannedR > 0 ? round1((avgRealizedR / avgPlannedR) * 100) : 0;
   const anomalyTrades = metrics.filter((metric) => metric.duration_minutes !== null && metric.duration_minutes > 30 && metric.mae_r < -0.7);
   const givebackTrades = winners.filter((metric) => metric.mfe_r - metric.realized_r > 1.5);
   const dates = closedTrades.map((trade) => trade.entryDate).filter(Boolean).sort();
@@ -125,7 +167,9 @@ export function generateAiSummaryPayload(trades: Trade[]): AiSummaryPayload {
       avg_realized_r_per_win: round2(avgRealizedR),
       avg_mfe_r_per_win: round2(avgMfeR),
       avg_mae_r_on_winners: round2(mean(winners.map((metric) => metric.mae_r))),
-      profit_capture_efficiency_pct: avgMfeR > 0 ? round1(avgRealizedR / avgMfeR * 100) : 0,
+      realization_efficiency_pct: realizationEfficiencyPct,
+      target_realization_rate_pct: targetRealizationRatePct,
+      profit_capture_efficiency_pct: realizationEfficiencyPct,
       mfe_distribution_pct: {
         at_least_1r: thresholdPct(1), at_least_2r: thresholdPct(2),
         at_least_3r: thresholdPct(3), at_least_4r: thresholdPct(4),

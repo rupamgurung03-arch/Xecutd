@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Trade, TradeStats } from '../types/trade';
 import { getJournalAuthHeaders } from '../lib/supabaseClient';
+import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 
 interface AICoachViewProps {
   stats: TradeStats;
@@ -16,6 +17,10 @@ interface ChatMessage {
 }
 
 export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
+  const [reviewScope, setReviewScope] = useState<'overall' | 'last-week' | 'last-month' | 'month' | 'custom'>('overall');
+  const [reviewMonth, setReviewMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [customStart, setCustomStart] = useState(new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10));
+  const [customEnd, setCustomEnd] = useState(new Date().toISOString().slice(0, 10));
   const [auditReport, setAuditReport] = useState<string | null>(null);
   const [auditMode, setAuditMode] = useState<string | null>(null);
   const [isRunningAudit, setIsRunningAudit] = useState(false);
@@ -30,50 +35,47 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-  // Compute top mistakes & setups to pass to AI
-  const getAuditPayload = () => {
-    const mistakeCounts: { [tag: string]: number } = {};
-    const setupCounts: { [s: string]: { count: number; wins: number } } = {};
+  const getBuddyScope = () => {
+    if (reviewScope === 'overall') return { type: 'overall' as const };
+    if (reviewScope === 'month') return { type: 'month' as const, month: reviewMonth };
+    const today = new Date();
+    const dateKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    if (reviewScope === 'custom') return { type: 'custom' as const, startDate: customStart, endDate: customEnd };
+    const days = reviewScope === 'last-week' ? 7 : 30;
+    return { type: 'custom' as const, startDate: dateKey(new Date(today.getFullYear(), today.getMonth(), today.getDate() - (days - 1))), endDate: dateKey(today) };
+  };
 
-    trades.filter((trade) => trade.tradeStatus !== 'MISSED').forEach((t) => {
-      if (t.mistakes) {
-        t.mistakes.forEach((m) => {
-          mistakeCounts[m] = (mistakeCounts[m] || 0) + 1;
-        });
-      }
-      if (t.setup) {
-        if (!setupCounts[t.setup]) setupCounts[t.setup] = { count: 0, wins: 0 };
-        setupCounts[t.setup].count++;
-        if (t.pnl > 0) setupCounts[t.setup].wins++;
-      }
+  // Send only fields needed by the authenticated Worker aggregator. No IDs, dollars, prices, notes, or attachments.
+  const getBuddyRecords = (scope: ReturnType<typeof getBuddyScope>) => {
+    const previousMonth = scope.type === 'month' ? (() => {
+      const [year, month] = scope.month.split('-').map(Number);
+      const date = new Date(year, month - 2, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    })() : '';
+    return trades.filter((trade) => {
+      if (trade.tradeStatus === 'MISSED' || trade.status !== 'Closed') return false;
+      if (scope.type === 'overall') return true;
+      if (scope.type === 'month') return trade.entryDate.startsWith(scope.month) || trade.entryDate.startsWith(previousMonth);
+      return trade.entryDate >= scope.startDate && trade.entryDate <= scope.endDate;
+    }).map((trade) => {
+      const excursion = getTradeExcursionDisplay(trade);
+      return {
+        status: trade.status, tradeStatus: trade.tradeStatus, entryDate: trade.entryDate, entryTime: trade.entryTime,
+        side: trade.side, setup: trade.setup, session: trade.session, plannedR: trade.plannedR, realizedR: trade.realizedR,
+        mfeR: excursion.mfeR, maeR: excursion.maeR, rulesFollowed: trade.rulesFollowed,
+        disciplineScore: trade.disciplineScore, mistakes: trade.mistakes, psychologyTags: trade.psychologyTags, emotion: trade.emotion,
+      };
     });
-
-    return {
-      stats,
-      topMistakes: Object.entries(mistakeCounts).map(([tag, count]) => ({ tag, count })),
-      topSetups: Object.entries(setupCounts).map(([setup, data]) => ({
-        setup,
-        winRate: `${((data.wins / data.count) * 100).toFixed(0)}%`,
-      })),
-      tradesSummary: trades.filter((trade) => trade.tradeStatus !== 'MISSED').slice(0, 10).map((t) => ({
-        symbol: t.symbol,
-        side: t.side,
-        pnl: t.pnl,
-        setup: t.setup,
-        rulesFollowed: t.rulesFollowed,
-        mistakes: t.mistakes,
-      })),
-    };
   };
 
   const handleRunAudit = async () => {
     setIsRunningAudit(true);
     try {
-      const payload = getAuditPayload();
+      const scope = getBuddyScope();
       const res = await fetch('/api/coach/analyze', {
         method: 'POST',
         headers: await getJournalAuthHeaders(),
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ scope, trades: getBuddyRecords(scope) }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || `Buddy service returned HTTP ${res.status}.`);
@@ -105,19 +107,14 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
     setIsSending(true);
 
     try {
-      const auditPayload = getAuditPayload();
+      const scope = getBuddyScope();
       const res = await fetch('/api/coach/chat', {
         method: 'POST',
         headers: await getJournalAuthHeaders(),
         body: JSON.stringify({
           message: query,
-          journalContext: {
-            totalTrades: stats.totalTrades,
-            winRate: stats.winRate,
-            netPnL: stats.netPnL,
-            topMistakes: auditPayload.topMistakes.map((item) => item.tag),
-          },
-          trades: trades.slice(0, 15),
+          scope,
+          trades: getBuddyRecords(scope),
         }),
       });
       const data = await res.json();
@@ -163,14 +160,28 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
           </p>
         </div>
 
-        <button
-          onClick={handleRunAudit}
-          disabled={isRunningAudit}
-          className="flex items-center gap-2 bg-on-surface text-surface-container-lowest hover:opacity-90 px-6 py-2.5 rounded-full transition-transform active:scale-95 shadow-sm font-caption-mono text-caption-mono uppercase font-bold cursor-pointer disabled:opacity-50"
-        >
-          <span className="w-2 h-2 rounded-full bg-primary-container"></span>
-          <span>{isRunningAudit ? 'Reviewing trades…' : 'Generate review'}</span>
-        </button>
+        <div className="flex flex-col sm:items-end gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <label htmlFor="buddy-review-scope" className="font-caption-mono text-[11px] uppercase text-tertiary">Review period</label>
+            <select id="buddy-review-scope" value={reviewScope} onChange={(e) => setReviewScope(e.target.value as typeof reviewScope)} className="bg-surface-container-lowest px-3 py-2 rounded-lg border border-outline-variant font-caption-mono text-[11px] text-on-surface">
+              <option value="overall">Overall</option>
+              <option value="last-week">Last 7 days</option>
+              <option value="last-month">Last 30 days</option>
+              <option value="month">Choose a month</option>
+              <option value="custom">Custom date range</option>
+            </select>
+            {reviewScope === 'month' && <input aria-label="Choose month" type="month" value={reviewMonth} onChange={(e) => setReviewMonth(e.target.value)} className="bg-surface-container-lowest px-2 py-2 rounded-lg border border-outline-variant font-caption-mono text-[11px] text-on-surface" />}
+            {reviewScope === 'custom' && <div className="flex gap-2"><input aria-label="Start date" type="date" value={customStart} max={customEnd} onChange={(e) => setCustomStart(e.target.value)} className="min-w-0 bg-surface-container-lowest px-2 py-2 rounded-lg border border-outline-variant font-caption-mono text-[11px] text-on-surface" /><input aria-label="End date" type="date" value={customEnd} min={customStart} onChange={(e) => setCustomEnd(e.target.value)} className="min-w-0 bg-surface-container-lowest px-2 py-2 rounded-lg border border-outline-variant font-caption-mono text-[11px] text-on-surface" /></div>}
+          </div>
+          <button
+            onClick={handleRunAudit}
+            disabled={isRunningAudit || (reviewScope === 'custom' && (!customStart || !customEnd || customStart > customEnd))}
+            className="flex items-center justify-center gap-2 bg-on-surface text-surface-container-lowest hover:opacity-90 px-6 py-2.5 rounded-full transition-transform active:scale-95 shadow-sm font-caption-mono text-caption-mono uppercase font-bold cursor-pointer disabled:opacity-50"
+          >
+            <span className="w-2 h-2 rounded-full bg-primary-container"></span>
+            <span>{isRunningAudit ? 'Reviewing trades…' : 'Generate review'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Grid: 12 Columns */}

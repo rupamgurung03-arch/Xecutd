@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Trade, TradeSide } from '../types/trade';
 import { formatCurrency } from '../utils/calculations';
+import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 
 interface TradesLogViewProps {
   trades: Trade[];
@@ -393,19 +394,28 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
             const isWin = !isMissed && trade.status === 'Closed' && trade.pnl > 0;
             const isLoss = !isMissed && trade.status === 'Closed' && trade.pnl < 0;
             const profitText = isMissed ? 'MISSED' : trade.status === 'Closed' ? formatCurrency(trade.pnl, currency) : 'OPEN';
+            const excursion = getTradeExcursionDisplay(trade);
             return (
-              <article key={trade.id} role="button" tabIndex={0} aria-label={`${trade.symbol}, ${trade.side}, ${profitText}. Tap to review trade.`} onClick={() => onSelectTrade(trade)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectTrade(trade); } }} className="flex min-h-14 items-center justify-between gap-3 border border-outline-variant bg-surface-container-low px-3 py-2.5 cursor-pointer active:bg-surface-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface">
-                <div className="flex min-w-0 items-center gap-2.5">
-                  <span className="max-w-[55vw] truncate font-display text-base font-bold text-on-surface">{trade.symbol}</span>
-                  <span className="shrink-0 border border-outline-variant px-2 py-1 font-caption-mono text-[10px] font-semibold uppercase text-on-surface-variant">{trade.side}</span>
+              <article key={trade.id} role="button" tabIndex={0} aria-label={`${trade.symbol}, ${trade.side}, ${profitText}. Tap to review trade.`} onClick={() => onSelectTrade(trade)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectTrade(trade); } }} className="flex min-h-14 flex-col gap-1.5 border border-outline-variant bg-surface-container-low px-3 py-2.5 cursor-pointer active:bg-surface-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface">
+                <div className="flex min-w-0 items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <span className="max-w-[55vw] truncate font-display text-base font-bold text-on-surface">{trade.symbol}</span>
+                    <span className="shrink-0 border border-outline-variant px-2 py-1 font-caption-mono text-[10px] font-semibold uppercase text-on-surface-variant">{trade.side}</span>
+                  </div>
+                  <span className={`shrink-0 font-table-data text-sm font-bold ${isWin ? 'text-success' : isLoss ? 'text-secondary' : 'text-on-surface'}`}>{profitText}</span>
                 </div>
-                <span className={`shrink-0 font-table-data text-sm font-bold ${isWin ? 'text-success' : isLoss ? 'text-secondary' : 'text-on-surface'}`}>{profitText}</span>
+                {(excursion.mfeR !== null || excursion.maeR !== null || excursion.exitEfficiencyPct !== null) && <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-outline-variant/70 pt-1.5 font-caption-mono text-[9px] uppercase tracking-wide">
+                  {excursion.mfeR !== null && <span className="text-cyan-700 dark:text-cyan-300">MFE +{excursion.mfeR.toFixed(1)}R</span>}
+                  {excursion.maeR !== null && <span className="text-amber-700 dark:text-amber-300">MAE -{Math.abs(excursion.maeR).toFixed(1)}R</span>}
+                  {excursion.exitEfficiencyPct !== null && <span className="border border-outline-variant bg-surface-container-lowest px-1.5 py-0.5 text-tertiary">{excursion.exitEfficiencyPct.toFixed(0)}% exit efficiency</span>}
+                  {excursion.gainedGivenBack && <span className="font-bold text-secondary">Gained Given Back</span>}
+                </div>}
               </article>
             );
           })}
         </div>
         <div className="hidden md:block w-full overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[1240px]">
+          <table className="w-full text-left border-collapse min-w-[1380px]">
             <thead>
               <tr className="bg-surface border-b border-outline-variant text-tertiary font-caption-mono text-caption-mono uppercase tracking-wider">
                 <th className="py-space-md px-space-md text-left font-semibold">STATUS &amp; ID</th>
@@ -416,6 +426,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
                 <th className="py-space-md px-space-md text-right font-semibold">ENTRY ➔ EXIT</th>
                 <th className="py-space-md px-space-md text-right font-semibold">NET P&amp;L</th>
                 <th className="py-space-md px-space-md text-right font-semibold">R-MULT</th>
+                <th className="py-space-md px-space-md text-right font-semibold">EXCURSION / EFFICIENCY</th>
                 <th className="py-space-md px-space-md text-left font-semibold">STRATEGY PLAYBOOK</th>
                 <th className="py-space-md px-space-md text-left font-semibold">DISCIPLINE / PSYCH</th>
                 <th className="py-space-md px-space-md text-center font-semibold">ACTIONS</th>
@@ -424,7 +435,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
             <tbody className="divide-y divide-outline-variant/60 text-body-md font-body-md bg-surface-container-lowest">
               {paginatedTrades.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="py-12 text-center text-tertiary font-caption-mono text-body-sm">
+                  <td colSpan={12} className="py-12 text-center text-tertiary font-caption-mono text-body-sm">
                     NO EXECUTIONS MATCHING CURRENT FILTER PARAMETERS
                   </td>
                 </tr>
@@ -434,6 +445,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
                   const isWin = !isMissed && t.pnl > 0;
                   const isLoss = !isMissed && t.pnl < 0;
                   const initials = t.symbol.replace(/[^a-zA-Z0-9]/g, '').slice(0, 2).toUpperCase() || 'TR';
+                  const excursion = getTradeExcursionDisplay(t);
 
                   return (
                     <tr
@@ -545,6 +557,16 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
                         >
                           {isMissed ? `${t.hypotheticalOutcome || '—'} · ${t.plannedRR ?? '—'}R` : `${(t.realizedR || 0) >= 0 ? '+' : ''}${(t.realizedR || 0).toFixed(1)}R`}
                         </span>
+                      </td>
+
+                      {/* MFE / MAE / exit efficiency */}
+                      <td className="py-space-md px-space-md text-right whitespace-nowrap">
+                        <div className="flex flex-col items-end gap-0.5 font-caption-mono text-[10px] uppercase">
+                          <span className="text-cyan-700 dark:text-cyan-300">MFE {excursion.mfeR === null ? '—' : `+${excursion.mfeR.toFixed(1)}R`}</span>
+                          <span className="text-amber-700 dark:text-amber-300">MAE {excursion.maeR === null ? '—' : `-${Math.abs(excursion.maeR).toFixed(1)}R`}</span>
+                          {excursion.exitEfficiencyPct !== null && <span className="border border-outline-variant bg-surface-container-lowest px-1.5 py-0.5 text-tertiary">{excursion.exitEfficiencyPct.toFixed(0)}% Exit Efficiency</span>}
+                          {excursion.gainedGivenBack && <span className="font-bold text-secondary">Gained Given Back</span>}
+                        </div>
                       </td>
 
                       {/* Strategy */}
