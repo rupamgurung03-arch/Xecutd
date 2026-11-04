@@ -63,7 +63,7 @@ const normalizeSnapshot = (value: unknown): JournalSnapshot => {
   };
 };
 
-export const useSupabaseJournal = (userId: string) => {
+export const useSupabaseJournal = (userId: string, accountName = '') => {
   const [journal, setJournal] = useState<JournalSnapshot>(() => defaultSnapshot());
   const [status, setStatus] = useState<JournalSyncStatus>('loading');
   const [error, setError] = useState('');
@@ -91,7 +91,10 @@ export const useSupabaseJournal = (userId: string) => {
         .maybeSingle();
       if (loadError) throw loadError;
 
-      const nextJournal = data?.payload ? normalizeSnapshot(data.payload) : readLocalSnapshot(userId);
+      let nextJournal = data?.payload ? normalizeSnapshot(data.payload) : readLocalSnapshot(userId);
+      if (!data?.payload && accountName && (!nextJournal.settings.traderName.trim() || nextJournal.settings.traderName === INITIAL_USER_SETTINGS.traderName)) {
+        nextJournal = { ...nextJournal, settings: { ...nextJournal.settings, traderName: accountName } };
+      }
       dirtyRef.current = false;
       skipSaveRef.current = Boolean(data?.payload);
       setJournal(nextJournal);
@@ -101,7 +104,7 @@ export const useSupabaseJournal = (userId: string) => {
       setError(loadError instanceof Error ? loadError.message : 'Could not load this account’s journal from Supabase.');
       setStatus('error');
     }
-  }, [userId]);
+  }, [userId, accountName]);
 
   const saveToCloud = useCallback(async (snapshot: JournalSnapshot, revision: number) => {
     const client = supabase;

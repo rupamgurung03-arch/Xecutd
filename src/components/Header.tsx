@@ -72,20 +72,19 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => setCurrentTab('dashboard')}
             className="flex min-w-0 items-center gap-2 sm:gap-3 text-left focus:outline-none group cursor-pointer"
           >
-            {/* Minimalist Bauhaus hardware badge */}
-            <div className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 rounded-full bg-surface-container-low dark:bg-surface-container-high border border-outline-variant flex items-center justify-center font-display font-bold text-on-surface text-sm tracking-wider shadow-inner group-hover:border-primary-container transition-colors">
-              <span className="w-2 h-2 rounded-full bg-primary-container"></span>
+            <div className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 overflow-hidden rounded-full border border-outline-variant bg-black shadow-inner group-hover:border-primary-container transition-colors">
+              <img src="/icons/xecutd-logo.svg" alt="" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col">
               <span className="font-display text-xs sm:text-body-md font-bold tracking-wider text-on-surface uppercase whitespace-nowrap">
-                XECUTD JOURNAL
+                XECUTD
               </span>
               <div className="flex items-center gap-space-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-                <span className="font-caption-mono text-caption-mono text-tertiary uppercase">PERSONAL JOURNAL</span>
+                <span className="max-w-[11rem] truncate font-caption-mono text-caption-mono text-tertiary uppercase">{settings.traderName.trim() ? `${settings.traderName.trim()}'s Journal` : 'Your Journal'}</span>
                 <span className="hidden sm:inline text-outline-variant text-caption-mono">•</span>
                 <span className="hidden md:inline font-caption-mono text-caption-mono text-on-surface-variant font-medium">
-                  JOURNAL {journalTime || '--:--:--'}
+                  {journalTime || '--:--:--'}
                 </span>
               </div>
             </div>

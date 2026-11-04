@@ -1,14 +1,16 @@
-const CACHE_NAME = 'xecutd-shell-v2';
+const CACHE_NAME = 'xecutd-shell-v3';
 const APP_SHELL = [
   '/',
   '/journal',
   '/index.html',
   '/manifest.webmanifest',
   '/offline.html',
+  '/icons/xecutd-logo.svg',
   '/icons/xecutd-mark.svg',
   '/icons/xecutd-app.svg',
   '/icons/xecutd-192.png',
   '/icons/xecutd-512.png',
+  '/icons/xecutd-512-maskable.png',
 ];
 
 self.addEventListener('install', (event) => {

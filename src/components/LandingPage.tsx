@@ -16,8 +16,8 @@ export const LandingPage: React.FC = () => (
     <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
       <header className="flex h-[76px] items-center justify-between border-b border-black/10">
         <a href="/" className="flex items-center gap-2.5 text-sm font-bold tracking-[0.1em]" aria-label="Xecutd home">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white"><span className="h-2.5 w-2.5 rounded-full bg-[#e30613]" /></span>
-          <span>XECUTD <span className="font-normal text-black/45">JOURNAL</span></span>
+          <span className="h-8 w-8 overflow-hidden rounded-full border border-black/10 bg-black"><img src="/icons/xecutd-logo.svg" alt="" className="h-full w-full object-cover" /></span>
+          <span>XECUTD</span>
         </a>
         <nav className="hidden items-center gap-8 text-sm text-black/55 md:flex"><a href="#features" className="hover:text-black">What you can track</a><a href="#preview" className="hover:text-black">Preview</a></nav>
         <a href="/journal" className="inline-flex items-center gap-2 rounded-full bg-[#151515] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#333]">Open journal <ArrowUpRight size={15} /></a>

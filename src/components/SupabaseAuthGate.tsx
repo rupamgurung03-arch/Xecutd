@@ -10,7 +10,7 @@ export type WelcomeKind = 'new' | 'daily' | 'returning';
 const localDayKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 interface SupabaseAuthGateProps {
-  children: (userId: string, onSignOut: () => Promise<void>, welcomeKind: WelcomeKind) => React.ReactNode;
+  children: (userId: string, onSignOut: () => Promise<void>, welcomeKind: WelcomeKind, accountName: string) => React.ReactNode;
 }
 
 export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) => {
@@ -18,6 +18,7 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
   const [legacyChoiceRequired, setLegacyChoiceRequired] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [view, setView] = useState<AuthView>('sign-in');
+  const [accountName, setAccountName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -114,7 +115,10 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
         const { data, error: authError } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { emailRedirectTo: redirectUrl() },
+          options: {
+            emailRedirectTo: redirectUrl(),
+            data: { display_name: accountName.trim() },
+          },
         });
         if (authError) setError(authError.message);
         else if (!data.session) setNotice('Check your email for a confirmation link, then come back here to sign in.');
@@ -191,7 +195,11 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
   }
 
   if (session && view !== 'update-password') {
-    if (!legacyChoiceRequired) return <>{children(session.user.id, handleSignOut, welcomeKind)}</>;
+    if (!legacyChoiceRequired) {
+      const metadataName = session.user.user_metadata?.display_name;
+      const accountName = typeof metadataName === 'string' ? metadataName.trim() : '';
+      return <>{children(session.user.id, handleSignOut, welcomeKind, accountName)}</>;
+    }
 
     return (
       <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12 text-on-surface">
@@ -234,7 +242,7 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
         <p className="mb-2 font-caption-mono text-caption-mono uppercase tracking-[.16em] text-tertiary">Xecutd Journal · Private access</p>
         <h1 id="login-title" className="font-headline-lg text-headline-lg font-semibold tracking-tight text-on-surface">{titles[view]}</h1>
         <p className="mt-2 font-body-sm text-body-sm text-tertiary">
-          {view === 'sign-up' ? 'Create an account with your email address and a password.' : view === 'reset-password' ? 'We’ll email you a secure link to reset your password.' : view === 'update-password' ? 'Your reset link is verified. Enter a new password below.' : 'Use the email and password for your journal account.'}
+          {view === 'sign-up' ? 'Create an account with a username, email address, and password.' : view === 'reset-password' ? 'We’ll email you a secure link to reset your password.' : view === 'update-password' ? 'Your reset link is verified. Enter a new password below.' : 'Use the email and password for your journal account.'}
         </p>
 
         {!hasSupabaseConfig ? (
@@ -243,6 +251,12 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
+            {view === 'sign-up' && (
+              <label className="flex flex-col gap-1.5 font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">
+                Username
+                <input type="text" autoComplete="nickname" required maxLength={48} value={accountName} onChange={(event) => setAccountName(event.target.value)} className="min-h-11 border border-outline-variant bg-surface-container-low px-3 font-body-md text-on-surface outline-none focus:border-on-surface" placeholder="Choose a journal name" />
+              </label>
+            )}
             {view !== 'update-password' && (
               <label className="flex flex-col gap-1.5 font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">
                 Email address
