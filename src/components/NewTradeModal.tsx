@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { Trade, AssetClass, TradeSide, TradeStatus, TradeRecordStatus, MissedTradeReason, HypotheticalOutcome, TradeSession, UserSettings } from '../types/trade';
+import { Trade, PartialExit, AssetClass, TradeSide, TradeStatus, TradeRecordStatus, MissedTradeReason, HypotheticalOutcome, TradeSession, UserSettings } from '../types/trade';
 import { calculateTradePnL, calculatePlannedR, calculateRealizedR, formatCurrency } from '../utils/calculations';
 
 interface NewTradeModalProps {
@@ -67,6 +67,13 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
 
   const [entryPrice, setEntryPrice] = useState<string>(editingTrade ? String(editingTrade.entryPrice) : '');
   const [exitPrice, setExitPrice] = useState<string>(editingTrade?.exitPrice ? String(editingTrade.exitPrice) : '');
+  const [usePartialExits, setUsePartialExits] = useState(Boolean(editingTrade?.partialExits?.length));
+  const [partialExits, setPartialExits] = useState<PartialExit[]>(editingTrade?.partialExits?.length ? editingTrade.partialExits.map((part) => ({
+    percentage: part.percentage,
+    exitPrice: part.exitPrice ?? (editingTrade.entryPrice + (editingTrade.side === 'Long' ? 1 : -1) * Math.abs(editingTrade.entryPrice - editingTrade.stopLoss) * (part.rMultiple ?? editingTrade.realizedR ?? 0)),
+  })) : [{ percentage: 100, exitPrice: editingTrade?.exitPrice ?? editingTrade?.entryPrice ?? 0 }]);
+  const [maxAdversePrice, setMaxAdversePrice] = useState(editingTrade?.maxAdversePrice === undefined ? '' : String(editingTrade.maxAdversePrice));
+  const [maxFavorablePrice, setMaxFavorablePrice] = useState(editingTrade?.maxFavorablePrice === undefined ? '' : String(editingTrade.maxFavorablePrice));
   const [stopLoss, setStopLoss] = useState<string>(editingTrade ? String(editingTrade.stopLoss) : '');
   const [takeProfit, setTakeProfit] = useState<string>(editingTrade ? String(editingTrade.takeProfit) : '');
   const [riskAmount, setRiskAmount] = useState<string>(editingTrade?.riskAmount !== undefined ? String(editingTrade.riskAmount) : '');
@@ -111,13 +118,31 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
   const numQty = riskPerUnit > 0 && numRiskAmount > 0
     ? numRiskAmount / riskPerUnit
     : editingTrade?.quantity || 1;
-  const { pnl, pnlPercent } = calculateTradePnL(side, numEntry, numExit, numQty, numFee);
-  const pnlReady = !isMissed && status === 'Closed' && entryPrice.trim() !== '' && exitPrice.trim() !== '' &&
-    riskAmount.trim() !== '' && fee.trim() !== '' && numEntry > 0 && numExit > 0 &&
+  const partialPercent = partialExits.reduce((sum, part) => sum + (Number(part.percentage) || 0), 0);
+  const partialR = (price: number) => riskPerUnit > 0 ? (side === 'Long' ? price - numEntry : numEntry - price) / riskPerUnit : 0;
+  const weightedPartialR = partialExits.reduce((sum, part) => sum + (Number(part.percentage) || 0) * partialR(Number(part.exitPrice) || 0), 0) / 100;
+  const effectiveExitPrice = usePartialExits
+    ? partialExits.reduce((sum, part) => sum + (Number(part.percentage) || 0) * (Number(part.exitPrice) || 0), 0) / 100
+    : numExit;
+  const effectiveExitText = usePartialExits ? String(effectiveExitPrice || '') : exitPrice;
+  const { pnl, pnlPercent } = calculateTradePnL(side, numEntry, effectiveExitPrice, numQty, numFee);
+  const partialPercentValid = Math.abs(partialPercent - 100) < 0.01;
+  const partialPricesValid = partialExits.length > 0 && partialExits.every((part) => Number(part.percentage) > 0 && Number(part.exitPrice) > 0 && Number.isFinite(Number(part.exitPrice)));
+  const partialsValid = !usePartialExits || (partialPricesValid && partialPercentValid);
+  const pnlReady = !isMissed && status === 'Closed' && effectiveExitText.trim() !== '' &&
+    riskAmount.trim() !== '' && fee.trim() !== '' && numEntry > 0 && effectiveExitPrice > 0 &&
     numSL > 0 && riskPerUnit > 0 && numRiskAmount > 0 && Number.isFinite(numRiskAmount) &&
-    Number.isFinite(numFee) && numFee >= 0 && numQty > 0;
+    Number.isFinite(numFee) && numFee >= 0 && numQty > 0 && partialsValid;
   const plannedR = calculatePlannedR(side, numEntry, numSL, numTP);
-  const realizedR = calculateRealizedR(side, numEntry, numExit, numSL);
+  const realizedR = usePartialExits ? weightedPartialR : calculateRealizedR(side, numEntry, numExit, numSL);
+  const maePriceValue = maxAdversePrice.trim() ? Number(maxAdversePrice) : Number.NaN;
+  const mfePriceValue = maxFavorablePrice.trim() ? Number(maxFavorablePrice) : Number.NaN;
+  const maeR = riskPerUnit > 0 && Number.isFinite(maePriceValue) ? Math.max(0, (side === 'Long' ? numEntry - maePriceValue : maePriceValue - numEntry) / riskPerUnit) : null;
+  const mfeR = riskPerUnit > 0 && Number.isFinite(mfePriceValue) ? Math.max(0, (side === 'Long' ? mfePriceValue - numEntry : numEntry - mfePriceValue) / riskPerUnit) : null;
+
+  const updatePartialExit = (index: number, field: keyof PartialExit, value: string) => {
+    setPartialExits((current) => current.map((part, partIndex) => partIndex === index ? { ...part, [field]: value === '' ? 0 : Number(value) } : part));
+  };
 
   const toggleMistake = (m: string) => {
     setMistakes((prev) =>
@@ -222,7 +247,13 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
       return;
     }
     if (!isMissed && status === 'Closed' && (!exitPrice.trim() || !numExit || !Number.isFinite(numExit))) {
-      setFormError('Enter the exit price to calculate P&L for a closed trade.');
+      if (!usePartialExits) {
+        setFormError('Enter the exit price to calculate P&L for a closed trade.');
+        return;
+      }
+    }
+    if (!isMissed && status === 'Closed' && usePartialExits && !partialsValid) {
+      setFormError(!partialPercentValid ? `Partial exit percentages must add up to 100% (currently ${partialPercent.toFixed(2)}%).` : 'Enter a valid exit price for each partial.');
       return;
     }
     if (!isMissed && status === 'Closed' && (!numSL || riskPerUnit <= 0)) {
@@ -264,10 +295,15 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
       exitDate: !isMissed && status === 'Closed' ? exitDate : undefined,
       exitTime: !isMissed && status === 'Closed' ? exitTime : undefined,
       entryPrice: numEntry,
-      exitPrice: !isMissed && status === 'Closed' ? numExit : undefined,
+      exitPrice: !isMissed && status === 'Closed' ? effectiveExitPrice : undefined,
+      partialExits: !isMissed && status === 'Closed' && usePartialExits ? partialExits.map((part) => ({ percentage: part.percentage, exitPrice: Number(part.exitPrice), rMultiple: partialR(Number(part.exitPrice)) })) : undefined,
+      maxAdversePrice: maxAdversePrice.trim() && Number.isFinite(Number(maxAdversePrice)) ? Number(maxAdversePrice) : undefined,
+      maxFavorablePrice: maxFavorablePrice.trim() && Number.isFinite(Number(maxFavorablePrice)) ? Number(maxFavorablePrice) : undefined,
+      maeR: maeR ?? undefined,
+      mfeR: mfeR ?? undefined,
       stopLoss: numSL,
       takeProfit: numTP,
-      quantity: numQty,
+      quantity: usePartialExits ? undefined : numQty,
       riskAmount: numRiskAmount,
       fee: isMissed ? 0 : numFee,
       pnl: isMissed ? 0 : pnlReady ? pnl : 0,
@@ -446,6 +482,29 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               {!isMissed && <span className={`font-caption-mono text-[11px] font-bold ${realizedR >= 0 ? 'text-success' : 'text-secondary'}`}>REALIZED {realizedR >= 0 ? '+' : ''}{realizedR.toFixed(1)}R</span>}
             </div>
           </div>
+          {!isMissed && status === 'Closed' && <div className="flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest p-3">
+            <label className="flex items-center gap-2 font-caption-mono text-[11px] font-semibold uppercase text-on-surface cursor-pointer">
+              <input type="checkbox" checked={usePartialExits} onChange={(event) => { setUsePartialExits(event.target.checked); setFormError(''); }} className="accent-primary-container" />
+              Log partial exits by % of position and price
+            </label>
+            {usePartialExits && <div className="flex flex-col gap-2">
+              <p className="font-body-sm text-caption-mono text-tertiary">Enter the percent closed and exit price for each portion. R and P&amp;L are calculated from your entry, stop, and dollar risk; no contract/share quantity is needed.</p>
+              {partialExits.map((part, index) => <div key={index} className="grid grid-cols-[1fr_1fr_auto] items-end gap-2">
+                <label className="flex flex-col gap-1 font-caption-mono text-[10px] uppercase text-tertiary">Position closed %
+                  <input type="number" min="0.01" max="100" step="any" value={part.percentage || ''} onChange={(event) => updatePartialExit(index, 'percentage', event.target.value)} className="min-w-0 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+                </label>
+                <label className="flex flex-col gap-1 font-caption-mono text-[10px] uppercase text-tertiary">Exit price
+                  <input type="number" min="0.00000001" step="any" value={part.exitPrice || ''} onChange={(event) => updatePartialExit(index, 'exitPrice', event.target.value)} className="min-w-0 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+                  <span className="normal-case">{riskPerUnit > 0 ? `${partialR(Number(part.exitPrice) || 0) >= 0 ? '+' : ''}${partialR(Number(part.exitPrice) || 0).toFixed(2)}R` : 'Add entry and stop to see R'}</span>
+                </label>
+                <button type="button" disabled={partialExits.length === 1} onClick={() => setPartialExits((current) => current.filter((_, partIndex) => partIndex !== index))} className="h-10 border border-outline-variant px-3 font-caption-mono text-xs text-secondary disabled:opacity-40">Remove</button>
+              </div>)}
+              <div className="flex items-center justify-between gap-2">
+                <button type="button" onClick={() => setPartialExits((current) => [...current, { percentage: Math.max(0, 100 - partialPercent), exitPrice: numEntry }])} className="border border-outline-variant px-3 py-2 font-caption-mono text-[10px] font-bold uppercase text-on-surface">+ Add partial</button>
+                <span className={`font-caption-mono text-[11px] font-bold ${Math.abs(partialPercent - 100) < 0.01 ? 'text-success' : 'text-secondary'}`}>{partialPercent.toFixed(2)}% / 100%</span>
+              </div>
+            </div>}
+          </div>}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-surface-container-low p-4 rounded-2xl border border-outline-variant">
             <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Entry</span>
@@ -459,7 +518,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               />
             </div>
 
-            {!isMissed && <div className="flex flex-col gap-1">
+            {!isMissed && status === 'Closed' && !usePartialExits && <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Exit price</span>
               <input
                 type="number"
@@ -531,10 +590,20 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               </span>
             ) : (
               <span className="font-body-sm text-body-sm text-tertiary">
-                {status === 'Open' ? 'P&L appears after the trade is closed.' : 'Enter risk, fees, entry, stop loss, and exit to show P&L.'}
+                {status === 'Open' ? 'P&L appears after the trade is closed.' : usePartialExits && !partialsValid ? (!partialPercentValid ? 'Partial exit percentages must total 100%.' : 'Enter an exit price for each partial.') : 'Enter risk, fees, entry, stop loss, and exit details to show P&L.'}
               </span>
             )}
           </div>
+          {!isMissed && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MAE · worst price against the trade
+              <input type="number" min="0.00000001" step="any" value={maxAdversePrice} onChange={(event) => setMaxAdversePrice(event.target.value)} placeholder={side === 'Long' ? 'Lowest price while open' : 'Highest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+              <span className="normal-case">{maeR === null ? 'Optional · enter the adverse extreme price' : `${maeR.toFixed(2)}R adverse`}</span>
+            </label>
+            <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MFE · best price in your favor
+              <input type="number" min="0.00000001" step="any" value={maxFavorablePrice} onChange={(event) => setMaxFavorablePrice(event.target.value)} placeholder={side === 'Long' ? 'Highest price while open' : 'Lowest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+              <span className="normal-case">{mfeR === null ? 'Optional · enter the favorable extreme price' : `${mfeR.toFixed(2)}R favorable`}</span>
+            </label>
+          </div>}
           {formError && <p role="alert" className="rounded-lg border border-error/30 bg-error-container/40 px-3 py-2 font-body-sm text-body-sm text-secondary">{formError}</p>}
           </section>
 

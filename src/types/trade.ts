@@ -7,6 +7,13 @@ export type MissedTradeReason = 'Hesitation' | 'Distraction' | 'Limit Not Filled
 export type HypotheticalOutcome = 'Win' | 'Loss' | 'Breakeven';
 export type TradeSession = 'Asia' | 'London' | 'New York';
 
+/** A scale-out portion as a percent of original position. `rMultiple` reads older journal records. */
+export interface PartialExit {
+  percentage: number;
+  exitPrice?: number;
+  rMultiple?: number;
+}
+
 export interface Trade {
   id: string;
   symbol: string;
@@ -24,9 +31,14 @@ export interface Trade {
   exitTime?: string;
   entryPrice: number;
   exitPrice?: number;
+  partialExits?: PartialExit[];
+  maxAdversePrice?: number;
+  maxFavorablePrice?: number;
+  maeR?: number;
+  mfeR?: number;
   stopLoss: number;
   takeProfit: number;
-  quantity: number;
+  quantity?: number;
   riskAmount?: number;
   fee: number;
   pnl: number; // Net $

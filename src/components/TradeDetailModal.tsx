@@ -26,6 +26,12 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
 
   const isWin = trade.pnl > 0;
   const isLoss = trade.pnl < 0;
+  const riskDistance = Math.abs(trade.entryPrice - trade.stopLoss);
+  const excursionR = (price: number, direction: 'adverse' | 'favorable') => {
+    if (!riskDistance) return 0;
+    const move = trade.side === 'Long' ? price - trade.entryPrice : trade.entryPrice - price;
+    return direction === 'favorable' ? Math.max(0, move / riskDistance) : Math.max(0, -move / riskDistance);
+  };
 
   const handleRequestAiReview = async () => {
     setIsLoadingAi(true);
@@ -72,11 +78,11 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
             <div className="flex flex-col">
               <span className="font-caption-mono text-caption-mono text-tertiary uppercase font-medium">SIDE &amp; SIZE</span>
               <span className="font-table-data text-table-data text-on-surface font-bold uppercase">
-                {trade.side} / {trade.quantity} Units
+                {trade.side} / {trade.partialExits?.length ? `${trade.partialExits.reduce((sum, part) => sum + part.percentage, 0)}% scaled out` : `${trade.quantity ?? '—'} Units`}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="font-caption-mono text-caption-mono text-tertiary uppercase font-medium">ENTRY / EXIT</span>
+              <span className="font-caption-mono text-caption-mono text-tertiary uppercase font-medium">{trade.partialExits?.length ? 'ENTRY / AVG EXIT' : 'ENTRY / EXIT'}</span>
               <span className="font-table-data text-table-data text-on-surface font-bold">
                 ${trade.entryPrice.toFixed(2)} ➔ ${(trade.exitPrice || trade.entryPrice).toFixed(2)}
               </span>
@@ -121,6 +127,25 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
               <span className="font-table-data text-table-data text-on-surface font-bold">{trade.session || '—'}</span>
             </div>
           </div>
+
+          {trade.partialExits?.length ? <section className="border border-outline-variant bg-surface-container-low p-space-md">
+            <h3 className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">Partial exits · % of original position</h3>
+            <div className="mt-2 flex flex-col gap-2">
+              {trade.partialExits.map((part, index) => {
+                const partR = part.exitPrice !== undefined ? (riskDistance ? (trade.side === 'Long' ? part.exitPrice - trade.entryPrice : trade.entryPrice - part.exitPrice) / riskDistance : 0) : (part.rMultiple || 0);
+                return <div key={`${index}-${part.percentage}-${part.exitPrice ?? part.rMultiple}`} className="flex items-center justify-between gap-3 border-b border-outline-variant/70 pb-2 last:border-0 last:pb-0 font-caption-mono text-body-sm">
+                  <span className="text-on-surface">Exit {index + 1} · {part.percentage}% · {part.exitPrice !== undefined ? `price ${part.exitPrice}` : 'price not recorded'}</span>
+                  <span className={`font-bold ${partR >= 0 ? 'text-success' : 'text-secondary'}`}>{partR >= 0 ? '+' : ''}{partR.toFixed(2)}R</span>
+                </div>;
+              })}
+            </div>
+            <p className="mt-2 font-caption-mono text-caption-mono text-tertiary">Weighted realized result: {(trade.realizedR || 0) >= 0 ? '+' : ''}{(trade.realizedR || 0).toFixed(2)}R</p>
+          </section> : null}
+
+          {(trade.maxAdversePrice !== undefined || trade.maxFavorablePrice !== undefined) && <section className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-space-md sm:grid-cols-2">
+            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MAE · worst adverse price</span><p className="mt-1 font-table-data text-table-data text-on-surface">{trade.maxAdversePrice ?? '—'}{trade.maxAdversePrice !== undefined && riskDistance > 0 ? ` · ${excursionR(trade.maxAdversePrice, 'adverse').toFixed(2)}R` : ''}</p></div>
+            <div><span className="font-caption-mono text-caption-mono font-bold uppercase text-tertiary">MFE · best favorable price</span><p className="mt-1 font-table-data text-table-data text-on-surface">{trade.maxFavorablePrice ?? '—'}{trade.maxFavorablePrice !== undefined && riskDistance > 0 ? ` · ${excursionR(trade.maxFavorablePrice, 'favorable').toFixed(2)}R` : ''}</p></div>
+          </section>}
 
           {trade.tradeStatus === 'MISSED' && <div className="rounded-xl border border-outline-variant bg-surface-container-low p-space-md">
             <span className="font-caption-mono text-caption-mono font-semibold uppercase tracking-wide text-tertiary">Missed setup review</span>

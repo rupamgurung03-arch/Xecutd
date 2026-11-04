@@ -132,7 +132,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
 
   // CSV Export handler
   const handleExportCSV = () => {
-    const headers = ['ID', 'Date', 'Time', 'Symbol', 'Side', 'Session', 'RecordStatus', 'MissedReason', 'HypotheticalOutcome', 'PlannedRR', 'Qty', 'EntryPrice', 'ExitPrice', 'NetPnL', 'RealizedR', 'Setup', 'Discipline'];
+    const headers = ['ID', 'Date', 'Time', 'Symbol', 'Side', 'Session', 'RecordStatus', 'MissedReason', 'HypotheticalOutcome', 'PlannedRR', 'Qty', 'PartialExits', 'MAEPrice', 'MAER', 'MFEPrice', 'MFER', 'EntryPrice', 'ExitPrice', 'NetPnL', 'RealizedR', 'Setup', 'Discipline'];
     const rows = trades.map((t) => [
       t.id,
       t.entryDate,
@@ -144,7 +144,12 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
       t.missedReason || '',
       t.hypotheticalOutcome || '',
       t.plannedRR ?? '',
-      t.quantity,
+      t.partialExits?.length ? '' : (t.quantity ?? ''),
+      t.partialExits?.map((part) => `${part.percentage}%@${part.exitPrice ?? `${part.rMultiple ?? ''}R`}`).join('; ') || '',
+      t.maxAdversePrice ?? '',
+      t.maeR ?? '',
+      t.maxFavorablePrice ?? '',
+      t.mfeR ?? '',
       t.entryPrice,
       t.exitPrice || t.entryPrice,
       t.pnl,
@@ -487,7 +492,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
 
                       {/* Size */}
                       <td className="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface font-medium">
-                        {t.quantity} Units
+                        {t.partialExits?.length ? 'Partial exits' : `${t.quantity ?? '—'} Units`}
                       </td>
 
                       {/* Entry -> Exit */}

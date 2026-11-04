@@ -691,7 +691,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             {t.setup || 'CORE_EXEC'}
                           </span>
                           <span className="hidden sm:inline px-space-sm py-0.5 rounded-full bg-surface-container font-caption-mono text-caption-mono text-outline font-medium">
-                            {t.quantity} UNITS
+                            {t.partialExits?.length ? 'PARTIAL EXITS' : `${t.quantity ?? '—'} UNITS`}
                           </span>
                         </div>
                         <div className="hidden sm:flex font-caption-mono text-caption-mono text-on-surface-variant items-center gap-space-xs mt-0.5 font-medium">
