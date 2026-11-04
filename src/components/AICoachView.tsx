@@ -76,10 +76,12 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || `Buddy service returned HTTP ${res.status}.`);
       setAuditReport(data.analysis || 'Analysis complete.');
       setAuditMode(data.mode || 'heuristic');
-    } catch {
-      setAuditReport(`I couldn't reach the coach service. Your journal currently has ${stats.closedTrades} closed trades, a ${stats.winRate}% win rate, and ${stats.expectancy >= 0 ? '+' : ''}$${Math.abs(stats.expectancy).toFixed(2)} expectancy per trade. Check that the local server is running, then try again.`);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'Unknown connection error.';
+      setAuditReport(`Buddy could not complete the review: ${reason}\n\nYour journal currently has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`);
       setAuditMode('heuristic');
     } finally {
       setIsRunningAudit(false);
@@ -119,6 +121,8 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
         }),
       });
       const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || `Buddy service returned HTTP ${res.status}.`);
+      if (!data.reply) throw new Error('The AI endpoint returned no reply. Check the Worker API deployment and runtime settings.');
       const botMsg: ChatMessage = {
         id: `coach-${Date.now()}`,
         sender: 'coach',
@@ -127,11 +131,12 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
         sources: data.sources || [],
       };
       setChatMessages((prev) => [...prev, botMsg]);
-    } catch {
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'Unknown connection error.';
       const botMsg: ChatMessage = {
         id: `coach-${Date.now()}`,
         sender: 'coach',
-        text: `I couldn't reach the coach service. From your journal: ${stats.closedTrades} closed trades, ${stats.winRate}% win rate, and ${stats.expectancy >= 0 ? '+' : ''}$${Math.abs(stats.expectancy).toFixed(2)} expectancy per trade.`,
+        text: `Buddy couldn't complete that request: ${reason}\n\nYour journal has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setChatMessages((prev) => [...prev, botMsg]);
