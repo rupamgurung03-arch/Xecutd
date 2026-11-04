@@ -14,6 +14,8 @@ interface DashboardViewProps {
   onNavigateToTrades: () => void;
   welcomeKind: WelcomeKind;
   profileName: string;
+  showWelcome: boolean;
+  onBeginUsing: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -27,8 +29,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToTrades,
   welcomeKind,
   profileName,
+  showWelcome,
+  onBeginUsing,
 }) => {
   const [timePeriod, setTimePeriod] = useState<'1D' | '1W' | '1M' | '3M' | 'YTD' | 'ALL'>('ALL');
+  const [showEquityDetails, setShowEquityDetails] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<string>('NEUTRAL');
   const [quickTicker, setQuickTicker] = useState<string>('');
   const [quickSide, setQuickSide] = useState<TradeSide>('Long');
@@ -242,9 +247,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return ((localOpenHour * 60 - offset) % 1440 + 1440) % 1440;
   };
   return (
-    <div className="w-full flex flex-col gap-space-lg">
+    <div className="w-full flex flex-col gap-space-lg" onClickCapture={(event) => {
+      if (!(event.target as HTMLElement).closest('[data-welcome-card]')) onBeginUsing();
+    }}>
 
-      <section className="flex flex-col gap-1 border border-outline-variant bg-surface-container-lowest p-space-lg shadow-sm" aria-live="polite">
+      {showWelcome && <section data-welcome-card className="flex flex-col gap-1 border border-outline-variant bg-surface-container-lowest p-space-lg shadow-sm" aria-live="polite">
         <p className="flex items-center gap-2 font-caption-mono text-caption-mono uppercase tracking-[.16em] text-tertiary">
           <span className="h-2 w-2 bg-primary" aria-hidden="true" />
           {welcomeKind === 'new' ? 'NEW JOURNAL' : welcomeKind === 'daily' ? 'FIRST CHECK-IN TODAY' : 'JOURNAL READY'}
@@ -263,59 +270,59 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               ? 'A new trading day. Review your plan, then focus on one decision at a time.'
               : 'Your journal is synced and ready. Keep following your process.'}
         </p>
-      </section>
+      </section>}
       
       {/* TOP SUMMARY METRICS BAR */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-space-md">
+      <section className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-6 gap-2 sm:gap-space-md">
         
         {/* Metric 1: Net Cumulative P&L */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-md hover:border-outline transition-all">
           <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary-container/10 blur-xl pointer-events-none"></div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
-              <span className="font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
+              <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
                 NET P&amp;L
               </span>
             </div>
-            <span className="font-caption-mono text-caption-mono text-on-surface font-semibold">
+            <span className="hidden sm:inline font-caption-mono text-caption-mono text-on-surface font-semibold">
               {stats.closedTrades} CLOSED
             </span>
           </div>
-          <div className="my-space-md">
+          <div className="my-2 sm:my-space-md">
             <div
-              className={`font-numeric-stat text-numeric-stat tracking-tight font-bold ${
+              className={`font-numeric-stat text-xl sm:text-numeric-stat tracking-tight font-bold truncate ${
                 stats.netPnL >= 0 ? 'text-on-surface' : 'text-secondary'
               }`}
             >
               {stats.netPnL >= 0 ? '+' : ''}{formatCurrency(Math.abs(stats.netPnL), currency)}
             </div>
-            <div className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
+            <div className="font-body-sm text-[10px] sm:text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
               <span>{stats.totalTrades} executed trades</span>
             </div>
           </div>
-          <div className="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
+          <div className="hidden sm:flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
             <span>MAX DRAWDOWN {formatCurrency(stats.maxDrawdownAmount, currency)}</span>
             <span>{stats.openTrades} OPEN</span>
           </div>
         </div>
 
         {/* Metric 2: Win Rate */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-              <span className="font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
+              <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
                 WIN RATE
               </span>
             </div>
-            <span className="font-caption-mono text-caption-mono text-tertiary uppercase font-medium">
+            <span className="hidden sm:inline font-caption-mono text-caption-mono text-tertiary uppercase font-medium">
               {stats.totalTrades} TRADES
             </span>
           </div>
-          <div className="my-space-sm flex items-center justify-between">
+          <div className="my-2 sm:my-space-sm flex items-center justify-between">
             <div>
-              <div className="font-numeric-stat text-numeric-stat text-on-surface tracking-tight font-bold">
+              <div className="font-numeric-stat text-xl sm:text-numeric-stat text-on-surface tracking-tight font-bold">
                 {winRatePercent}%
               </div>
               <div className="font-body-sm text-body-sm text-on-surface-variant mt-1 font-medium">
@@ -325,7 +332,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             </div>
             {/* Glyph circular radial progress */}
-            <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
+            <div className="relative hidden sm:flex w-14 h-14 shrink-0 items-center justify-center">
               <svg className="w-14 h-14 -rotate-90" viewBox="0 0 48 48">
                 <circle
                   className="text-surface-container-highest"
@@ -361,83 +368,83 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Metric 3: Profit Factor & R:R */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-              <span className="font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
+              <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
                 PROFIT FACTOR
               </span>
             </div>
-            <span className="font-caption-mono text-caption-mono text-on-surface font-semibold">
+            <span className="hidden sm:inline font-caption-mono text-caption-mono text-on-surface font-semibold">
               {stats.closedTrades} TRADES
             </span>
           </div>
-          <div className="my-space-md">
-            <div className="font-numeric-stat text-numeric-stat text-on-surface tracking-tight font-bold">
+          <div className="my-2 sm:my-space-md">
+            <div className="font-numeric-stat text-xl sm:text-numeric-stat text-on-surface tracking-tight font-bold">
               {stats.grossLoss > 0 ? stats.profitFactor.toFixed(2) : stats.grossProfit > 0 ? '∞' : '—'}
             </div>
-            <div className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
+            <div className="font-body-sm text-[9px] sm:text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
               <span>AVG WIN / AVG LOSS:</span>
               <span className="font-caption-mono text-on-surface font-bold">
                 {stats.winLossRatio.toFixed(2)}
               </span>
             </div>
           </div>
-          <div className="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
+          <div className="hidden sm:flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
             <span>GROSS PROFIT {formatCurrency(stats.grossProfit, currency)}</span>
             <span>GROSS LOSS {formatCurrency(stats.grossLoss, currency)}</span>
           </div>
         </div>
 
         {/* Metric 4: Avg Trade Expectancy */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-              <span className="font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
-                EXPECTANCY / TRADE
+              <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
+                <span className="sm:hidden">EXPECTANCY</span><span className="hidden sm:inline">EXPECTANCY / TRADE</span>
               </span>
             </div>
-            <span className="font-caption-mono text-caption-mono text-on-surface font-bold">
+            <span className="hidden sm:inline font-caption-mono text-caption-mono text-on-surface font-bold">
               {stats.avgRealizedR >= 0 ? '+' : ''}{stats.avgRealizedR.toFixed(2)} R
             </span>
           </div>
-          <div className="my-space-md">
+          <div className="my-2 sm:my-space-md">
             <div
-              className={`font-numeric-stat text-numeric-stat tracking-tight font-bold ${
+              className={`font-numeric-stat text-xl sm:text-numeric-stat tracking-tight font-bold truncate ${
                 stats.expectancy >= 0 ? 'text-on-surface' : 'text-secondary'
               }`}
             >
               {stats.expectancy >= 0 ? '+' : ''}{formatCurrency(Math.abs(stats.expectancy), currency)}
             </div>
-            <div className="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
+            <div className="font-body-sm text-[9px] sm:text-body-sm text-on-surface-variant flex items-center gap-space-xs mt-1 font-medium">
               <span className="w-2 h-2 rounded-full bg-primary"></span>
               <span>PLAN FOLLOWED {stats.closedTrades ? `${stats.rulesCompliance.toFixed(0)}%` : '—'}</span>
             </div>
           </div>
-          <div className="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
+          <div className="hidden sm:flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-space-xs border-t border-outline-variant/60 font-medium">
             <span>AVG WIN: {formatCurrency(stats.avgWin, currency)}</span>
             <span>AVG LOSS: {formatCurrency(-Math.abs(stats.avgLoss), currency)}</span>
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between shadow-sm">
-          <span className="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider font-semibold">MAX DRAWDOWN</span>
-          <div className="my-space-sm">
-            <span className="font-numeric-stat text-numeric-stat text-secondary font-bold">{formatCurrency(-Math.abs(stats.maxDrawdownAmount), currency)}</span>
-            <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{stats.maxDrawdown.toFixed(1)}% of recorded peak</p>
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm">
+          <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary uppercase tracking-wider font-semibold"><span className="sm:hidden">MAX DD</span><span className="hidden sm:inline">MAX DRAWDOWN</span></span>
+          <div className="my-2 sm:my-space-sm">
+            <span className="font-numeric-stat text-xl sm:text-numeric-stat text-secondary font-bold truncate">{formatCurrency(-Math.abs(stats.maxDrawdownAmount), currency)}</span>
+            <p className="font-body-sm text-[9px] sm:text-body-sm text-on-surface-variant mt-1">{stats.maxDrawdown.toFixed(1)}% of peak</p>
           </div>
-          <span className="font-caption-mono text-caption-mono text-tertiary">Closed trades only</span>
+          <span className="hidden sm:inline font-caption-mono text-caption-mono text-tertiary">Closed trades only</span>
         </div>
 
-        <div className="bg-surface-container-lowest border border-outline-variant p-space-lg rounded-xl flex flex-col justify-between shadow-sm">
-          <span className="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider font-semibold">AVERAGE R / TRADE</span>
-          <div className="my-space-sm">
-            <span className={`font-numeric-stat text-numeric-stat font-bold ${stats.avgRealizedR < 0 ? 'text-secondary' : 'text-on-surface'}`}>{stats.avgRealizedR >= 0 ? '+' : ''}{stats.avgRealizedR.toFixed(2)}R</span>
-            <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{stats.closedTrades} closed trades</p>
+        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm">
+          <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary uppercase tracking-wider font-semibold"><span className="sm:hidden">AVG R / TRADE</span><span className="hidden sm:inline">AVERAGE R / TRADE</span></span>
+          <div className="my-2 sm:my-space-sm">
+            <span className={`font-numeric-stat text-xl sm:text-numeric-stat font-bold ${stats.avgRealizedR < 0 ? 'text-secondary' : 'text-on-surface'}`}>{stats.avgRealizedR >= 0 ? '+' : ''}{stats.avgRealizedR.toFixed(2)}R</span>
+            <p className="font-body-sm text-[9px] sm:text-body-sm text-on-surface-variant mt-1">{stats.closedTrades} closed trades</p>
           </div>
-          <span className="font-caption-mono text-caption-mono text-tertiary">Realized R average</span>
+          <span className="hidden sm:inline font-caption-mono text-caption-mono text-tertiary">Realized R average</span>
         </div>
 
       </section>
@@ -451,9 +458,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* EQUITY CURVE & DRAWDOWN MODULE */}
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
             
-            {/* Chart Header & Time Pills */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-sm border-b border-outline-variant/60">
-              <div className="flex flex-col">
+            {/* Chart controls: compact range and balance row on mobile */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-space-md pb-space-sm border-b border-outline-variant/60">
+              <div className="hidden sm:flex flex-col">
                 <div className="flex items-center gap-space-xs">
                   <span className="font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase font-semibold">
                     Equity curve
@@ -470,7 +477,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* Time Range Selectors */}
-              <div className="flex items-center bg-surface-container-low border border-outline-variant p-1 rounded-full self-start sm:self-auto">
+              <div className="hidden sm:flex items-center bg-surface-container-low border border-outline-variant p-1 rounded-full self-start sm:self-auto">
                 {(['1D', '1W', '1M', '3M', 'YTD', 'ALL'] as const).map((period) => (
                   <button
                     key={period}
@@ -485,10 +492,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </button>
                 ))}
               </div>
+              <div className="grid grid-cols-2 gap-2 sm:hidden">
+                <label className="flex min-w-0 items-center gap-1.5 border border-outline-variant bg-surface-container-low px-2.5 py-2 font-caption-mono text-[10px] uppercase text-on-surface-variant">
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">calendar_month</span>
+                  <select aria-label="Equity chart date range" value={timePeriod} onChange={(event) => setTimePeriod(event.target.value as typeof timePeriod)} className="min-w-0 w-full appearance-none bg-transparent font-caption-mono text-[10px] font-semibold text-on-surface outline-none">
+                    {(['1D', '1W', '1M', '3M', 'YTD', 'ALL'] as const).map((period) => <option key={period} value={period}>{period}</option>)}
+                  </select>
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">expand_more</span>
+                </label>
+                <button type="button" aria-expanded={showEquityDetails} onClick={() => setShowEquityDetails((open) => !open)} className="flex min-w-0 items-center justify-between gap-1 border border-outline-variant bg-surface-container-low px-2.5 py-2 text-left">
+                  <span className="min-w-0"><span className="block font-caption-mono text-[8px] uppercase tracking-wide text-tertiary">Ending balance</span><span className="block truncate font-table-data text-xs font-bold text-on-surface">{formatCurrency(endingBalance, currency)}</span></span>
+                  <span className="material-symbols-outlined text-base text-tertiary" aria-hidden="true">{showEquityDetails ? 'expand_less' : 'expand_more'}</span>
+                </button>
+              </div>
             </div>
 
             {/* Secondary Telemetry Micro-Readouts */}
-            <div className="flex flex-wrap items-center gap-space-md font-caption-mono text-caption-mono text-tertiary py-space-xs">
+            <div className="hidden sm:flex flex-wrap items-center gap-space-md font-caption-mono text-caption-mono text-tertiary py-space-xs">
               <div className="flex items-center gap-space-xs">
                 <span className="w-2 h-2 rounded-full bg-primary"></span>
                   <span className="text-on-surface font-medium">ENDING BALANCE: {formatCurrency(endingBalance, currency)}</span>
@@ -511,6 +531,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </span>
               </div>
             </div>
+            {showEquityDetails && <div className="grid grid-cols-2 gap-2 sm:hidden">
+              <div className="border border-outline-variant bg-surface-container-low p-2"><span className="block font-caption-mono text-[8px] uppercase text-tertiary">Max drawdown</span><span className="font-caption-mono text-[10px] font-semibold text-secondary">{formatCurrency(-Math.abs(stats.maxDrawdownAmount), currency)} · {stats.maxDrawdown.toFixed(1)}%</span></div>
+              <div className="border border-outline-variant bg-surface-container-low p-2"><span className="block font-caption-mono text-[8px] uppercase text-tertiary">Discipline gap</span><span className={`font-caption-mono text-[10px] font-semibold ${disciplineGapR > 0 ? 'text-secondary' : 'text-on-surface'}`}>{disciplineGapR.toFixed(2)}R</span></div>
+              <div className="col-span-2 border border-outline-variant bg-surface-container-low p-2"><span className="font-caption-mono text-[8px] uppercase text-tertiary">Status</span><span className="ml-2 font-caption-mono text-[10px] font-semibold text-on-surface">{stats.closedTrades} closed trades</span></div>
+            </div>}
 
             {/* Geometric Light/Dark Vector Line Chart (Inline SVG) */}
             <div className="relative w-full h-72 sm:h-80 bg-surface-container-low border border-outline-variant rounded-xl p-space-md flex flex-col justify-between overflow-hidden shadow-inner group">
@@ -609,20 +634,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* RECENT EXECUTED TRADES SNIPPET */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 sm:p-space-lg shadow-sm flex flex-col gap-2 sm:gap-space-md">
             <div className="flex items-center justify-between border-b border-outline-variant/60 pb-space-sm">
               <div className="flex items-center gap-space-sm">
                 <div className="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
-                <h3 className="font-headline-md text-headline-md text-on-surface font-bold">
+                <h3 className="font-headline-md text-sm sm:text-headline-md text-on-surface font-bold">
                   RECENT EXECUTIONS
                 </h3>
-                <span className="font-caption-mono text-caption-mono text-on-surface-variant bg-surface-container-high px-space-sm py-0.5 rounded-full font-semibold">
+                <span className="hidden sm:inline font-caption-mono text-caption-mono text-on-surface-variant bg-surface-container-high px-space-sm py-0.5 rounded-full font-semibold">
                   BATCH #{trades.length}
                 </span>
               </div>
               <button
                 onClick={onNavigateToTrades}
-                className="font-caption-mono text-caption-mono text-on-surface hover:text-outline transition-colors flex items-center gap-1 font-semibold group cursor-pointer"
+                className="hidden sm:flex font-caption-mono text-caption-mono text-on-surface hover:text-outline transition-colors items-center gap-1 font-semibold group cursor-pointer"
               >
                 <span>EXPLORE COMPLETE LEDGER</span>
                 <span className="material-symbols-outlined text-body-sm group-hover:translate-x-0.5 transition-transform">
@@ -642,19 +667,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <div
                     key={t.id}
                     onClick={() => onSelectTrade(t)}
-                    className="bg-surface-container-low hover:bg-surface-container border border-outline-variant/60 p-space-md rounded-xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-space-sm group cursor-pointer"
+                    className="bg-surface-container-low hover:bg-surface-container border border-outline-variant/60 p-2.5 sm:p-space-md rounded-xl transition-all flex flex-row items-center justify-between gap-2 sm:gap-space-sm group cursor-pointer"
                   >
-                    <div className="flex items-center gap-space-md min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center font-display text-body-md font-bold shrink-0 border border-outline-variant/60">
+                    <div className="flex items-center gap-2 sm:gap-space-md min-w-0">
+                      <div className="hidden sm:flex w-10 h-10 rounded-full bg-surface-container-highest text-on-surface items-center justify-center font-display text-body-md font-bold shrink-0 border border-outline-variant/60">
                         {initials}
                       </div>
                       <div className="flex flex-col min-w-0">
-                        <div className="flex items-center gap-space-sm flex-wrap">
-                          <span className="font-display text-body-lg font-bold text-on-surface">
+                        <div className="flex items-center gap-2 sm:gap-space-sm flex-wrap">
+                          <span className="font-display text-sm sm:text-body-lg font-bold text-on-surface">
                             {t.symbol}
                           </span>
                           <span
-                            className={`px-space-sm py-0.5 rounded-full font-caption-mono text-caption-mono uppercase font-bold ${
+                            className={`px-1.5 sm:px-space-sm py-0.5 rounded-full font-caption-mono text-[9px] sm:text-caption-mono uppercase font-bold ${
                               t.side === 'Long'
                                 ? 'bg-surface-container-highest text-on-surface'
                                 : 'bg-surface-container text-outline'
@@ -662,14 +687,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           >
                             {t.side}
                           </span>
-                          <span className="px-space-sm py-0.5 rounded-full bg-surface-container font-caption-mono text-caption-mono text-outline font-medium uppercase">
+                          <span className="hidden sm:inline px-space-sm py-0.5 rounded-full bg-surface-container font-caption-mono text-caption-mono text-outline font-medium uppercase">
                             {t.setup || 'CORE_EXEC'}
                           </span>
-                          <span className="px-space-sm py-0.5 rounded-full bg-surface-container font-caption-mono text-caption-mono text-outline font-medium">
+                          <span className="hidden sm:inline px-space-sm py-0.5 rounded-full bg-surface-container font-caption-mono text-caption-mono text-outline font-medium">
                             {t.quantity} UNITS
                           </span>
                         </div>
-                        <div className="font-caption-mono text-caption-mono text-on-surface-variant flex items-center gap-space-xs mt-0.5 font-medium">
+                        <div className="hidden sm:flex font-caption-mono text-caption-mono text-on-surface-variant items-center gap-space-xs mt-0.5 font-medium">
                           <span>ENTRY: ${t.entryPrice.toFixed(2)}</span>
                           <span>→</span>
                           <span>EXIT: ${(t.exitPrice || t.entryPrice).toFixed(2)}</span>
@@ -678,7 +703,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between md:justify-end gap-space-lg shrink-0">
+                    <div className="hidden sm:flex items-center justify-between md:justify-end gap-space-lg shrink-0">
                       <div className="flex flex-col items-start md:items-end">
                         <span
                           className={`font-table-data text-table-data font-bold ${
@@ -703,10 +728,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* Bottom execution status micro-bar */}
-            <div className="flex items-center justify-between bg-surface-container-low border border-outline-variant px-space-md py-space-sm rounded-full">
-              <span className="font-caption-mono text-caption-mono text-outline font-medium">
-                CURRENT STREAK: {stats.currentStreak ? `${stats.currentStreak} ${stats.streakType.toLowerCase()}${stats.currentStreak === 1 ? '' : 's'}` : 'NONE'}
-              </span>
+            <div className="hidden sm:flex items-center justify-end bg-surface-container-low border border-outline-variant px-space-md py-space-sm rounded-full">
               <span className="font-caption-mono text-caption-mono text-on-surface font-semibold">
                 CLOSED TRADES: {stats.closedTrades} · NET {formatCurrency(stats.netPnL, currency)}
               </span>
@@ -718,7 +740,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {/* RIGHT COLUMN: 4 COLUMNS (WIDGETS & HARDWARE-INSPIRED OS MODULES) */}
         <div className="lg:col-span-4 flex flex-col gap-space-lg min-w-0">
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-lg shadow-sm flex flex-col gap-space-md">
+          <div className="hidden lg:flex bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-lg shadow-sm flex-col gap-space-md">
             <div className="flex items-start justify-between gap-space-sm">
               <div>
                 <p className="flex items-center gap-1.5 font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase"><span className="h-1.5 w-1.5 rounded-full bg-primary-container" />Trade entry</p>
@@ -1061,7 +1083,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* Recent 30 days */}
-      <section className="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+      <section className="hidden md:flex bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg shadow-sm flex-col gap-space-md">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm border-b border-outline-variant/60 pb-space-sm">
           <div className="flex items-center gap-space-sm">
             <span className="w-2 h-2 rounded-full bg-primary"></span>

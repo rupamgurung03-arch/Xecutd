@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Trade, TradeSide } from '../types/trade';
 import { formatCurrency } from '../utils/calculations';
 
@@ -29,6 +29,16 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
   const [draftDateTo, setDraftDateTo] = useState('');
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [dateRangeError, setDateRangeError] = useState('');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)');
+    const updateMobileView = () => setIsMobileView(media.matches);
+    updateMobileView();
+    media.addEventListener('change', updateMobileView);
+    return () => media.removeEventListener('change', updateMobileView);
+  }, []);
 
   // Playbook list
   const playbooks = useMemo(() => {
@@ -107,11 +117,18 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
   }, [trades, searchTerm, selectedPlaybook, sideFilter, outcomeFilter, dateFrom, dateTo]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredTrades.length / rowsPerPage) || 1;
+  const pageSize = isMobileView ? 6 : rowsPerPage;
+  const totalPages = Math.ceil(filteredTrades.length / pageSize) || 1;
   const paginatedTrades = useMemo(() => {
-    const start = (currentPage - 1) * rowsPerPage;
-    return filteredTrades.slice(start, start + rowsPerPage);
-  }, [filteredTrades, currentPage, rowsPerPage]);
+    const start = (currentPage - 1) * pageSize;
+    return filteredTrades.slice(start, start + pageSize);
+  }, [filteredTrades, currentPage, pageSize]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
+
+  const activeFilterCount = Number(selectedPlaybook !== 'ALL') + Number(sideFilter !== 'ALL') + Number(outcomeFilter !== 'ALL');
 
   // CSV Export handler
   const handleExportCSV = () => {
@@ -187,25 +204,25 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
         {/* Upper Strip: Search, Strategy, Date, Export */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
           {/* Left: Search & Range Picker */}
-          <div className="flex flex-wrap items-center gap-space-sm">
-            <div className="relative flex items-center bg-surface-container-low border border-outline-variant/80 rounded-full px-space-md py-1.5 min-w-[220px]">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-space-sm min-w-0">
+            <div className="relative col-span-2 sm:col-span-1 flex min-w-0 w-full sm:w-auto items-center bg-surface-container-low border border-outline-variant/80 rounded-full px-space-md py-1.5 sm:min-w-[220px]">
               <span className="material-symbols-outlined text-body-md text-tertiary mr-space-xs">search</span>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="FILTER TICKER / ID (e.g. NQ, #TR-04)"
+                placeholder="FILTER TICKER / ID"
                 className="bg-transparent border-0 outline-none text-on-surface placeholder:text-tertiary font-caption-mono text-body-sm w-full uppercase"
               />
-              <span className="font-caption-mono text-caption-mono text-tertiary bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant/60">
+              <span className="hidden md:inline font-caption-mono text-caption-mono text-tertiary bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant/60">
                 ⌘K
               </span>
             </div>
 
             <div className="relative">
-              <button type="button" aria-expanded={datePickerOpen} onClick={() => { setDraftDateFrom(dateFrom); setDraftDateTo(dateTo); setDateRangeError(''); setDatePickerOpen((open) => !open); }} className="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container border border-outline-variant/80 px-space-md py-1.5 rounded-full text-on-surface transition-colors font-body-sm">
+              <button type="button" aria-expanded={datePickerOpen} onClick={() => { setDraftDateFrom(dateFrom); setDraftDateTo(dateTo); setDateRangeError(''); setDatePickerOpen((open) => !open); }} className="flex min-w-0 items-center justify-center gap-space-xs bg-surface-container-low hover:bg-surface-container border border-outline-variant/80 px-2.5 sm:px-space-md py-1.5 rounded-full text-on-surface transition-colors font-body-sm">
                 <span className="material-symbols-outlined text-body-sm text-tertiary">calendar_month</span>
-                <span className="font-caption-mono text-caption-mono tracking-wide uppercase font-medium">{dateFrom || dateTo ? `${dateFrom || 'START'} — ${dateTo || 'END'}`.replaceAll('-', '.') : 'ALL DATES'}</span>
+                <span className="truncate font-caption-mono text-[10px] sm:text-caption-mono tracking-wide uppercase font-medium">{dateFrom || dateTo ? `${dateFrom || 'START'} — ${dateTo || 'END'}`.replaceAll('-', '.') : 'ALL DATES'}</span>
                 <span className="material-symbols-outlined text-body-sm text-tertiary">arrow_drop_down</span>
               </button>
               {datePickerOpen && <div className="absolute left-0 top-full z-40 mt-2 w-[min(19rem,calc(100vw-2.5rem))] rounded-2xl border border-outline-variant bg-surface-container-lowest p-space-md shadow-xl">
@@ -222,8 +239,15 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
               </div>}
             </div>
 
+            <button type="button" aria-expanded={mobileFiltersOpen} aria-controls="mobile-ledger-filters" onClick={() => setMobileFiltersOpen((open) => !open)} className="md:hidden flex items-center justify-center gap-1.5 border border-outline-variant bg-surface-container-low px-2.5 py-1.5 rounded-full font-caption-mono text-[10px] font-semibold uppercase text-on-surface">
+              <span className="material-symbols-outlined text-sm">tune</span>
+              <span>FILTER</span>
+              {activeFilterCount > 0 && <span className="inline-flex h-4 min-w-4 items-center justify-center bg-primary text-on-primary px-1 text-[9px]">{activeFilterCount}</span>}
+              <span className="material-symbols-outlined text-sm">{mobileFiltersOpen ? 'expand_less' : 'expand_more'}</span>
+            </button>
+
             {/* Strategy Playbook Multi-Filter Pill */}
-            <div className="flex items-center gap-space-xs overflow-x-auto py-1">
+            <div className="hidden md:flex items-center gap-space-xs overflow-x-auto py-1">
               <button
                 onClick={() => setSelectedPlaybook('ALL')}
                 className={`px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase font-medium transition-all flex items-center gap-1.5 ${
@@ -252,7 +276,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
           </div>
 
           {/* Export and trade-entry actions */}
-          <div className="flex items-center gap-space-sm shrink-0">
+          <div className="hidden md:flex items-center gap-space-sm shrink-0">
             <button
               onClick={handleExportCSV}
               className="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container border border-outline-variant/80 text-on-surface px-space-md py-1.5 rounded-full transition-all font-body-sm cursor-pointer"
@@ -270,8 +294,30 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
           </div>
         </div>
 
+        {mobileFiltersOpen && <div id="mobile-ledger-filters" className="md:hidden flex flex-col gap-3 border-t border-outline-variant/50 pt-3">
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-caption-mono text-[10px] font-bold uppercase tracking-wider text-tertiary">Filter options</span>
+            <button type="button" onClick={() => { setSearchTerm(''); setSelectedPlaybook('ALL'); setSideFilter('ALL'); setOutcomeFilter('ALL'); setDateFrom(''); setDateTo(''); setDraftDateFrom(''); setDraftDateTo(''); setCurrentPage(1); }} className="font-caption-mono text-[10px] font-semibold uppercase text-on-surface underline underline-offset-2">Clear all</button>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {['ALL', ...playbooks].map((playbook) => <button key={playbook} type="button" aria-pressed={selectedPlaybook === playbook} onClick={() => { setSelectedPlaybook(playbook); setCurrentPage(1); }} className={`max-w-full truncate border px-2.5 py-1.5 font-caption-mono text-[9px] uppercase tracking-wide ${selectedPlaybook === playbook ? 'border-primary bg-primary text-on-primary' : 'border-outline-variant bg-surface-container-low text-on-surface-variant'}`}>{playbook === 'ALL' ? 'All playbooks' : playbook}</button>)}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-caption-mono text-[9px] uppercase tracking-wider text-tertiary">Direction</span>
+            <div className="grid grid-cols-3 border border-outline-variant bg-surface-container-low p-0.5">
+              {(['ALL', 'LONG', 'SHORT'] as const).map((side) => <button key={side} type="button" aria-pressed={sideFilter === side} onClick={() => { setSideFilter(side); setCurrentPage(1); }} className={`py-1.5 font-caption-mono text-[9px] uppercase ${sideFilter === side ? 'bg-on-surface text-surface-container-lowest font-bold' : 'text-tertiary'}`}>{side}</button>)}
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-caption-mono text-[9px] uppercase tracking-wider text-tertiary">Outcome</span>
+            <div className="grid grid-cols-4 border border-outline-variant bg-surface-container-low p-0.5">
+              {(['ALL', 'WINS', 'LOSSES', 'BE'] as const).map((outcome) => <button key={outcome} type="button" aria-pressed={outcomeFilter === outcome} onClick={() => { setOutcomeFilter(outcome); setCurrentPage(1); }} className={`py-1.5 font-caption-mono text-[9px] uppercase ${outcomeFilter === outcome ? 'bg-on-surface text-surface-container-lowest font-bold' : 'text-tertiary'}`}>{outcome}</button>)}
+            </div>
+          </div>
+        </div>}
+
         {/* Lower Sub-strip: Side & Outcome Toggles */}
-        <div className="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs border-t border-outline-variant/50">
+        <div className="hidden md:flex flex-wrap items-center justify-between gap-space-sm pt-space-xs border-t border-outline-variant/50">
           <div className="flex items-center gap-space-md flex-wrap">
             {/* Side Pill Group */}
             <div className="flex items-center bg-surface-container-low p-0.5 rounded-full border border-outline-variant/80">
@@ -309,7 +355,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
           </div>
 
           {/* Telemetry readout right */}
-          <div className="flex items-center gap-space-sm text-caption-mono font-caption-mono text-tertiary">
+          <div className="hidden md:flex items-center gap-space-sm text-caption-mono font-caption-mono text-tertiary">
             <span>SHOWING {filteredTrades.length} OF {trades.length} EXECUTIONS</span>
             <span>•</span>
             <span className="text-on-surface-variant font-medium">SORT: TIMESTAMP DESC</span>
@@ -334,37 +380,21 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
         </div>
 
         {/* Scrollable Table Wrapper */}
-        <div className="md:hidden flex flex-col gap-space-sm p-space-sm">
+        <div className="md:hidden flex flex-col gap-2 p-2">
           {paginatedTrades.length === 0 ? (
             <p className="py-8 text-center font-body-sm text-on-surface-variant">No trades match these filters.</p>
           ) : paginatedTrades.map((trade) => {
             const isMissed = trade.tradeStatus === 'MISSED';
             const isWin = !isMissed && trade.status === 'Closed' && trade.pnl > 0;
             const isLoss = !isMissed && trade.status === 'Closed' && trade.pnl < 0;
+            const profitText = isMissed ? 'MISSED' : trade.status === 'Closed' ? formatCurrency(trade.pnl, currency) : 'OPEN';
             return (
-              <article key={trade.id} onClick={() => onSelectTrade(trade)} className="rounded-xl border border-outline-variant bg-surface-container-low p-space-md cursor-pointer active:bg-surface-container">
-                <div className="flex items-start justify-between gap-space-sm">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-space-xs">
-                      <span className="font-headline-md text-body-lg font-bold text-on-surface">{trade.symbol}</span>
-                      <span className="rounded-full border border-outline-variant px-space-sm py-0.5 font-caption-mono text-caption-mono text-on-surface-variant">{trade.side}</span>
-                      <span className="rounded-full bg-surface-container px-space-sm py-0.5 font-caption-mono text-caption-mono text-tertiary">{isMissed ? 'MISSED' : trade.status}</span>
-                    </div>
-                    <p className="mt-1 truncate font-body-sm text-body-sm text-on-surface-variant">{trade.setup || 'No strategy set'}</p>
-                    <p className="mt-1 font-caption-mono text-caption-mono text-tertiary">{trade.entryDate} · {trade.entryTime || 'Time not set'} · {trade.quantity} units</p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className={`font-table-data text-table-data font-bold ${isWin ? 'text-success' : isLoss ? 'text-secondary' : 'text-on-surface'}`}>{isMissed ? 'MISSED' : trade.status === 'Closed' ? formatCurrency(trade.pnl, currency) : 'Open'}</p>
-                    <p className="font-caption-mono text-caption-mono text-tertiary">{isMissed ? `${trade.hypotheticalOutcome || '—'} · ${trade.plannedRR ?? '—'}R planned` : trade.status === 'Closed' ? `${trade.realizedR >= 0 ? '+' : ''}${trade.realizedR.toFixed(2)}R` : '—'}</p>
-                  </div>
+              <article key={trade.id} role="button" tabIndex={0} aria-label={`${trade.symbol}, ${trade.side}, ${profitText}. Tap to review trade.`} onClick={() => onSelectTrade(trade)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectTrade(trade); } }} className="flex min-h-14 items-center justify-between gap-3 border border-outline-variant bg-surface-container-low px-3 py-2.5 cursor-pointer active:bg-surface-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span className="max-w-[55vw] truncate font-display text-base font-bold text-on-surface">{trade.symbol}</span>
+                  <span className="shrink-0 border border-outline-variant px-2 py-1 font-caption-mono text-[10px] font-semibold uppercase text-on-surface-variant">{trade.side}</span>
                 </div>
-                {(trade.notes || trade.tags?.length > 0) && <p className="mt-3 line-clamp-2 font-body-sm text-body-sm text-on-surface-variant">{trade.notes || trade.tags.join(' · ')}</p>}
-                <div className="mt-3 flex items-center justify-between border-t border-outline-variant/60 pt-2">
-                  <span className="font-caption-mono text-caption-mono text-tertiary">Tap to review</span>
-                  <button type="button" onClick={(event) => { event.stopPropagation(); onDeleteTrade(trade.id); }} className="flex items-center gap-1 rounded-full px-2 py-1 font-caption-mono text-caption-mono text-tertiary hover:text-secondary" aria-label={`Delete ${trade.symbol} trade`}>
-                    <span className="material-symbols-outlined text-body-sm">delete</span>Delete
-                  </button>
-                </div>
+                <span className={`shrink-0 font-table-data text-sm font-bold ${isWin ? 'text-success' : isLoss ? 'text-secondary' : 'text-on-surface'}`}>{profitText}</span>
               </article>
             );
           })}
@@ -567,9 +597,9 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
         </div>
 
         {/* Pagination Footer */}
-        <div className="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md border-t border-outline-variant/80">
+        <div className="px-3 sm:px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md border-t border-outline-variant/80">
           <div className="flex items-center gap-space-md">
-            <div className="flex items-center gap-space-xs">
+            <div className="hidden md:flex items-center gap-space-xs">
               <span className="font-caption-mono text-caption-mono text-tertiary uppercase">ROWS PER PAGE:</span>
               <div className="flex items-center bg-white rounded-full p-0.5 border border-outline-variant shadow-xs">
                 {[8, 25, 50, 100].map((num) => (
@@ -593,6 +623,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
             <span className="font-caption-mono text-caption-mono text-tertiary hidden md:inline">
               PAGE {currentPage} OF {totalPages}
             </span>
+            <span className="md:hidden font-caption-mono text-[10px] text-tertiary uppercase">6 per page · Page {currentPage} of {totalPages}</span>
           </div>
 
           <div className="flex items-center gap-space-xs">

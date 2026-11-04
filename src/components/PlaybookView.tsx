@@ -455,28 +455,24 @@ export const PlaybookView: React.FC<PlaybookViewProps> = ({
             <div
               key={rule.id}
               onClick={() => onToggleRule(rule.id)}
-              className="p-space-md bg-surface-container-low rounded-lg flex items-start justify-between gap-space-md border border-outline-variant/60 cursor-pointer hover:bg-surface-container transition-colors shadow-xs"
+              className="min-w-0 p-2.5 sm:p-space-md bg-surface-container-low rounded-lg flex items-center justify-between gap-2 sm:gap-space-md border border-outline-variant/60 cursor-pointer hover:bg-surface-container transition-colors shadow-xs"
             >
-              <div className="flex items-start gap-space-sm">
+              <div className="flex min-w-0 flex-1 items-center gap-space-sm">
                 <span
-                  className={`material-symbols-outlined text-body-lg mt-0.5 ${
+                  className={`material-symbols-outlined text-body-lg shrink-0 ${
                     rule.active ? 'text-primary' : 'text-tertiary/40'
                   }`}
                 >
                   {rule.active ? 'check_circle' : 'radio_button_unchecked'}
                 </span>
-                <div className="flex flex-col">
-                  <span
-                    className={`font-body-md font-semibold ${
-                      rule.active ? 'text-on-surface' : 'text-tertiary line-through'
-                    }`}
-                  >
-                    {rule.text}
-                  </span>
-                  <span className="font-caption-mono text-caption-mono text-tertiary">
-                    GATE: {rule.category.toUpperCase()} • ENFORCED
-                  </span>
-                </div>
+                <span
+                  title={rule.text}
+                  className={`block min-w-0 flex-1 truncate whitespace-nowrap font-body-sm text-body-sm font-semibold ${
+                    rule.active ? 'text-on-surface' : 'text-tertiary line-through'
+                  }`}
+                >
+                  {rule.text}
+                </span>
               </div>
               <button
                 onClick={(e) => {

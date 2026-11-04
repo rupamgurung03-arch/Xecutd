@@ -191,23 +191,31 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     <div className="w-full flex flex-col gap-space-lg">
       
       {/* TOP TOOLBAR: Month Navigation & Mode Switchers */}
-      <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-outline-variant">
-        <div className="flex items-center gap-space-sm flex-wrap">
-          <div className="flex items-center bg-surface-container-low rounded-full p-space-xs border border-outline-variant/80">
+      <div className="w-full min-w-0 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 sm:gap-space-md bg-surface-container-lowest p-2.5 sm:p-space-md rounded-xl shadow-sm border border-outline-variant">
+        <div className="flex min-w-0 w-full md:w-auto items-center gap-2 sm:gap-space-sm">
+          <div className="flex min-w-0 w-full md:w-auto items-center gap-0.5 sm:gap-1 bg-surface-container-low rounded-full p-1 border border-outline-variant/80">
             <button
               onClick={prevMonth}
+              aria-label="Previous month"
               className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer shadow-xs"
             >
               <span className="material-symbols-outlined text-body-lg">chevron_left</span>
             </button>
-            <div className="px-space-md flex items-center gap-space-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-              <span className="font-headline-md text-body-md uppercase tracking-wider text-on-surface font-bold">
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-1 sm:gap-space-xs px-1 sm:px-space-sm">
+              <span className="w-1.5 h-1.5 shrink-0 rounded-full bg-secondary"></span>
+              <span className="truncate font-headline-md text-[11px] sm:text-body-md uppercase tracking-wider text-on-surface font-bold">
                 {monthYearLabel}
               </span>
+              <button
+                onClick={setToday}
+                className="sm:hidden shrink-0 px-2 py-1 rounded-full bg-surface-container-high hover:bg-surface-container text-tertiary hover:text-on-surface text-[9px] font-caption-mono tracking-wide uppercase transition-colors border border-outline-variant/80 cursor-pointer font-semibold"
+              >
+                Today
+              </button>
             </div>
             <button
               onClick={nextMonth}
+              aria-label="Next month"
               className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer shadow-xs"
             >
               <span className="material-symbols-outlined text-body-lg">chevron_right</span>
@@ -215,23 +223,23 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </div>
           <button
             onClick={setToday}
-            className="px-space-md py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-tertiary hover:text-on-surface text-caption-mono font-caption-mono tracking-widest uppercase transition-all shadow-xs border border-outline-variant/80 cursor-pointer font-medium"
+            className="hidden sm:inline-flex px-space-md py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-tertiary hover:text-on-surface text-caption-mono font-caption-mono tracking-widest uppercase transition-all shadow-xs border border-outline-variant/80 cursor-pointer font-medium"
           >
             TODAY
           </button>
         </div>
 
-        <div className="flex items-center gap-space-sm">
+        <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-2 sm:gap-space-sm">
           <button
             type="button"
             onClick={() => setShowWeekends((show) => !show)}
             aria-pressed={!showWeekends}
-            className="flex items-center gap-space-xs rounded-full border border-outline-variant/80 bg-surface-container-low px-space-md py-1.5 text-caption-mono font-caption-mono font-semibold uppercase tracking-wide text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+            className="flex min-w-0 items-center justify-center gap-space-xs rounded-full border border-outline-variant/80 bg-surface-container-low px-2.5 sm:px-space-md py-1.5 text-[10px] sm:text-caption-mono font-caption-mono font-semibold uppercase tracking-wide text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
           >
             <span className="material-symbols-outlined text-body-md" aria-hidden="true">weekend</span>
             {showWeekends ? 'Hide weekends' : 'Show weekends'}
           </button>
-          <div className="flex items-center gap-space-sm rounded-full border border-outline-variant/80 bg-surface-container-low px-space-md py-1.5 text-on-surface-variant">
+          <label className="relative flex h-10 w-10 shrink-0 items-center justify-center gap-space-sm rounded-full border border-outline-variant/80 bg-surface-container-low px-2 sm:h-auto sm:w-auto sm:px-space-md sm:py-1.5 text-on-surface-variant">
             <span className="material-symbols-outlined text-body-md" aria-hidden="true">calendar_month</span>
             <input
               type="month"
@@ -243,9 +251,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 setCurrentDate(new Date(year, month - 1, 1));
                 setSelectedDayString(`${event.target.value}-01`);
               }}
-              className="min-w-0 cursor-pointer bg-transparent font-caption-mono text-caption-mono font-semibold uppercase text-on-surface outline-none"
+              className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 sm:static sm:z-auto sm:h-auto sm:w-auto sm:min-w-0 sm:opacity-100 sm:bg-transparent font-caption-mono text-caption-mono font-semibold uppercase text-on-surface outline-none"
             />
-          </div>
+          </label>
         </div>
       </div>
 
@@ -319,14 +327,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-lg items-start">
       {/* MAIN INTERACTIVE HEATMAP MATRIX */}
-      <div className="lg:col-span-2 order-1 min-w-0 w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md border border-outline-variant">
+      <div className="lg:col-span-2 order-1 min-w-0 w-full bg-surface-container-lowest rounded-xl p-2.5 sm:p-space-lg shadow-sm flex flex-col gap-2 sm:gap-space-md border border-outline-variant">
         
         {/* Day Headers (Mon -> Sun) */}
-        <div className={`grid ${showWeekends ? 'grid-cols-7' : 'grid-cols-5'} gap-space-sm text-center border-b border-outline-variant/80 pb-2`}>
+        <div className={`grid min-w-0 ${showWeekends ? 'grid-cols-7' : 'grid-cols-5'} gap-1 sm:gap-space-sm text-center border-b border-outline-variant/80 pb-2`}>
           {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].filter((_, i) => showWeekends || i < 5).map((d, i) => (
             <div
               key={d}
-              className={`text-caption-mono font-caption-mono tracking-widest uppercase py-1 ${i >= 5 ? 'text-tertiary' : 'text-on-surface-variant font-bold'}`}
+              className={`min-w-0 text-[9px] sm:text-caption-mono font-caption-mono tracking-wide sm:tracking-widest uppercase py-1 ${i >= 5 ? 'text-tertiary' : 'text-on-surface-variant font-bold'}`}
             >
               {d}
             </div>
@@ -334,12 +342,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
 
         {/* Calendar 7x5 Matrix Cells */}
-        <div className={`grid ${showWeekends ? 'grid-cols-7' : 'grid-cols-5'} gap-space-sm`}>
+        <div className={`grid min-w-0 w-full ${showWeekends ? 'grid-cols-7' : 'grid-cols-5'} gap-1 sm:gap-space-sm`}>
           {calendarDays.filter((cell) => showWeekends || ![0, 6].includes(new Date(`${cell.dateStr}T00:00:00`).getDay())).map((cell, idx) => {
             const isSelected = selectedDayString === cell.dateStr;
             const hasTrades = !!cell.stat && cell.stat.trades.length > 0;
+            const hasClosedTrades = !!cell.stat?.trades.some((trade) => trade.tradeStatus !== 'MISSED' && trade.status === 'Closed');
             const isWin = hasTrades && cell.stat!.netPnl >= 0;
             const isLoss = hasTrades && cell.stat!.netPnl < 0;
+            const mobilePnlClass = hasClosedTrades && cell.stat!.netPnl !== 0 ? (cell.stat!.netPnl < 0 ? 'calendar-mobile-loss' : 'calendar-mobile-win') : '';
             const isPeakDay = cell.isCurrentMonth && monthTelemetry.peakDay?.date === cell.dateStr;
             const isWeekend = [0, 6].includes(new Date(`${cell.dateStr}T00:00:00`).getDay());
 
@@ -362,7 +372,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 onClick={() => {
                   setSelectedDayString(cell.dateStr);
                 }}
-                className={`rounded-sm p-1.5 sm:p-space-sm h-20 sm:h-24 lg:h-20 flex flex-col justify-between transition-colors cursor-pointer ${cellClass}`}
+                title={`${cell.dateStr}${hasTrades ? ` · ${formatCurrency(cell.stat!.netPnl, currency)}` : ''}`}
+                className={`min-w-0 overflow-hidden rounded-sm p-0.5 sm:p-space-sm h-10 sm:h-24 lg:h-20 flex flex-col justify-between transition-colors cursor-pointer ${cellClass} ${mobilePnlClass}`}
               >
                 <div className="flex items-center justify-between">
                   <span
@@ -373,20 +384,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     {String(cell.dayNum).padStart(2, '0')}
                   </span>
                   {isPeakDay && (
-                    <span className="px-1 py-0.5 bg-primary text-on-primary text-[9px] leading-none font-caption-mono font-bold tracking-wide">
+                    <span className="hidden sm:inline px-1 py-0.5 bg-primary text-on-primary text-[9px] leading-none font-caption-mono font-bold tracking-wide">
                       PEAK
                     </span>
                   )}
                   {hasTrades && (
-                    <span className="px-space-xs py-0.5 rounded-full bg-surface-container-high text-[10px] font-caption-mono text-on-surface-variant font-semibold border border-outline-variant/50">
+                    <span className="hidden sm:inline px-space-xs py-0.5 rounded-full bg-surface-container-high text-[10px] font-caption-mono text-on-surface-variant font-semibold border border-outline-variant/50">
                       {cell.stat!.trades.length} T
                     </span>
                   )}
                 </div>
 
-                <div className="text-center">
+                <div className="min-w-0 text-center">
                   {hasTrades ? (
-                    <div className="flex flex-col">
+                    <>
+                    <div className="hidden sm:flex flex-col">
                       <span
                         className={`font-table-data text-table-data font-bold ${
                           isWin ? 'text-on-surface' : 'text-secondary'
@@ -398,14 +410,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                         {cell.stat!.totalR >= 0 ? '+' : ''}{cell.stat!.totalR.toFixed(1)}R
                       </span>
                     </div>
+                    </>
                   ) : (
-                    <span className="text-tertiary/70 font-caption-mono text-[9px] uppercase tracking-wide">
+                    <span className="hidden sm:inline text-tertiary/70 font-caption-mono text-[9px] uppercase tracking-wide">
                       {isWeekend && cell.isCurrentMonth ? 'MARKET CLOSED' : '·'}
                     </span>
                   )}
                 </div>
 
-                <div className="flex justify-between items-center text-caption-mono font-caption-mono text-tertiary pt-space-xs">
+                <div className="hidden sm:flex justify-between items-center text-caption-mono font-caption-mono text-tertiary pt-space-xs">
                   <span className="max-w-[70%] truncate px-space-xs rounded bg-surface-container-high text-[10px] font-caption-mono text-on-surface font-semibold border border-outline-variant/40 uppercase">
                     {hasTrades ? Array.from(cell.stat!.symbols).slice(0, 1).join('') : ''}
                   </span>

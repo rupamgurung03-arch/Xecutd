@@ -64,27 +64,27 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white/90 dark:bg-surface/90 backdrop-blur-xl shadow-xs border-b border-outline-variant/80">
-      <div className="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md">
+      <div className="h-14 sm:h-16 w-full px-3 sm:px-gutter-desktop flex items-center justify-between gap-2 sm:gap-space-md">
         
         {/* Brand & Market Telemetry */}
-        <div className="flex items-center gap-space-sm shrink-0">
+        <div className="flex min-w-0 items-center gap-space-sm shrink">
           <button
             onClick={() => setCurrentTab('dashboard')}
-            className="flex items-center gap-3 text-left focus:outline-none group cursor-pointer"
+            className="flex min-w-0 items-center gap-2 sm:gap-3 text-left focus:outline-none group cursor-pointer"
           >
             {/* Minimalist Bauhaus hardware badge */}
-            <div className="h-8 w-8 rounded-full bg-surface-container-low dark:bg-surface-container-high border border-outline-variant flex items-center justify-center font-display font-bold text-on-surface text-sm tracking-wider shadow-inner group-hover:border-primary-container transition-colors">
+            <div className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 rounded-full bg-surface-container-low dark:bg-surface-container-high border border-outline-variant flex items-center justify-center font-display font-bold text-on-surface text-sm tracking-wider shadow-inner group-hover:border-primary-container transition-colors">
               <span className="w-2 h-2 rounded-full bg-primary-container"></span>
             </div>
             <div className="flex flex-col">
-              <span className="font-display text-body-md font-bold tracking-wider text-on-surface uppercase">
+              <span className="font-display text-xs sm:text-body-md font-bold tracking-wider text-on-surface uppercase whitespace-nowrap">
                 XECUTD JOURNAL
               </span>
               <div className="flex items-center gap-space-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
                 <span className="font-caption-mono text-caption-mono text-tertiary uppercase">PERSONAL JOURNAL</span>
-                <span className="text-outline-variant text-caption-mono">•</span>
-                <span className="font-caption-mono text-caption-mono text-on-surface-variant font-medium">
+                <span className="hidden sm:inline text-outline-variant text-caption-mono">•</span>
+                <span className="hidden md:inline font-caption-mono text-caption-mono text-on-surface-variant font-medium">
                   JOURNAL {journalTime || '--:--:--'}
                 </span>
               </div>
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Right Action Cluster */}
-        <div className="flex items-center gap-space-md shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-space-md shrink-0">
           {/* Daily P&L readout */}
           <div className="hidden md:flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-full border border-outline-variant/80">
             <span className="font-caption-mono text-caption-mono text-tertiary uppercase">DAILY P&amp;L</span>
@@ -138,10 +138,13 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Log Trade CTA button */}
           <button
             onClick={onOpenNewTrade}
-            className="flex items-center gap-space-xs bg-primary text-on-primary hover:bg-neutral-800 transition-transform active:scale-95 px-space-md py-1.5 rounded-full shadow-sm cursor-pointer"
+            title="Log a trade"
+            aria-label="Log a trade"
+            className="flex items-center justify-center gap-space-xs bg-primary text-on-primary hover:bg-neutral-800 transition-transform active:scale-95 px-2 sm:px-space-md py-1.5 rounded-full shadow-sm cursor-pointer"
           >
-            <span className="w-2 h-2 rounded-full bg-secondary-container shrink-0"></span>
-            <span className="font-headline-md text-body-sm font-semibold tracking-wider uppercase text-on-primary">
+            <span className="hidden sm:block w-2 h-2 rounded-full bg-secondary-container shrink-0"></span>
+            <span className="material-symbols-outlined sm:hidden text-lg leading-none">add</span>
+            <span className="hidden sm:inline font-headline-md text-body-sm font-semibold tracking-wider uppercase text-on-primary whitespace-nowrap">
               LOG TRADE
             </span>
           </button>
@@ -171,14 +174,15 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile Nav strip */}
-      <div className="flex lg:hidden overflow-x-auto px-4 py-2 border-t border-surface-container-high/40 gap-1 bg-surface-container-low scrollbar-none">
+      <nav aria-label="Journal sections" className="mobile-nav-scroll flex w-full max-w-full min-w-0 lg:hidden overflow-x-auto overscroll-x-contain px-2 sm:px-4 py-1.5 sm:py-2 border-t border-surface-container-high/40 gap-0.5 sm:gap-1 bg-surface-container-low">
         {navItems.map((item) => {
           const isActive = currentTab === item.id;
           return (
             <button
               key={item.id}
               onClick={() => setCurrentTab(item.id)}
-              className={`px-3 py-1 rounded-full font-caption-mono text-caption-mono uppercase tracking-wider whitespace-nowrap transition-colors ${
+              aria-current={isActive ? 'page' : undefined}
+              className={`px-2 sm:px-3 py-1 rounded-full font-caption-mono text-[9px] sm:text-caption-mono uppercase tracking-wider whitespace-nowrap transition-colors ${
                 isActive
                   ? 'bg-surface-container-high text-on-surface font-semibold'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -188,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           );
         })}
-      </div>
+      </nav>
     </header>
   );
 };

@@ -41,6 +41,12 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
   const setCustomGrades: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customGrades', value);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  const navigateToTab = (tab: string) => {
+    setShowWelcome(false);
+    setCurrentTab(tab);
+  };
 
   // Modal states
   const [isNewTradeOpen, setIsNewTradeOpen] = useState(false);
@@ -50,6 +56,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
   const openTradeForm = (defaults: { symbol?: string; side?: TradeSide } = {}) => {
+    setShowWelcome(false);
     setEditingTrade(null);
     setNewTradeDefaults(defaults);
     setNewTradeOpenKey((key) => key + 1);
@@ -135,7 +142,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
       {/* Universal Fixed Header */}
       <Header
         currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
+        setCurrentTab={navigateToTab}
         onOpenNewTrade={openTradeForm}
         settings={settings}
         setSettings={setSettings}
@@ -143,7 +150,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
       />
 
       {/* Main Workspace Canvas with top padding for fixed header */}
-      <main className="flex-1 w-full pt-16 pb-12 bg-background">
+      <main className="flex-1 w-full pt-28 lg:pt-16 pb-12 bg-background">
         <div className="w-full px-gutter-desktop py-space-lg">
           <Suspense fallback={<div className="flex min-h-48 items-center justify-center font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading journal section…</div>}>
           {currentTab === 'dashboard' && (
@@ -158,6 +165,8 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
               onNavigateToTrades={() => setCurrentTab('trades')}
               welcomeKind={welcomeKind}
               profileName={settings.traderName}
+              showWelcome={showWelcome}
+              onBeginUsing={() => setShowWelcome(false)}
             />
           )}
 

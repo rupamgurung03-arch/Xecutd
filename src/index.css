@@ -323,6 +323,40 @@
   background: rgba(148, 163, 184, 0.4);
 }
 
+.mobile-nav-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(110, 110, 115, 0.7) transparent;
+}
+
+.mobile-nav-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.mobile-nav-scroll::-webkit-scrollbar-thumb {
+  background: rgba(110, 110, 115, 0.7);
+  border-radius: 0;
+}
+
+@media (max-width: 639px) {
+  .calendar-mobile-win {
+    background: #ffffff !important;
+    border-color: #ffffff !important;
+  }
+
+  .calendar-mobile-win > div:first-child > span:first-child {
+    color: #111111 !important;
+  }
+
+  .calendar-mobile-loss {
+    background: #e30613 !important;
+    border-color: #e30613 !important;
+  }
+
+  .calendar-mobile-loss > div:first-child > span:first-child {
+    color: #ffffff !important;
+  }
+}
+
 /* Journal surfaces use square corners across every view. Keep full-round utility
    shapes (pills, dots, and avatars) unchanged. */
 :where([class~="rounded"], [class*="rounded-"]:not([class~="rounded-full"])) {
