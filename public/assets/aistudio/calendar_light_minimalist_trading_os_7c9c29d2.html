@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"primary":"#000000","inverse-surface":"#2f3132","error":"#ba1a1a","on-primary":"#ffffff","primary-fixed":"#e5e2e1","on-tertiary-container":"#848484","tertiary-fixed-dim":"#c7c6c6","on-secondary-fixed":"#410001","outline-variant":"#e2e4e4","surface":"#f9f9fb","surface-bright":"#f9f9fb","secondary-fixed-dim":"#ffb4aa","surface-container-low":"#f3f3f5","on-tertiary-fixed-variant":"#464747","surface-dim":"#d9dadc","inverse-on-surface":"#f0f0f2","surface-tint":"#5f5e5e","surface-container-high":"#e8e8ea","surface-container-lowest":"#ffffff","outline":"#747878","on-primary-fixed":"#1c1b1b","on-secondary":"#ffffff","on-surface-variant":"#555859","primary-fixed-dim":"#c8c6c5","tertiary-fixed":"#e3e2e2","on-surface":"#111111","tertiary-container":"#e5e5e8","background":"#f5f5f7","surface-variant":"#eaebee","on-tertiary-fixed":"#1b1c1c","on-tertiary":"#ffffff","error-container":"#fee8e6","on-background":"#111111","secondary-container":"#e80f16","secondary-fixed":"#ffdad5","on-primary-fixed-variant":"#474646","on-error":"#ffffff","surface-container":"#ececef","tertiary":"#6e6e73","secondary":"#bc000c","inverse-primary":"#c8c6c5","primary-container":"#111111","surface-container-highest":"#e2e2e5","on-secondary-container":"#fffbff","on-secondary-fixed-variant":"#930007","on-primary-container":"#ffffff","on-error-container":"#ba1a1a"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xs":"0.25rem","gutter":"1rem","margin-tablet":"1.5rem","margin-desktop":"2.5rem","space-md":"1rem","space-lg":"1.5rem","space-xl":"2.5rem","space-sm":"0.5rem","margin":"1rem","gutter-desktop":"1.5rem"},"fontFamily":{"body-sm":["Space Grotesk"],"telemetry-metric-sm":["Space Mono"],"headline-lg":["Space Grotesk"],"caption-dot":["Space Mono"],"body-md":["Space Grotesk"],"headline-sm":["Space Grotesk"],"label-data":["Space Mono"],"body-lg":["Space Grotesk"],"label-mono-caps":["Space Mono"],"telemetry-metric":["Space Mono"],"headline-md":["Space Grotesk"],"display-hero-mobile":["Space Grotesk"],"display-hero":["Space Grotesk"],"headline-lg-mobile":["Space Grotesk"]},"fontSize":{"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"telemetry-metric-sm":["18px",{"lineHeight":"22px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg":["32px",{"lineHeight":"38px","letterSpacing":"-0.03em","fontWeight":"600"}],"caption-dot":["9px",{"lineHeight":"12px","letterSpacing":"0.15em","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"500"}],"label-data":["13px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"400"}],"label-mono-caps":["10px",{"lineHeight":"14px","letterSpacing":"0.12em","fontWeight":"700"}],"telemetry-metric":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"600"}],"display-hero-mobile":["38px",{"lineHeight":"42px","letterSpacing":"-0.03em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"60px","letterSpacing":"-0.04em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary selection:text-white"><header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-outline-variant shadow-sm"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><img alt="Glyph Journal Logo" class="h-8 w-auto object-contain invert brightness-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XtLWtEVxjhHMxKOm7B2C67tZ3spqxpt_2QV1V90mqC5pm0Y0YlAJJ2OfODqsaaY8M1PtcF8NoEmz_BQb-cxj7lXEvHDPZ_VzMXNmFdZVgF2iI8c7GFDK5rYfnS7NsGuGirgcCOsgIHypwOVp5zZccPPDcX3-InMdYNglpAOIB20k7f_N9uNpSli03fVwXKIzu2fU2xsonzV-gpQ8Kr1RxshjvvS7XHe608YEdX0_Cz"/><div class="flex flex-col"><span class="font-headline-md text-body-md font-bold tracking-wider text-on-surface uppercase">GLYPH // TRADING OS</span><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-label-mono-caps text-caption-dot text-tertiary uppercase">NYSE ACTIVE</span><span class="text-outline-variant text-caption-dot">•</span><span class="font-label-mono-caps text-caption-dot text-on-surface-variant">UTC 14:32:08</span></div></div></div><nav class="hidden xl:flex items-center bg-surface-container-low p-space-xs rounded-full gap-space-xs border border-outline-variant/60" data-active-classes="bg-white text-on-surface font-semibold shadow-xs"><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-mono-caps text-[11px] tracking-wide" data-path="dashboard" href="#">DASHBOARD</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-mono-caps text-[11px] tracking-wide" data-path="trades-ledger" href="#">TRADES LEDGER</a><a aria-current="page" class="px-space-md py-1.5 rounded-full transition-all tracking-wide bg-white text-on-surface font-semibold shadow-xs font-label-mono-caps text-[11px]" data-path="calendar" href="#">CALENDAR</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-mono-caps text-[11px] tracking-wide" data-path="playbook" href="#">PLAYBOOK</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-mono-caps text-[11px] tracking-wide" data-path="settings" href="#">SETTINGS</a></nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-full border border-outline-variant/80"><span class="font-label-mono-caps text-[10px] text-tertiary uppercase">DAILY P&amp;L</span><span class="font-label-data text-body-md text-emerald-600 font-bold">+$2,480.00</span><span class="font-label-mono-caps text-[10px] text-emerald-600 font-semibold">(+3.2%)</span></div><button class="flex items-center gap-space-xs bg-primary text-on-primary hover:bg-neutral-800 transition-transform active:scale-95 px-space-md py-1.5 rounded-full shadow-sm"><span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span><span class="font-headline-md text-body-sm font-semibold tracking-wider uppercase text-on-primary">LOG TRADE</span></button><button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center transition-colors text-on-surface-variant hover:text-on-surface border border-outline-variant/60"><span class="material-symbols-outlined text-[18px]">notifications</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvVCPNfbBWvIcTsT2tW9h80Yzjy-2nXI0wxdR61TXjCL7f3Mc_75ObVbJlxuUQd1CisrvlTddBnWZudYKCNxHDAbH5IMDpHMtdHuGkAr1dhBJ_Jf1LqHty_LpR77k4OTh2EzYFGcmHuvCodcg_vBaZLFTjBhf33LFLkS1c5wu_rgOSfgxRST_twbdHgK9pDEdmtNMCWzlLcUTfTb_aoAXpYbBc8tACs0BxUGx1obE"/></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full px-margin-tablet lg:px-margin-desktop py-space-lg flex flex-col gap-space-lg">
+<!-- TOP TOOLBAR: Month Navigation & Mode Switchers -->
+<div class="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md bg-white p-space-md rounded-xl border border-outline-variant/80 shadow-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center bg-surface-container-low rounded-full p-space-xs border border-outline-variant/60">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white transition-all" id="prevMonthBtn">
+<span class="material-symbols-outlined text-body-lg">chevron_left</span>
+</button>
+<div class="px-space-md flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-headline-md text-body-md uppercase tracking-wider text-on-surface font-semibold">APRIL 2025</span>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-white transition-all" id="nextMonthBtn">
+<span class="material-symbols-outlined text-body-lg">chevron_right</span>
+</button>
+</div>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high text-label-mono-caps font-label-mono-caps tracking-widest uppercase transition-all border border-outline-variant/50">
+          TODAY (APR 15)
+        </button>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-low p-space-xs rounded-full border border-outline-variant/60">
+<button class="view-toggle-btn px-space-md py-1 rounded-full text-label-mono-caps font-label-mono-caps uppercase tracking-wider transition-all bg-primary text-on-primary shadow-xs" data-mode="month">
+          MONTH HEATMAP
+        </button>
+<button class="view-toggle-btn px-space-md py-1 rounded-full text-label-mono-caps font-label-mono-caps uppercase tracking-wider transition-all text-on-surface-variant hover:text-on-surface" data-mode="week">
+          WEEK BREAKDOWN
+        </button>
+<button class="view-toggle-btn px-space-md py-1 rounded-full text-label-mono-caps font-label-mono-caps uppercase tracking-wider transition-all text-on-surface-variant hover:text-on-surface" data-mode="matrix">
+          DAY MATRIX
+        </button>
+</div>
+</div>
+<!-- MONTH PERFORMANCE TELEMETRY BANNER -->
+<div class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-space-md">
+<!-- Primary Net Stat Card -->
+<div class="xl:col-span-2 bg-white rounded-xl p-space-lg flex flex-col justify-between border border-outline-variant/80 shadow-xs relative overflow-hidden">
+<div class="absolute right-0 top-0 w-36 h-36 bg-gradient-to-br from-secondary/5 via-transparent to-transparent pointer-events-none rounded-full blur-2xl"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            ::: TELEMETRY_MONTH_NET :::
+          </div>
+<span class="px-space-sm py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-label-mono-caps font-label-mono-caps font-bold">75.0% WIN RATE</span>
+</div>
+<div class="my-space-md">
+<div class="font-telemetry-metric text-display-hero-mobile text-on-surface tracking-tight font-bold">+$14,840.50</div>
+<div class="flex items-center gap-space-sm mt-space-xs font-label-mono-caps text-[11px] text-on-surface-variant">
+<span class="font-semibold text-emerald-600">REALIZED ACCUMULATION</span>
+<span>•</span>
+<span class="text-tertiary">+18.42R TOTAL</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="h-2 flex-1 rounded-full bg-surface-container overflow-hidden flex">
+<div class="h-full bg-emerald-500" style="width: 75%;"></div>
+<div class="h-full bg-secondary" style="width: 25%;"></div>
+</div>
+<span class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold">12W / 4L</span>
+</div>
+</div>
+<!-- Execution Days Breakdown -->
+<div class="bg-white rounded-xl p-space-lg flex flex-col justify-between border border-outline-variant/80 shadow-xs">
+<div class="flex items-center justify-between text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase">
+<span>::: SESSIONS :::</span>
+<span class="material-symbols-outlined text-body-md text-tertiary">tune</span>
+</div>
+<div class="my-space-sm">
+<div class="font-telemetry-metric text-telemetry-metric text-on-surface">16 / 21</div>
+<div class="font-label-mono-caps text-[10px] text-tertiary mt-space-xs uppercase">ACTIVE TRADING DAYS</div>
+</div>
+<div class="flex items-center justify-between font-label-mono-caps text-[11px]">
+<span class="text-emerald-700 font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 12 GREEN
+          </span>
+<span class="text-secondary font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 4 RED
+          </span>
+</div>
+</div>
+<!-- Alpha Peak Day -->
+<div class="bg-white rounded-xl p-space-lg flex flex-col justify-between border border-outline-variant/80 shadow-xs">
+<div class="flex items-center justify-between text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase">
+<span>::: PEAK ALPHA :::</span>
+<span class="material-symbols-outlined text-body-md text-emerald-600">arrow_outward</span>
+</div>
+<div class="my-space-sm">
+<div class="font-telemetry-metric text-telemetry-metric text-emerald-600">+$3,850.00</div>
+<div class="font-label-mono-caps text-[10px] text-tertiary mt-space-xs">TUE, APR 08 (ORB_BREAK)</div>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-semibold text-on-surface">NVDA</span>
+<span>5 EXECUTIONS • 100% DISCIPLINE</span>
+</div>
+</div>
+<!-- Maximum Drawdown Day -->
+<div class="bg-white rounded-xl p-space-lg flex flex-col justify-between border border-outline-variant/80 shadow-xs">
+<div class="flex items-center justify-between text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase">
+<span>::: MAX DRAWDOWN :::</span>
+<span class="material-symbols-outlined text-body-md text-secondary">call_received</span>
+</div>
+<div class="my-space-sm">
+<div class="font-telemetry-metric text-telemetry-metric text-secondary">-$920.00</div>
+<div class="font-label-mono-caps text-[10px] text-tertiary mt-space-xs">FRI, APR 11 (FVG_CHOP)</div>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-semibold text-on-surface">SPY</span>
+<span>STOPPED OUT 2x • RULE SAFE</span>
+</div>
+</div>
+</div>
+<!-- MAIN INTERACTIVE HEATMAP MATRIX -->
+<div class="w-full bg-white rounded-xl p-space-lg border border-outline-variant/80 shadow-xs flex flex-col gap-space-md">
+<!-- Day Headers (Mon -> Sun) -->
+<div class="grid grid-cols-7 gap-space-sm text-center">
+<div class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold tracking-widest uppercase py-1">MON</div>
+<div class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold tracking-widest uppercase py-1">TUE</div>
+<div class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold tracking-widest uppercase py-1">WED</div>
+<div class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold tracking-widest uppercase py-1">THU</div>
+<div class="text-label-mono-caps font-label-mono-caps text-on-surface-variant font-bold tracking-widest uppercase py-1">FRI</div>
+<div class="text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase py-1">SAT</div>
+<div class="text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase py-1">SUN</div>
+</div>
+<!-- Calendar 7x5 Matrix Cells -->
+<div class="grid grid-cols-7 gap-space-sm" id="calendarGrid">
+<!-- PREVIOUS MONTH TAIL -->
+<!-- Mar 31 -->
+<div class="bg-surface-container-low rounded-xl p-space-sm h-32 flex flex-col justify-between opacity-50 select-none border border-outline-variant/30">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-tertiary">31</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary font-bold">PREV</span>
+</div>
+<div class="text-center font-label-data text-body-sm text-emerald-700/60 font-semibold">+$420</div>
+<div class="flex justify-between items-center text-label-mono-caps text-[9px] text-tertiary">
+<span>2 TR</span>
+<span>QQQ</span>
+</div>
+</div>
+<!-- WEEK 1: APR 01 to APR 06 -->
+<!-- Apr 01 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="94" data-date="Tuesday, April 01, 2025" data-day="1" data-note="Clear trend day. Held runners till 11:30 AM core target." data-pnl="+$1,120.00" data-ticker="NVDA" data-trades="3">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">01</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">3 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,120.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.8R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 02 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="90" data-date="Wednesday, April 02, 2025" data-day="2" data-note="Pre-market gap fill executed with precision. Controlled position sizing." data-pnl="+$840.00" data-ticker="TSLA" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">02</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$840.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.2R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">TSLA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+<!-- Apr 03 (Red) -->
+<div class="day-cell cursor-pointer bg-red-50/70 border border-red-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-red-400 hover:shadow-xs" data-compliance="80" data-date="Thursday, April 03, 2025" data-day="3" data-note="Chop inside opening 30min range. Stopped twice at break-even slip." data-pnl="-$410.00" data-ticker="SPY" data-trades="4">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">03</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-secondary font-bold border border-red-200">4 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-secondary font-bold">-$410.00</span>
+<span class="text-label-mono-caps text-caption-dot text-secondary font-semibold">-0.8R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">SPY</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 04 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="100" data-date="Friday, April 04, 2025" data-day="4" data-note="NFP reaction retest. Clear confluence with VWAP bounce. Perfect discipline." data-pnl="+$1,650.00" data-ticker="NQ" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">04</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,650.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+2.6R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NQ</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 05 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>05</span>
+<span>SAT</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">MARKET CLOSED</span>
+</div>
+<!-- Apr 06 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>06</span>
+<span>SUN</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">WEEKEND_OFF</span>
+</div>
+<!-- WEEK 2: APR 07 to APR 13 -->
+<!-- Apr 07 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="95" data-date="Monday, April 07, 2025" data-day="7" data-note="Single clean entry. Left no stress on table. Closed ahead of midday stall." data-pnl="+$520.00" data-ticker="AAPL" data-trades="1">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">07</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">1 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$520.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+0.9R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">AAPL</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 08 (Best Day) -->
+<div class="day-cell cursor-pointer bg-emerald-100/80 border-2 border-emerald-500 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:shadow-md" data-compliance="100" data-date="Tuesday, April 08, 2025" data-day="8" data-note="Highest P&amp;L day of month. Flawless execution across AI hardware sector momentum." data-pnl="+$3,850.00" data-ticker="NVDA" data-trades="5">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-emerald-900 font-bold">08</span>
+<span class="px-space-xs py-0.5 rounded-full bg-emerald-700 text-white text-caption-dot font-label-mono-caps font-bold">PEAK</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-900 font-bold">+$3,850.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-700 font-bold">+4.8R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-emerald-900 font-bold border border-emerald-300">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+</div>
+</div>
+</div>
+<!-- Apr 09 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="88" data-date="Wednesday, April 09, 2025" data-day="9" data-note="Reversal scalp on semiconductor sector sympathy move. Quick scale out." data-pnl="+$790.00" data-ticker="AMD" data-trades="3">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">09</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">3 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$790.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.1R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">AMD</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+<!-- Apr 10 (Red) -->
+<div class="day-cell cursor-pointer bg-red-50/70 border border-red-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-red-400 hover:shadow-xs" data-compliance="92" data-date="Thursday, April 10, 2025" data-day="10" data-note="Choppy auction around pivot. Cut loss right at stop trigger without hesitation." data-pnl="-$310.00" data-ticker="META" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">10</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-secondary font-bold border border-red-200">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-secondary font-bold">-$310.00</span>
+<span class="text-label-mono-caps text-caption-dot text-secondary font-semibold">-0.5R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">META</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 11 (Worst Day / DD Max) -->
+<div class="day-cell cursor-pointer bg-red-100/80 border-2 border-secondary rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:shadow-md" data-compliance="75" data-date="Friday, April 11, 2025" data-day="11" data-note="Challenging tape. Fed speak caused false breakout. Honored hard stops." data-pnl="-$920.00" data-ticker="SPY" data-trades="4">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-secondary font-bold">11</span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary text-white text-caption-dot font-label-mono-caps font-bold">DD MAX</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-secondary font-bold">-$920.00</span>
+<span class="text-label-mono-caps text-caption-dot text-secondary font-bold">-1.6R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-secondary font-bold border border-red-300">SPY</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+<!-- Apr 12 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>12</span>
+<span>SAT</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">MARKET CLOSED</span>
+</div>
+<!-- Apr 13 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>13</span>
+<span>SUN</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">WEEKEND_OFF</span>
+</div>
+<!-- WEEK 3: APR 14 to APR 20 -->
+<!-- Apr 14 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="96" data-date="Monday, April 14, 2025" data-day="14" data-note="Strong open drive. Captured initial expansion impulse cleanly." data-pnl="+$1,340.00" data-ticker="TSLA" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">14</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,340.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+2.1R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">TSLA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 15 (Active Day Selected) -->
+<div class="day-cell cursor-pointer bg-emerald-100/90 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all ring-2 ring-primary shadow-md relative" data-compliance="98" data-date="Tuesday, April 15, 2025" data-day="15" data-note="Followed the morning rule. Waited 15 mins post-open. Took ORB on NVDA cleanly." data-pnl="+$2,480.00" data-ticker="NVDA" data-trades="4" id="activeDayNode">
+<div class="absolute -top-1.5 -right-1.5 w-3 h-3 rounded-full bg-secondary animate-pulse shadow-sm"></div>
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">15</span>
+<span class="px-space-xs py-0.5 rounded-full bg-primary text-caption-dot font-label-mono-caps text-on-primary font-bold">TODAY</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-800 font-bold">+$2,480.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-700 font-bold">+3.2R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-bold border border-outline-variant">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+</div>
+</div>
+</div>
+<!-- Apr 16 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="100" data-date="Wednesday, April 16, 2025" data-day="16" data-note="Midday continuation setup. Strict limit order entry and target scale." data-pnl="+$610.00" data-ticker="NQ" data-trades="1">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">16</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">1 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$610.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.0R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NQ</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 17 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="92" data-date="Thursday, April 17, 2025" data-day="17" data-note="Earnings pre-run consolidation breakout. Re-entered on retest bounce." data-pnl="+$1,190.00" data-ticker="MSFT" data-trades="3">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">17</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">3 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,190.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.9R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">MSFT</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+<!-- Apr 18 (Good Friday / Holiday) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/60">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>18</span>
+<span class="font-bold text-on-surface-variant">HOL</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary font-semibold">GOOD FRIDAY</span>
+</div>
+<!-- Apr 19 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>19</span>
+<span>SAT</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">MARKET CLOSED</span>
+</div>
+<!-- Apr 20 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>20</span>
+<span>SUN</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">WEEKEND_OFF</span>
+</div>
+<!-- WEEK 4: APR 21 to APR 27 -->
+<!-- Apr 21 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="94" data-date="Monday, April 21, 2025" data-day="21" data-note="Pre-market liquidity sweep turned into textbook continuation." data-pnl="+$980.00" data-ticker="NVDA" data-trades="3">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">21</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">3 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$980.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.4R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 22 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="89" data-date="Tuesday, April 22, 2025" data-day="22" data-note="Patience paid off during low volume drift. Minimal size deployed." data-pnl="+$430.00" data-ticker="SPY" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">22</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$430.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+0.7R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">SPY</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+<!-- Apr 23 (Red) -->
+<div class="day-cell cursor-pointer bg-red-50/70 border border-red-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-red-400 hover:shadow-xs" data-compliance="85" data-date="Wednesday, April 23, 2025" data-day="23" data-note="Whipsaw during crude inventory headlines. Stopped within prescribed range." data-pnl="-$260.00" data-ticker="AMD" data-trades="4">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">23</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-secondary font-bold border border-red-200">4 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-secondary font-bold">-$260.00</span>
+<span class="text-label-mono-caps text-caption-dot text-secondary font-semibold">-0.4R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">AMD</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 24 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="97" data-date="Thursday, April 24, 2025" data-day="24" data-note="Tech index recovery rally. Clean multi-contract trend ride." data-pnl="+$1,450.00" data-ticker="QQQ" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">24</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,450.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+2.2R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">QQQ</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 25 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="91" data-date="Friday, April 25, 2025" data-day="25" data-note="Closed out month targets early. Refused to overtrade on Friday afternoon." data-pnl="+$880.00" data-ticker="NVDA" data-trades="3">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">25</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">3 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$880.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.3R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 26 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>26</span>
+<span>SAT</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">MARKET CLOSED</span>
+</div>
+<!-- Apr 27 (Weekend) -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-sm h-32 flex flex-col justify-between select-none border border-dashed border-outline-variant/50">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>27</span>
+<span>SUN</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">WEEKEND_OFF</span>
+</div>
+<!-- WEEK 5: APR 28 to APR 30 + NEXT MONTH TAIL -->
+<!-- Apr 28 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="93" data-date="Monday, April 28, 2025" data-day="28" data-note="Re-testing Friday pivot. Small scalp win, disciplined exit." data-pnl="+$370.00" data-ticker="TSLA" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">28</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$370.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+0.6R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">TSLA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 29 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="98" data-date="Tuesday, April 29, 2025" data-day="29" data-note="Single opening range breakout trade. Flawless TP hit." data-pnl="+$510.00" data-ticker="SPY" data-trades="1">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">29</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">1 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$510.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+0.8R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">SPY</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- Apr 30 (Green) -->
+<div class="day-cell cursor-pointer bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-space-sm h-32 flex flex-col justify-between transition-all hover:border-emerald-400 hover:shadow-xs" data-compliance="95" data-date="Wednesday, April 30, 2025" data-day="30" data-note="Month final closeout. Controlled position sizing. System honored." data-pnl="+$740.00" data-ticker="NVDA" data-trades="2">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-on-surface font-bold">30</span>
+<span class="px-space-xs py-0.5 rounded-full bg-white text-caption-dot font-label-mono-caps text-on-surface-variant font-semibold border border-outline-variant/50">2 T</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$740.00</span>
+<span class="text-label-mono-caps text-caption-dot text-emerald-600 font-semibold">+1.1R</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="px-space-xs rounded bg-white text-caption-dot font-label-mono-caps text-on-surface font-semibold border border-outline-variant/40">NVDA</span>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+<!-- May 01 Tail -->
+<div class="bg-surface-container-low rounded-xl p-space-sm h-32 flex flex-col justify-between opacity-50 select-none border border-outline-variant/30">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-tertiary">01</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary font-bold">MAY</span>
+</div>
+<div class="text-center font-label-data text-body-sm text-tertiary">--</div>
+<div class="flex justify-between items-center text-label-mono-caps text-[9px] text-tertiary">
+<span>--</span>
+<span>--</span>
+</div>
+</div>
+<!-- May 02 Tail -->
+<div class="bg-surface-container-low rounded-xl p-space-sm h-32 flex flex-col justify-between opacity-50 select-none border border-outline-variant/30">
+<div class="flex items-center justify-between">
+<span class="font-label-mono-caps text-caption-dot text-tertiary">02</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary font-bold">MAY</span>
+</div>
+<div class="text-center font-label-data text-body-sm text-tertiary">--</div>
+<div class="flex justify-between items-center text-label-mono-caps text-[9px] text-tertiary">
+<span>--</span>
+<span>--</span>
+</div>
+</div>
+<!-- May 03 Tail (Weekend) -->
+<div class="bg-surface-container-low/60 rounded-xl p-space-sm h-32 flex flex-col justify-between opacity-40 select-none border border-dashed border-outline-variant/40">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>03</span>
+<span>SAT</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">CLOSED</span>
+</div>
+<!-- May 04 Tail (Weekend) -->
+<div class="bg-surface-container-low/60 rounded-xl p-space-sm h-32 flex flex-col justify-between opacity-40 select-none border border-dashed border-outline-variant/40">
+<div class="flex justify-between items-center text-label-mono-caps text-caption-dot text-tertiary">
+<span>04</span>
+<span>SUN</span>
+</div>
+<div class="flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-dim"></span>
+</div>
+<span class="text-label-mono-caps text-[9px] text-center text-tertiary">CLOSED</span>
+</div>
+</div>
+<!-- Heatmap Dot Legend -->
+<div class="flex flex-wrap items-center justify-between pt-space-sm text-label-mono-caps font-label-mono-caps text-tertiary border-t border-outline-variant/40">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
+<span class="text-on-surface font-semibold">WINNING_SESSION</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-secondary"></span>
+<span class="text-on-surface font-semibold">DRAWDOWN_SESSION</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-surface-dim border border-outline-variant/60"></span>
+<span>OFF_MARKET</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-bold text-on-surface">CLICK ANY DATE FOR FULL EXECUTION TIMELINE</span>
+</div>
+</div>
+</div>
+<!-- BOTTOM SPLIT SECTION: DAY DETAIL + ECONOMIC RADAR -->
+<div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- LEFT (8 COLS): SELECTED DAY DETAIL PANEL -->
+<div class="lg:col-span-8 bg-white rounded-xl p-space-lg border border-outline-variant/80 shadow-xs flex flex-col gap-space-md">
+<!-- Detail Header -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border-b border-outline-variant/40 pb-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs font-label-mono-caps text-caption-dot text-tertiary tracking-widest uppercase">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>::: ACTIVE_INSPECTION_RECORD :::</span>
+</div>
+<h2 class="font-headline-lg text-headline-md text-on-surface font-bold mt-1" id="selectedDateTitle">Tuesday, April 15, 2025</h2>
+</div>
+<div class="flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-full border border-outline-variant/70">
+<span class="font-label-mono-caps text-caption-dot text-tertiary uppercase font-bold">METRICS</span>
+<span class="font-label-data text-body-md text-emerald-700 font-bold" id="selectedPnlBadge">+$2,480.00</span>
+<span class="text-tertiary">•</span>
+<span class="font-label-mono-caps text-caption-dot text-on-surface-variant font-bold" id="selectedTradesBadge">4 TRADES</span>
+</div>
+</div>
+<!-- Trader Reflections Pill Box -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-xs border border-outline-variant/50">
+<div class="flex items-center justify-between text-label-mono-caps font-label-mono-caps text-tertiary uppercase">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-body-md text-secondary">stylus_note</span>
+<span class="font-bold text-on-surface">DAILY PSYCHOLOGY &amp; JOURNAL LOG</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-white text-emerald-700 font-bold border border-emerald-200" id="complianceScoreTag">COMPLIANCE 98%</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic font-medium" id="selectedNotesText">
+            "Followed the morning rule. Waited 15 mins post-open. Took ORB on NVDA cleanly. Kept partial runners to capture extension into the 11:00 AM liquidity sweep."
+          </p>
+</div>
+<!-- Execution Timeline List -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase px-space-sm py-1">
+<span>EXECUTION TIMELINE (CHRONOLOGICAL)</span>
+<span>R-MULTIPLE &amp; NET RETURN</span>
+</div>
+<!-- Trade 1 -->
+<div class="flex items-center justify-between p-space-md bg-surface-container-low rounded-xl border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-md">
+<div class="w-1.5 h-8 rounded-full bg-emerald-500"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-md text-body-md text-on-surface font-bold">$NVDA</span>
+<span class="px-space-xs py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-label-mono-caps text-[10px] font-bold">LONG</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">09:47:12 -&gt; 10:14:05</span>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary mt-0.5">
+<span>SETUP: 5M_ORB_EXPANSION</span>
+<span>•</span>
+<span>SIZE: 200 SHS</span>
+<span>•</span>
+<span>ENTRY: 864.20 | EXIT: 871.90</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$1,540.00</span>
+<span class="font-label-mono-caps text-caption-dot text-emerald-600 font-bold">+2.1R</span>
+</div>
+</div>
+<!-- Trade 2 -->
+<div class="flex items-center justify-between p-space-md bg-surface-container-low rounded-xl border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-md">
+<div class="w-1.5 h-8 rounded-full bg-emerald-500"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-md text-body-md text-on-surface font-bold">$NVDA</span>
+<span class="px-space-xs py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-label-mono-caps text-[10px] font-bold">LONG</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">10:32:40 -&gt; 10:48:22</span>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary mt-0.5">
+<span>SETUP: VWAP_PULLBACK_RETEST</span>
+<span>•</span>
+<span>SIZE: 150 SHS</span>
+<span>•</span>
+<span>ENTRY: 868.50 | EXIT: 873.10</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$690.00</span>
+<span class="font-label-mono-caps text-caption-dot text-emerald-600 font-bold">+0.9R</span>
+</div>
+</div>
+<!-- Trade 3 -->
+<div class="flex items-center justify-between p-space-md bg-surface-container-low rounded-xl border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-md">
+<div class="w-1.5 h-8 rounded-full bg-secondary"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-md text-body-md text-on-surface font-bold">$QQQ</span>
+<span class="px-space-xs py-0.2 rounded bg-red-50 text-secondary border border-red-200 font-label-mono-caps text-[10px] font-bold">SHORT</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">11:15:02 -&gt; 11:22:18</span>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary mt-0.5">
+<span>SETUP: FVG_REVERSAL</span>
+<span>•</span>
+<span>SIZE: 300 SHS</span>
+<span>•</span>
+<span>ENTRY: 442.10 | EXIT: 442.75</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-data text-label-data text-secondary font-bold">-$195.00</span>
+<span class="font-label-mono-caps text-caption-dot text-secondary font-bold">-0.3R</span>
+</div>
+</div>
+<!-- Trade 4 -->
+<div class="flex items-center justify-between p-space-md bg-surface-container-low rounded-xl border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-space-md">
+<div class="w-1.5 h-8 rounded-full bg-emerald-500"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-md text-body-md text-on-surface font-bold">$SPY</span>
+<span class="px-space-xs py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-label-mono-caps text-[10px] font-bold">LONG</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">14:02:11 -&gt; 14:35:49</span>
+</div>
+<div class="flex items-center gap-space-xs text-label-mono-caps text-[11px] text-tertiary mt-0.5">
+<span>SETUP: S/R_FLIP_CONTINUATION</span>
+<span>•</span>
+<span>SIZE: 250 SHS</span>
+<span>•</span>
+<span>ENTRY: 508.80 | EXIT: 510.58</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-data text-label-data text-emerald-700 font-bold">+$445.00</span>
+<span class="font-label-mono-caps text-caption-dot text-emerald-600 font-bold">+0.6R</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT (4 COLS): HIGH-IMPACT ECONOMIC CALENDAR RADAR -->
+<div class="lg:col-span-4 bg-white rounded-xl p-space-lg border border-outline-variant/80 shadow-xs flex flex-col justify-between gap-space-md">
+<div>
+<!-- Radar Header -->
+<div class="flex items-center justify-between mb-space-md border-b border-outline-variant/40 pb-space-sm">
+<div class="flex items-center gap-space-xs text-label-mono-caps font-label-mono-caps text-tertiary tracking-widest uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+              ::: MACRO_RADAR :::
+            </div>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-low text-label-mono-caps font-label-mono-caps text-tertiary font-bold border border-outline-variant/60">UTC-4 NY</span>
+</div>
+<h3 class="font-headline-md text-body-lg text-on-surface font-bold">Economic Catalysts</h3>
+<p class="font-body-sm text-body-sm text-tertiary mt-0.5">Automated volatility lock warning protocol active.</p>
+<!-- Economic Event Items List -->
+<div class="flex flex-col gap-space-sm mt-space-md">
+<!-- Event 1: CPI -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-mono-caps text-caption-dot text-on-surface uppercase font-bold">08:30 AM</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">• USD</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-mono-caps text-[9px] tracking-wider font-bold border border-red-200">HIGH IMPACT</span>
+</div>
+<div class="font-headline-md text-body-md text-on-surface font-bold">Core CPI MoM / YoY</div>
+<div class="grid grid-cols-3 gap-space-xs text-label-mono-caps text-[11px] text-tertiary pt-space-xs">
+<div>ACTUAL: <span class="text-on-surface font-bold">0.3%</span></div>
+<div>FORECAST: <span class="text-tertiary">0.3%</span></div>
+<div>PREV: <span class="text-tertiary">0.4%</span></div>
+</div>
+</div>
+<!-- Event 2: FOMC Minutes -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-mono-caps text-caption-dot text-on-surface uppercase font-bold">14:00 PM</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">• USD</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-mono-caps text-[9px] tracking-wider font-bold border border-red-200">HIGH IMPACT</span>
+</div>
+<div class="font-headline-md text-body-md text-on-surface font-bold">FOMC Meeting Minutes</div>
+<div class="text-label-mono-caps text-[10px] text-tertiary pt-space-xs font-semibold">
+                RATE SPECULATION &amp; LIQUIDITY OUTLOOK
+              </div>
+</div>
+<!-- Event 3: Jobless Claims -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-mono-caps text-caption-dot text-on-surface uppercase font-bold">08:30 AM (THU)</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">• USD</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-mono-caps text-[9px] tracking-wider font-bold border border-outline-variant/60">MED IMPACT</span>
+</div>
+<div class="font-headline-md text-body-md text-on-surface font-bold">Initial Jobless Claims</div>
+<div class="grid grid-cols-3 gap-space-xs text-label-mono-caps text-[11px] text-tertiary pt-space-xs">
+<div>ACTUAL: <span class="text-tertiary font-bold">--</span></div>
+<div>FORECAST: <span class="text-tertiary">215K</span></div>
+<div>PREV: <span class="text-tertiary">211K</span></div>
+</div>
+</div>
+<!-- Event 4: Powell Speech -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-xs border border-outline-variant/60 hover:bg-surface-container transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-mono-caps text-caption-dot text-on-surface uppercase font-bold">11:00 AM (FRI)</span>
+<span class="text-label-mono-caps text-caption-dot text-tertiary">• USD</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-mono-caps text-[9px] tracking-wider font-bold border border-red-200">HIGH IMPACT</span>
+</div>
+<div class="font-headline-md text-body-md text-on-surface font-bold">Fed Chair Powell Remarks</div>
+<div class="text-label-mono-caps text-[10px] text-tertiary pt-space-xs font-semibold">
+                ECONOMIC CLUB OF NEW YORK SYMPOSIUM
+              </div>
+</div>
+</div>
+</div>
+<!-- Terminal System Safety Note -->
+<div class="bg-surface-container-low p-space-sm rounded-xl flex items-center gap-space-sm text-label-mono-caps text-[10px] text-on-surface-variant border border-outline-variant/70">
+<span class="material-symbols-outlined text-body-lg text-secondary">shield</span>
+<span class="font-semibold">HARD LOCK: NEW ENTRIES RESTRICTED 2 MINS BEFORE &amp; AFTER HIGH-TIER CATALYSTS</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Inline Interaction Handler Script -->
+<script>
+    (function initCalendarMatrix() {
+      const dayCells = document.querySelectorAll('.day-cell');
+      const dateTitle = document.getElementById('selectedDateTitle');
+      const pnlBadge = document.getElementById('selectedPnlBadge');
+      const tradesBadge = document.getElementById('selectedTradesBadge');
+      const complianceTag = document.getElementById('complianceScoreTag');
+      const notesText = document.getElementById('selectedNotesText');
+
+      dayCells.forEach(cell => {
+        cell.addEventListener('click', () => {
+          // Deselect previous
+          dayCells.forEach(c => {
+            c.classList.remove('ring-2', 'ring-primary', 'shadow-md');
+          });
+
+          // Highlight selected
+          cell.classList.add('ring-2', 'ring-primary', 'shadow-md');
+
+          // Read Dataset
+          const date = cell.getAttribute('data-date');
+          const trades = cell.getAttribute('data-trades');
+          const pnl = cell.getAttribute('data-pnl');
+          const compliance = cell.getAttribute('data-compliance');
+          const note = cell.getAttribute('data-note');
+
+          if (dateTitle && date) dateTitle.textContent = date;
+          if (pnlBadge && pnl) {
+            pnlBadge.textContent = pnl;
+            if (pnl.startsWith('-')) {
+              pnlBadge.className = 'font-label-data text-body-md text-secondary font-bold';
+            } else {
+              pnlBadge.className = 'font-label-data text-body-md text-emerald-700 font-bold';
+            }
+          }
+          if (tradesBadge && trades) tradesBadge.textContent = trades + ' TRADES';
+          if (complianceTag && compliance) complianceTag.textContent = 'COMPLIANCE ' + compliance + '%';
+          if (notesText && note) notesText.textContent = '"' + note + '"';
+        });
+      });
+
+      // View toggle pills state switch
+      const toggleButtons = document.querySelectorAll('.view-toggle-btn');
+      toggleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          toggleButtons.forEach(b => {
+            b.classList.remove('bg-primary', 'text-on-primary', 'shadow-xs');
+            b.classList.add('text-on-surface-variant');
+          });
+          btn.classList.add('bg-primary', 'text-on-primary', 'shadow-xs');
+          btn.classList.remove('text-on-surface-variant');
+        });
+      });
+    })();
+  </script>
+</div></main><footer class="w-full bg-white py-space-lg border-t border-outline-variant/60"><div class="w-full px-gutter-desktop flex flex-col md:flex-row items-center justify-between gap-space-md text-label-mono-caps text-caption-dot text-tertiary font-label-mono-caps"><div class="flex items-center gap-space-md"><span>::: GLYPH_ENGINE_v4.2.0 :::</span><span>LATENCY: 12ms</span><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>HARDWARE SYNC ACTIVE</span></div><div class="flex items-center gap-space-lg"><span>TELEMETRY STABLE</span><span>© 2025 GLYPH TRADING SYSTEMS</span></div></div></footer></body></html>

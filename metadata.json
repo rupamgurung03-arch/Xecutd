@@ -1,0 +1,6 @@
+{
+  "name": "ApexTrade Journal",
+  "description": "Professional trading journal and performance analytics terminal with execution logging, psychology tracking, equity curve analytics, and AI trade review.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

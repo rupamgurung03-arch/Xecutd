@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@300;400;500&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-secondary-fixed-variant":"#454747","primary-fixed":"#ffdad5","on-tertiary":"#303031","on-primary-fixed":"#410001","surface":"#131313","secondary-fixed-dim":"#c6c6c7","on-tertiary-fixed-variant":"#464747","on-secondary-fixed":"#1a1c1c","tertiary-fixed-dim":"#c7c6c6","outline-variant":"#5e3f3b","primary":"#ffb4aa","surface-tint":"#ffb4aa","inverse-surface":"#e5e2e1","surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b","surface-bright":"#3a3939","on-tertiary-container":"#f8f6f6","outline":"#af8782","surface-container-high":"#2a2a2a","inverse-on-surface":"#313030","on-surface":"#e5e2e1","background":"#131313","tertiary-container":"#717171","surface-variant":"#353534","error-container":"#93000a","on-background":"#e5e2e1","on-primary-fixed-variant":"#930007","primary-container":"#e30613","on-surface-variant":"#e9bcb6","surface-container-highest":"#353534","on-error":"#690005","surface-container":"#201f1f","tertiary":"#c7c6c6","on-tertiary-fixed":"#1b1c1c","on-error-container":"#ffdad6","error":"#ffb4ab","on-primary-container":"#fff5f3","inverse-primary":"#c0000c","on-primary":"#690003","on-secondary":"#2f3131","secondary-container":"#454747","primary-fixed-dim":"#ffb4aa","surface-dim":"#131313","secondary":"#c6c6c7","tertiary-fixed":"#e3e2e2","secondary-fixed":"#e2e2e2","on-secondary-container":"#b4b5b5"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter-desktop":"1.5rem","margin-tablet":"1.5rem","space-xl":"2.5rem","space-sm":"0.5rem","margin":"1rem","space-lg":"1.5rem","gutter":"1rem","margin-desktop":"2.5rem","space-md":"1rem","space-xs":"0.25rem"},"fontFamily":{"display":["Space Grotesk"],"headline-md":["Space Grotesk"],"body-md":["Hanken Grotesk"],"caption-mono":["JetBrains Mono"],"body-sm":["Hanken Grotesk"],"headline-lg-mobile":["Space Grotesk"],"body-lg":["Hanken Grotesk"],"table-data":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"numeric-stat":["JetBrains Mono"]},"fontSize":{"display":["48px",{"lineHeight":"52px","letterSpacing":"-0.04em","fontWeight":"600"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"caption-mono":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"400"}],"table-data":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"400"}],"headline-lg":["32px",{"lineHeight":"38px","letterSpacing":"-0.03em","fontWeight":"500"}],"numeric-stat":["28px",{"lineHeight":"32px","letterSpacing":"-0.03em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface-container-lowest font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.5)]"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><img alt="Glyph Journal Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XtLWtEVxjhHMxKOm7B2C67tZ3spqxpt_2QV1V90mqC5pm0Y0YlAJJ2OfODqsaaY8M1PtcF8NoEmz_BQb-cxj7lXEvHDPZ_VzMXNmFdZVgF2iI8c7GFDK5rYfnS7NsGuGirgcCOsgIHypwOVp5zZccPPDcX3-InMdYNglpAOIB20k7f_N9uNpSli03fVwXKIzu2fU2xsonzV-gpQ8Kr1RxshjvvS7XHe608YEdX0_Cz"/><div class="flex flex-col"><span class="font-display text-body-md font-semibold tracking-wider text-on-surface uppercase">GLYPH // TRADING OS</span><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span><span class="font-caption-mono text-caption-mono text-tertiary uppercase">NYSE ACTIVE</span><span class="text-tertiary-container text-caption-mono">•</span><span class="font-caption-mono text-caption-mono text-secondary">UTC 14:32:08</span></div></div></div><nav class="hidden xl:flex items-center bg-surface-container-low p-space-xs rounded-full gap-space-xs shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]" data-active-classes="bg-surface-container-high text-on-surface font-medium"><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="dashboard" href="#">DASHBOARD</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="trades-ledger" href="#">TRADES LEDGER</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="calendar" href="#">CALENDAR</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="playbook" href="#">PLAYBOOK</a><a aria-current="page" class="px-space-md py-1.5 rounded-full transition-all tracking-wide bg-surface-container-high text-on-surface font-medium" data-path="settings" href="#">SETTINGS</a></nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"><span class="font-caption-mono text-caption-mono text-tertiary uppercase">DAILY P&amp;L</span><span class="font-table-data text-table-data text-inverse-surface font-medium">+$2,480.00</span><span class="font-caption-mono text-caption-mono text-on-surface-variant">(+3.2%)</span></div><button class="flex items-center gap-space-xs bg-inverse-surface text-inverse-on-surface hover:bg-on-surface transition-transform active:scale-95 px-space-md py-1.5 rounded-full shadow-[0_0_12px_rgba(227,6,19,0.25)]"><span class="w-2 h-2 rounded-full bg-primary-container shrink-0"></span><span class="font-headline-md text-body-sm font-semibold tracking-wider uppercase text-inverse-on-surface">LOG TRADE</span></button><button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center transition-colors text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-body-lg">notifications</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_0_0_1px_rgba(255,255,255,0.1)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvVCPNfbBWvIcTsT2tW9h80Yzjy-2nXI0wxdR61TXjCL7f3Mc_75ObVbJlxuUQd1CisrvlTddBnWZudYKCNxHDAbH5IMDpHMtdHuGkAr1dhBJ_Jf1LqHty_LpR77k4OTh2EzYFGcmHuvCodcg_vBaZLFTjBhf33LFLkS1c5wu_rgOSfgxRST_twbdHgK9pDEdmtNMCWzlLcUTfTb_aoAXpYbBc8tACs0BxUGx1obE"/></div></div></header><main class="w-full pt-16 bg-surface-container-lowest min-h-screen"><div class="flex flex-col w-full">
+<!-- Visual Ambient Backing with Subtle Radial Glow -->
+<div class="relative w-full px-margin-desktop py-space-lg flex flex-col gap-space-xl overflow-hidden">
+<div class="absolute -top-32 right-1/4 w-96 h-96 rounded-full bg-primary-container/5 blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -left-20 w-80 h-80 rounded-full bg-surface-variant/40 blur-3xl pointer-events-none"></div>
+<!-- Screen Sub-Header & Hardware Readout Bar -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md pb-space-sm">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs text-caption-mono font-caption-mono text-tertiary">
+<span>::: SYS_CONFIG_PARAM</span>
+<span>//</span>
+<span class="text-on-surface">NODE_ID: GLYPH-TERMINAL-09</span>
+<span>//</span>
+<span class="inline-flex items-center gap-1 text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+            ACTIVE SYNC
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">TERMINAL SETTINGS &amp; POLICIES</h1>
+<p class="font-body-md text-body-md text-tertiary max-w-2xl">
+          Configure clinical execution limits, hardware-grade circuit breakers, telemetry latency buffers, and translucent glass UI density.
+        </p>
+</div>
+<!-- Quick Action Pill Group -->
+<div class="flex items-center gap-space-xs shrink-0 bg-surface-container-low p-1.5 rounded-full shadow-sm">
+<button class="px-space-md py-1.5 rounded-full font-body-sm text-body-sm text-tertiary hover:text-on-surface hover:bg-surface-container transition-all" id="discard-btn">
+          REVERT STAGED
+        </button>
+<button class="px-space-md py-1.5 rounded-full bg-inverse-surface text-inverse-on-surface font-headline-md text-body-sm font-semibold tracking-wider uppercase transition-transform active:scale-95 shadow-md flex items-center gap-2" id="commit-btn">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+          COMMIT PARAMS
+        </button>
+</div>
+</div>
+<!-- Main Settings Architecture: 12-Column Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter-desktop items-start">
+<!-- Left Navigation Deck (3 Cols) -->
+<nav class="xl:col-span-3 flex flex-col gap-space-xs bg-surface-container-low/70 backdrop-blur-md p-space-sm rounded-lg shadow-sm sticky top-20">
+<div class="px-space-md py-2 font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider flex items-center justify-between">
+<span>CONFIG MODULES</span>
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+</div>
+<button class="nav-tab active-tab w-full text-left px-space-md py-2.5 rounded-full flex items-center justify-between transition-all bg-surface-container-highest text-on-surface font-body-md text-body-md" data-nav-target="risk">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-body-lg text-primary">security</span>
+<span>Risk &amp; Circuit Breakers</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</button>
+<button class="nav-tab w-full text-left px-space-md py-2.5 rounded-full flex items-center justify-between transition-all text-tertiary hover:text-on-surface hover:bg-surface-container font-body-md text-body-md" data-nav-target="brokers">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-body-lg">hub</span>
+<span>Broker &amp; API Sync</span>
+</div>
+<span class="font-caption-mono text-caption-mono px-2 py-0.5 rounded-full bg-surface-container text-tertiary">2 LIVE</span>
+</button>
+<button class="nav-tab w-full text-left px-space-md py-2.5 rounded-full flex items-center justify-between transition-all text-tertiary hover:text-on-surface hover:bg-surface-container font-body-md text-body-md" data-nav-target="display">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-body-lg">tune</span>
+<span>Glyph Aesthetic &amp; Sound</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>
+</button>
+<button class="nav-tab w-full text-left px-space-md py-2.5 rounded-full flex items-center justify-between transition-all text-tertiary hover:text-on-surface hover:bg-surface-container font-body-md text-body-md" data-nav-target="storage">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-body-lg">inventory_2</span>
+<span>Data Ledger &amp; Backups</span>
+</div>
+<span class="material-symbols-outlined text-body-sm text-tertiary">lock</span>
+</button>
+<button class="nav-tab w-full text-left px-space-md py-2.5 rounded-full flex items-center justify-between transition-all text-tertiary hover:text-on-surface hover:bg-surface-container font-body-md text-body-md" data-nav-target="profile">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-body-lg">person</span>
+<span>Operator Identity</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">v4.2</span>
+</button>
+<!-- Hardware System Telemetry Micro-Card in Nav Deck -->
+<div class="mt-space-md p-space-md bg-surface-container-lowest/80 rounded-DEFAULT flex flex-col gap-space-xs">
+<div class="flex items-center justify-between font-caption-mono text-caption-mono text-tertiary">
+<span>MEM POOL ALLOC</span>
+<span class="text-on-surface font-numeric-stat text-body-sm">412 MB</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[38%]"></div>
+</div>
+<div class="flex items-center justify-between font-caption-mono text-caption-mono text-tertiary pt-1">
+<span>AUDIT DISK SYNC</span>
+<span class="text-on-surface">ONLINE (0 error)</span>
+</div>
+</div>
+</nav>
+<!-- Center & Right Module Workspace (9 Cols) -->
+<div class="xl:col-span-9 flex flex-col gap-space-lg">
+<!-- ================= SECTION 1: RISK MANAGEMENT & DISCIPLINE ENGINE ================= -->
+<section class="flex flex-col gap-space-md bg-surface-container-low/60 backdrop-blur-md p-space-lg rounded-xl shadow-lg relative" id="section-risk">
+<!-- Dot-matrix Accent Label -->
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-caption-mono text-caption-mono uppercase tracking-widest text-primary">DISCIPLINE ENGINE // KERNEL LEVEL</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">LEVEL 1 HARDWARE INTERLOCK</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Execution Safeguards &amp; Circuit Breakers</h2>
+<p class="font-body-md text-body-md text-tertiary">System-enforced lockouts protect against emotional deviations and drawdown cascades.</p>
+</div>
+<!-- Master Circuit Breaker High-Impact Panel -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md shadow-inner">
+<div class="flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container shrink-0">
+<span class="material-symbols-outlined text-headline-md">eject</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-body-lg text-on-surface font-semibold tracking-wide">HARD CIRCUIT BREAKER (AUTO-LOCKOUT)</span>
+<span class="font-caption-mono text-caption-mono px-2 py-0.5 bg-primary-container/20 text-primary rounded-full">ENFORCED</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">
+                  Immediately cuts terminal execution and suspends broker routing if daily P&amp;L triggers threshold.
+                </p>
+<span class="font-caption-mono text-caption-mono text-on-surface-variant pt-1">THRESHOLD TRIGGER: -$1,200.00 DAILY SESSION EQUALIZER</span>
+</div>
+</div>
+<!-- Custom Nothing-style Hardware Red Dot Switch -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0 self-start md:self-center">
+<input checked="" class="sr-only peer" id="circuit-breaker-toggle" type="checkbox"/>
+<div class="w-16 h-8 bg-surface-container rounded-full peer peer-checked:bg-surface-container-high peer-focus:outline-none transition-colors relative flex items-center px-1">
+<div class="w-6 h-6 bg-surface-container-lowest rounded-full shadow-md transition-transform flex items-center justify-center peer-checked:translate-x-8">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+</div>
+</div>
+</label>
+</div>
+<!-- Grid of Sub-Controls -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Max Risk Per Trade Input Pod -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-caption-mono text-caption-mono uppercase text-tertiary">MAX RISK PER TRADE</span>
+<span class="material-symbols-outlined text-body-md text-tertiary">verified_user</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-numeric-stat text-numeric-stat text-on-surface font-medium">$350.00</span>
+<span class="font-caption-mono text-caption-mono text-primary">(0.75% Equity)</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">Position sizing rejects orders exceeding R-calc max risk.</p>
+</div>
+<div class="flex items-center gap-space-xs pt-space-xs">
+<button class="px-space-md py-1 rounded-full bg-surface-container-highest text-caption-mono font-caption-mono text-on-surface hover:bg-surface-bright transition-all">0.50%</button>
+<button class="px-space-md py-1 rounded-full bg-inverse-surface text-inverse-on-surface text-caption-mono font-caption-mono font-semibold">0.75%</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-highest text-caption-mono font-caption-mono text-on-surface hover:bg-surface-bright transition-all">1.00%</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-highest text-caption-mono font-caption-mono text-on-surface hover:bg-surface-bright transition-all">CUSTOM</button>
+</div>
+</div>
+<!-- Max Concurrent Positions Stepper Pod -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-caption-mono text-caption-mono uppercase text-tertiary">MAX CONCURRENT EXECUTIONS</span>
+<span class="material-symbols-outlined text-body-md text-tertiary">stacks</span>
+</div>
+<div class="flex items-baseline justify-between">
+<div>
+<span class="font-numeric-stat text-numeric-stat text-on-surface font-medium" id="pos-counter-val">3</span>
+<span class="font-caption-mono text-caption-mono text-tertiary ml-2">OPEN POSITIONS MAX</span>
+</div>
+<!-- Tactile Stepper Pill -->
+<div class="flex items-center bg-surface-container-lowest rounded-full p-1 shadow-inner gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-all active:scale-95" id="pos-dec-btn">
+<span class="material-symbols-outlined text-body-md">remove</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-all active:scale-95" id="pos-inc-btn">
+<span class="material-symbols-outlined text-body-md">add</span>
+</button>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">New fills automatically queue or reject beyond this cap.</p>
+</div>
+</div>
+<!-- Revenge Trading Mitigation Module -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container mt-1 shrink-0"></div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md text-on-surface font-medium">Revenge Trading Lockout Buffer</span>
+<span class="font-body-sm text-body-sm text-tertiary">
+                  Enforces an unskippable 30-minute terminal cooldown following 2 consecutive stop-outs in the same symbol.
+                </span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm self-end sm:self-center">
+<span class="font-caption-mono text-caption-mono text-primary font-medium">COOLDOWN: 30 MIN</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-surface-container-lowest rounded-full peer peer-checked:bg-surface-container-highest transition-colors relative flex items-center px-1">
+<div class="w-4 h-4 bg-on-surface rounded-full shadow-md transition-transform flex items-center justify-center peer-checked:translate-x-6">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 2: BROKERAGE & API INTEGRATIONS ================= -->
+<section class="flex flex-col gap-space-md bg-surface-container-low/60 backdrop-blur-md p-space-lg rounded-xl shadow-lg" id="section-brokers">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-caption-mono text-caption-mono uppercase tracking-widest text-secondary">BRIDGE ROUTING // REALTIME TELEMETRY</span>
+</div>
+<button class="font-caption-mono text-caption-mono text-primary hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm">add_link</span>
+              CONNECT NEW BROKER
+            </button>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Connected Brokerages &amp; Execution Gateways</h2>
+<p class="font-body-md text-body-md text-tertiary">Sub-millisecond Webhook / REST synchronizations with automatic ledger audit.</p>
+</div>
+<!-- Connected Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Interactive Brokers Card -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md relative overflow-hidden group">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-body-sm font-semibold text-on-surface">
+                    IBKR
+                  </div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Interactive Brokers</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">TWS API Gateway • Port 7496</span>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-sm"></span>
+</div>
+<!-- Telemetry Metrics Row -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-lowest p-2 rounded-DEFAULT font-caption-mono text-caption-mono">
+<div class="flex flex-col">
+<span class="text-tertiary">STATUS</span>
+<span class="text-on-surface font-medium">CONNECTED</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">LATENCY</span>
+<span class="text-on-surface font-medium">12ms</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">FILL RATE</span>
+<span class="text-on-surface font-medium">99.8%</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-caption-mono text-caption-mono text-tertiary">ACC: U9812-PRO</span>
+<button class="px-space-md py-1 rounded-full bg-surface-container-highest hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">Configure</button>
+</div>
+</div>
+<!-- Tradovate Card -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md relative overflow-hidden group">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-body-sm font-semibold text-on-surface">
+                    TRAD
+                  </div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Tradovate Futures</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">Direct WebSocket Fills</span>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-sm"></span>
+</div>
+<!-- Telemetry Metrics Row -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-lowest p-2 rounded-DEFAULT font-caption-mono text-caption-mono">
+<div class="flex flex-col">
+<span class="text-tertiary">STATUS</span>
+<span class="text-on-surface font-medium">CONNECTED</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">LATENCY</span>
+<span class="text-on-surface font-medium">18ms</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">FILL RATE</span>
+<span class="text-on-surface font-medium">100.0%</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-caption-mono text-caption-mono text-tertiary">ACC: TV-DEMO-99</span>
+<button class="px-space-md py-1 rounded-full bg-surface-container-highest hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">Configure</button>
+</div>
+</div>
+<!-- Binance Card (Standby) -->
+<div class="bg-surface-container/60 p-space-md rounded-lg flex flex-col justify-between gap-space-md opacity-85 hover:opacity-100 transition-opacity">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center font-caption-mono text-body-sm font-semibold text-tertiary">
+                    BNCE
+                  </div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Binance Futures</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">HMAC-SHA256 API Key</span>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-lowest p-2 rounded-DEFAULT font-caption-mono text-caption-mono">
+<div class="flex flex-col">
+<span class="text-tertiary">STATUS</span>
+<span class="text-secondary font-medium">STANDBY</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">LATENCY</span>
+<span class="text-tertiary font-medium">--</span>
+</div>
+<div class="flex flex-col">
+<span class="text-tertiary">AUTH</span>
+<span class="text-on-surface font-medium">VALID</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-caption-mono text-caption-mono text-tertiary">READ-ONLY MODE</span>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">Activate</button>
+</div>
+</div>
+<!-- Manual CSV Fallback Card -->
+<div class="bg-surface-container/60 p-space-md rounded-lg flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center font-caption-mono text-body-sm text-tertiary">
+<span class="material-symbols-outlined text-body-lg">upload_file</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Manual Execution Ingest</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">Sierra Chart, NinjaTrader CSV</span>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">
+                Drop your end-of-day broker fill statements directly for automatic parsing and trade reconciliation.
+              </p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-caption-mono text-caption-mono text-tertiary">AUTO-TAGGER: ON</span>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">Import File</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 3: VISUAL & GLYPH AESTHETIC ================= -->
+<section class="flex flex-col gap-space-md bg-surface-container-low/60 backdrop-blur-md p-space-lg rounded-xl shadow-lg" id="section-display">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-caption-mono text-caption-mono uppercase tracking-widest text-primary">HARDWARE OPTICS &amp; TACTILE HAPTICS</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">NOTHING INDUSTRIAL DESIGN SYSTEM</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Visual Density &amp; Acoustic Feedback</h2>
+<p class="font-body-md text-body-md text-tertiary">Tune your cockpit display telemetry for high concentration and cognitive stillness.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Dot Matrix Font Emulation -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<span class="font-caption-mono text-caption-mono uppercase text-tertiary">DOT-MATRIX TELEMETRY</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-display text-body-lg text-on-surface font-semibold tracking-wider uppercase">DOT FONT V2</span>
+<p class="font-body-sm text-body-sm text-tertiary">Renders timestamps, ticker symbols, and R-ratios in authentic matrix glyphs.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer pt-2">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-surface-container-lowest rounded-full peer peer-checked:bg-surface-container-highest transition-colors relative flex items-center px-1">
+<div class="w-4 h-4 bg-inverse-surface rounded-full shadow transition-transform peer-checked:translate-x-6 flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+</div>
+<span class="ml-3 font-caption-mono text-caption-mono text-on-surface">ENABLED</span>
+</label>
+</div>
+<!-- Glyph Widget Style Density Selector -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md md:col-span-2">
+<div class="flex items-start justify-between">
+<span class="font-caption-mono text-caption-mono uppercase text-tertiary">GLYPH WIDGET DENSITY</span>
+<span class="font-caption-mono text-caption-mono text-secondary">ACTIVE: STANDARD</span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs">
+<!-- Option 1: Minimal -->
+<button class="flex flex-col items-center gap-2 p-space-sm rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-high transition-all text-left">
+<div class="w-full h-10 rounded bg-surface-container flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</div>
+<span class="font-headline-md text-body-sm font-medium text-on-surface">Minimal</span>
+<span class="font-caption-mono text-caption-mono text-tertiary text-center">Spacious, pure essential metrics</span>
+</button>
+<!-- Option 2: Standard (Selected) -->
+<button class="flex flex-col items-center gap-2 p-space-sm rounded-DEFAULT bg-surface-container-highest shadow-sm text-left relative overflow-hidden">
+<div class="w-full h-10 rounded bg-surface-container-low flex items-center justify-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</div>
+<span class="font-headline-md text-body-sm font-medium text-on-surface">Standard</span>
+<span class="font-caption-mono text-caption-mono text-tertiary text-center">Balanced HUD &amp; ledger grid</span>
+</button>
+<!-- Option 3: Dense -->
+<button class="flex flex-col items-center gap-2 p-space-sm rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-high transition-all text-left">
+<div class="w-full h-10 rounded bg-surface-container flex items-center justify-center gap-1">
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+</div>
+<span class="font-headline-md text-body-sm font-medium text-on-surface">Dense</span>
+<span class="font-caption-mono text-caption-mono text-tertiary text-center">Quant matrix, 100% data focus</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary pt-1">
+<span>SCALING: 100% FIXED DPR</span>
+<span>SUBPIXEL AA: ACTIVE</span>
+</div>
+</div>
+</div>
+<!-- Mechanical Audio Feedback Pod -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface shrink-0">
+<span class="material-symbols-outlined text-body-lg">volume_up</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-body-md text-on-surface font-medium">Mechanical Keyclick &amp; Fill Haptics</span>
+<span class="font-caption-mono text-caption-mono px-2 py-0.5 rounded-full bg-surface-container-highest text-tertiary">SYNTH SOUND</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">
+                  Crisp acoustic feedback on order execution, stop trigger adjustments, and circuit breaker warnings.
+                </p>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-highest text-body-sm font-body-sm text-on-surface hover:bg-surface-bright transition-all flex items-center gap-1.5" id="sound-test-btn">
+<span class="material-symbols-outlined text-body-sm">play_arrow</span>
+                Test Click
+              </button>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-12 h-6 bg-surface-container-lowest rounded-full peer peer-checked:bg-surface-container-highest transition-colors relative flex items-center px-1">
+<div class="w-4 h-4 bg-inverse-surface rounded-full shadow transition-transform peer-checked:translate-x-6 flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 4: STORAGE & EXPORT LEDGER ================= -->
+<section class="flex flex-col gap-space-md bg-surface-container-low/60 backdrop-blur-md p-space-lg rounded-xl shadow-lg" id="section-storage">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span class="font-caption-mono text-caption-mono uppercase tracking-widest text-tertiary">ENCRYPTED PERSISTENCE // LEDGER ARCHIVE</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">AES-GCM-256</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Data Vault &amp; Audit Trail Backups</h2>
+<p class="font-body-md text-body-md text-tertiary">Complete offline ownership of your psychological notes, setups, and trade executions.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Encrypted Local Storage Card -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-body-lg">shield</span>
+</div>
+<div>
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Local SQLite Vault</span>
+<p class="font-caption-mono text-caption-mono text-tertiary">Last backup: 24 mins ago (64.2 MB)</p>
+</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">
+                Encrypted on disk via master key. Zero remote telemetry transmits trade metadata without signature.
+              </p>
+<div class="flex items-center justify-between pt-2">
+<span class="font-caption-mono text-caption-mono text-secondary">INTEGRITY: 100% OK</span>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-highest hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm">download</span>
+                  Backup Now
+                </button>
+</div>
+</div>
+<!-- Cloud Mirror Sync Card -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-body-lg">cloud_sync</span>
+</div>
+<div>
+<span class="font-headline-md text-body-lg text-on-surface font-medium">Google Drive Sync</span>
+<p class="font-caption-mono text-caption-mono text-tertiary">trader.glyph@secure-relay.io</p>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">
+                Continuous background snapshot after every closed session. Encrypted chunk distribution.
+              </p>
+<div class="flex items-center justify-between pt-2">
+<span class="font-caption-mono text-caption-mono text-primary font-medium">SYNC ACTIVE</span>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-highest hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">Settings</button>
+</div>
+</div>
+</div>
+<!-- Raw Ledger Export Bar -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-body-lg">database</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md text-on-surface font-medium">Export Ledger &amp; Playbook History</span>
+<span class="font-body-sm text-body-sm text-tertiary">Includes R-multiples, psychological session notes, tick execution stamps.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0">
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-caption-mono font-caption-mono text-on-surface transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-body-sm">table_view</span>
+                EXPORT CSV
+              </button>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-caption-mono font-caption-mono text-on-surface transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-body-sm">data_object</span>
+                EXPORT JSON
+              </button>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 5: OPERATOR IDENTITY (Compact) ================= -->
+<section class="flex flex-col gap-space-md bg-surface-container-low/60 backdrop-blur-md p-space-lg rounded-xl shadow-lg" id="section-profile">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-caption-mono text-caption-mono uppercase tracking-widest text-secondary">OPERATOR CREDENTIALS</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">SECURE ENCLAVE 01</span>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md bg-surface-container p-space-md rounded-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-inner relative">
+<span class="font-headline-md text-headline-md text-on-surface">GL</span>
+<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-primary-container border-2 border-surface-container"></span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-body-lg text-on-surface font-semibold">LEONID_QUANT_4</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">OPERATOR // ENTERPRISE PRO TIER</span>
+<span class="font-caption-mono text-caption-mono text-secondary pt-0.5">FIRM: PROPRIETARY ARB DESK NYC</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs self-start sm:self-center">
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-highest hover:bg-surface-bright text-body-sm font-body-sm text-on-surface transition-all">
+                Edit Bio &amp; Avatar
+              </button>
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-highest hover:bg-error-container hover:text-on-error-container text-body-sm font-body-sm text-tertiary transition-all">
+                Rotate Keys
+              </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive micro-interactions for settings controls
+  (function initTerminalSettings() {
+    // Stepper Position Counter
+    const decBtn = document.getElementById('pos-dec-btn');
+    const incBtn = document.getElementById('pos-inc-btn');
+    const counterDisplay = document.getElementById('pos-counter-val');
+    let positionCount = 3;
+
+    if (decBtn && incBtn && counterDisplay) {
+      decBtn.addEventListener('click', () => {
+        if (positionCount > 1) {
+          positionCount--;
+          counterDisplay.textContent = positionCount;
+        }
+      });
+
+      incBtn.addEventListener('click', () => {
+        if (positionCount < 10) {
+          positionCount++;
+          counterDisplay.textContent = positionCount;
+        }
+      });
+    }
+
+    // Audio click emulation button feedback
+    const soundTestBtn = document.getElementById('sound-test-btn');
+    if (soundTestBtn) {
+      soundTestBtn.addEventListener('click', () => {
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(640, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.04);
+        } catch (e) {
+          // Browser auto-play policy guard
+        }
+      });
+    }
+
+    // Smooth navigation jump between sections
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('bg-surface-container-highest', 'text-on-surface');
+          t.classList.add('text-tertiary');
+        });
+        tab.classList.add('bg-surface-container-highest', 'text-on-surface');
+        tab.classList.remove('text-tertiary');
+
+        const targetId = 'section-' + tab.getAttribute('data-nav-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Commit button toast simulation
+    const commitBtn = document.getElementById('commit-btn');
+    if (commitBtn) {
+      commitBtn.addEventListener('click', () => {
+        const originalText = commitBtn.innerHTML;
+        commitBtn.innerHTML = '<span class="w-2 h-2 rounded-full bg-on-surface animate-ping"></span>COMMITTED';
+        setTimeout(() => {
+          commitBtn.innerHTML = originalText;
+        }, 1500);
+      });
+    }
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest py-space-lg shadow-[0_-1px_0_0_rgba(255,255,255,0.04)]"><div class="w-full px-gutter-desktop flex flex-col md:flex-row items-center justify-between gap-space-md text-caption-mono text-tertiary font-caption-mono"><div class="flex items-center gap-space-md"><span>::: GLYPH_ENGINE_v4.2.0 :::</span><span>LATENCY: 12ms</span><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>HARDWARE SYNC ACTIVE</span></div><div class="flex items-center gap-space-lg"><span>TELEMETRY STABLE</span><span>© 2025 GLYPH TRADING SYSTEMS</span></div></div></footer></body></html>

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@300;400;500&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-secondary-fixed-variant":"#454747","primary-fixed":"#ffdad5","on-tertiary":"#303031","on-primary-fixed":"#410001","surface":"#131313","secondary-fixed-dim":"#c6c6c7","on-tertiary-fixed-variant":"#464747","on-secondary-fixed":"#1a1c1c","tertiary-fixed-dim":"#c7c6c6","outline-variant":"#5e3f3b","primary":"#ffb4aa","surface-tint":"#ffb4aa","inverse-surface":"#e5e2e1","surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b","surface-bright":"#3a3939","on-tertiary-container":"#f8f6f6","outline":"#af8782","surface-container-high":"#2a2a2a","inverse-on-surface":"#313030","on-surface":"#e5e2e1","background":"#131313","tertiary-container":"#717171","surface-variant":"#353534","error-container":"#93000a","on-background":"#e5e2e1","on-primary-fixed-variant":"#930007","primary-container":"#e30613","on-surface-variant":"#e9bcb6","surface-container-highest":"#353534","on-error":"#690005","surface-container":"#201f1f","tertiary":"#c7c6c6","on-tertiary-fixed":"#1b1c1c","on-error-container":"#ffdad6","error":"#ffb4ab","on-primary-container":"#fff5f3","inverse-primary":"#c0000c","on-primary":"#690003","on-secondary":"#2f3131","secondary-container":"#454747","primary-fixed-dim":"#ffb4aa","surface-dim":"#131313","secondary":"#c6c6c7","tertiary-fixed":"#e3e2e2","secondary-fixed":"#e2e2e2","on-secondary-container":"#b4b5b5"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter-desktop":"1.5rem","margin-tablet":"1.5rem","space-xl":"2.5rem","space-sm":"0.5rem","margin":"1rem","space-lg":"1.5rem","gutter":"1rem","margin-desktop":"2.5rem","space-md":"1rem","space-xs":"0.25rem"},"fontFamily":{"display":["Space Grotesk"],"headline-md":["Space Grotesk"],"body-md":["Hanken Grotesk"],"caption-mono":["JetBrains Mono"],"body-sm":["Hanken Grotesk"],"headline-lg-mobile":["Space Grotesk"],"body-lg":["Hanken Grotesk"],"table-data":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"numeric-stat":["JetBrains Mono"]},"fontSize":{"display":["48px",{"lineHeight":"52px","letterSpacing":"-0.04em","fontWeight":"600"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"caption-mono":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"400"}],"table-data":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"400"}],"headline-lg":["32px",{"lineHeight":"38px","letterSpacing":"-0.03em","fontWeight":"500"}],"numeric-stat":["28px",{"lineHeight":"32px","letterSpacing":"-0.03em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface-container-lowest font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.5)]"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><img alt="Glyph Journal Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XtLWtEVxjhHMxKOm7B2C67tZ3spqxpt_2QV1V90mqC5pm0Y0YlAJJ2OfODqsaaY8M1PtcF8NoEmz_BQb-cxj7lXEvHDPZ_VzMXNmFdZVgF2iI8c7GFDK5rYfnS7NsGuGirgcCOsgIHypwOVp5zZccPPDcX3-InMdYNglpAOIB20k7f_N9uNpSli03fVwXKIzu2fU2xsonzV-gpQ8Kr1RxshjvvS7XHe608YEdX0_Cz"/><div class="flex flex-col"><span class="font-display text-body-md font-semibold tracking-wider text-on-surface uppercase">GLYPH // TRADING OS</span><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span><span class="font-caption-mono text-caption-mono text-tertiary uppercase">NYSE ACTIVE</span><span class="text-tertiary-container text-caption-mono">•</span><span class="font-caption-mono text-caption-mono text-secondary">UTC 14:32:08</span></div></div></div><nav class="hidden xl:flex items-center bg-surface-container-low p-space-xs rounded-full gap-space-xs shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]" data-active-classes="bg-surface-container-high text-on-surface font-medium"><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="dashboard" href="#">DASHBOARD</a><a aria-current="page" class="px-space-md py-1.5 rounded-full transition-all tracking-wide bg-surface-container-high text-on-surface font-medium" data-path="trades-ledger" href="#">TRADES LEDGER</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="calendar" href="#">CALENDAR</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="playbook" href="#">PLAYBOOK</a><a class="px-space-md py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-body-sm tracking-wide" data-path="settings" href="#">SETTINGS</a></nav><div class="flex items-center gap-space-md shrink-0"><div class="hidden md:flex items-center gap-space-sm bg-surface-container-low px-space-md py-1.5 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"><span class="font-caption-mono text-caption-mono text-tertiary uppercase">DAILY P&amp;L</span><span class="font-table-data text-table-data text-inverse-surface font-medium">+$2,480.00</span><span class="font-caption-mono text-caption-mono text-on-surface-variant">(+3.2%)</span></div><button class="flex items-center gap-space-xs bg-inverse-surface text-inverse-on-surface hover:bg-on-surface transition-transform active:scale-95 px-space-md py-1.5 rounded-full shadow-[0_0_12px_rgba(227,6,19,0.25)]"><span class="w-2 h-2 rounded-full bg-primary-container shrink-0"></span><span class="font-headline-md text-body-sm font-semibold tracking-wider uppercase text-inverse-on-surface">LOG TRADE</span></button><button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center transition-colors text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-body-lg">notifications</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_0_0_1px_rgba(255,255,255,0.1)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvVCPNfbBWvIcTsT2tW9h80Yzjy-2nXI0wxdR61TXjCL7f3Mc_75ObVbJlxuUQd1CisrvlTddBnWZudYKCNxHDAbH5IMDpHMtdHuGkAr1dhBJ_Jf1LqHty_LpR77k4OTh2EzYFGcmHuvCodcg_vBaZLFTjBhf33LFLkS1c5wu_rgOSfgxRST_twbdHgK9pDEdmtNMCWzlLcUTfTb_aoAXpYbBc8tACs0BxUGx1obE"/></div></div></header><main class="w-full pt-16 bg-surface-container-lowest min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full px-margin-desktop py-space-lg flex flex-col gap-space-lg">
+<!-- TOP STATS METRIC MATRIX TAPE -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Card 1: Total Trades -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">EXECUTION COUNT</span>
+</div>
+<span class="font-numeric-stat text-numeric-stat text-on-surface">174</span>
+<span class="font-caption-mono text-caption-mono text-secondary">WIN RATE: 64.9% (113W / 61L)</span>
+</div>
+<div class="h-10 w-16 opacity-75">
+<svg class="w-full h-full text-secondary fill-none stroke-current" stroke-width="1.5" viewbox="0 0 64 36">
+<path d="M 2 30 L 12 24 L 20 28 L 32 14 L 42 18 L 52 8 L 62 12"></path>
+<circle class="fill-primary-container stroke-none" cx="62" cy="12" r="2.5"></circle>
+</svg>
+</div>
+</div>
+<!-- Card 2: Total Volume -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">GROSS NOTIONAL</span>
+</div>
+<span class="font-numeric-stat text-numeric-stat text-on-surface">$1.42M</span>
+<span class="font-caption-mono text-caption-mono text-secondary">AVG TICKET: $8,160.91</span>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex gap-1">
+<span class="w-1 h-3 rounded-full bg-surface-container-highest"></span>
+<span class="w-1 h-4 rounded-full bg-secondary"></span>
+<span class="w-1 h-2 rounded-full bg-secondary"></span>
+<span class="w-1 h-5 rounded-full bg-on-surface"></span>
+<span class="w-1 h-3 rounded-full bg-surface-container-highest"></span>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary">LEVERAGE: 2.1x</span>
+</div>
+</div>
+<!-- Card 3: Gross Net P&L -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex items-center justify-between relative overflow-hidden">
+<div class="flex flex-col gap-space-xs z-10">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_8px_rgba(227,6,19,0.8)]"></span>
+<span class="font-caption-mono text-caption-mono text-on-surface-variant uppercase tracking-wider">REALIZED NET P&amp;L</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-numeric-stat text-numeric-stat text-on-surface font-semibold">+$94,120.00</span>
+<span class="font-caption-mono text-caption-mono text-on-surface-variant">(+38.4R)</span>
+</div>
+<span class="font-caption-mono text-caption-mono text-secondary">PROFIT FACTOR: 2.42</span>
+</div>
+<div class="absolute -right-4 -bottom-4 w-20 h-20 bg-primary-container/10 rounded-full blur-xl pointer-events-none"></div>
+</div>
+<!-- Card 4: Commissions & Cost -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex items-center justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">ROUTING &amp; REG FEES</span>
+</div>
+<span class="font-numeric-stat text-numeric-stat text-tertiary">-$9,200.40</span>
+<span class="font-caption-mono text-caption-mono text-tertiary-container">SLIPPAGE DRAG: 0.12%</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-caption-mono text-caption-mono px-space-sm py-0.5 rounded-full bg-surface-container-high text-tertiary">IBKR PRO DIRECT</span>
+</div>
+</div>
+</div>
+<!-- FILTER ENGINE & SYNC CONTROLS TOOLBAR -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-md shadow-sm">
+<!-- Upper Strip: Search, Strategy, Date, Export -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<!-- Left: Search & Range Picker -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Search input pod -->
+<div class="relative flex items-center bg-surface-container rounded-full px-space-md py-1.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] min-w-[220px]">
+<span class="material-symbols-outlined text-body-md text-tertiary mr-space-xs">search</span>
+<input class="bg-transparent border-0 outline-none text-on-surface placeholder:text-tertiary font-caption-mono text-body-sm w-full uppercase" placeholder="FILTER TICKER / ID (e.g. NQ, #TR-04)" type="text"/>
+<span class="font-caption-mono text-caption-mono text-tertiary-container bg-surface-container-high px-1.5 py-0.5 rounded-full">⌘K</span>
+</div>
+<!-- Date Range Selector Pill -->
+<button class="flex items-center gap-space-xs bg-surface-container hover:bg-surface-container-high px-space-md py-1.5 rounded-full text-secondary hover:text-on-surface transition-all font-body-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
+<span class="material-symbols-outlined text-body-sm">calendar_month</span>
+<span class="font-caption-mono text-caption-mono tracking-wide uppercase">2025.04.01 — 2025.04.14</span>
+<span class="material-symbols-outlined text-body-sm text-tertiary">arrow_drop_down</span>
+</button>
+<!-- Strategy Playbook Multi-Filter Pill -->
+<div class="flex items-center gap-space-xs overflow-x-auto py-1">
+<button class="bg-inverse-surface text-inverse-on-surface px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase font-medium shadow-sm flex items-center gap-1">
+<span class="w-1 h-1 rounded-full bg-primary-container"></span>
+              ALL PLAYBOOKS
+            </button>
+<button class="bg-surface-container hover:bg-surface-container-high text-tertiary hover:text-on-surface px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase transition-all shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+              ORB / BREAKOUT
+            </button>
+<button class="bg-surface-container hover:bg-surface-container-high text-tertiary hover:text-on-surface px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase transition-all shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+              GAP FILL
+            </button>
+<button class="bg-surface-container hover:bg-surface-container-high text-tertiary hover:text-on-surface px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase transition-all shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+              LIQUIDITY SWEEP
+            </button>
+<button class="bg-surface-container hover:bg-surface-container-high text-tertiary hover:text-on-surface px-space-md py-1 rounded-full font-caption-mono text-caption-mono tracking-wider uppercase transition-all shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+              VWAP REVERSION
+            </button>
+</div>
+</div>
+<!-- Right: Broker Telemetry & Export Pill Buttons -->
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="flex items-center gap-space-xs bg-surface-container px-space-md py-1.5 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-caption-mono text-caption-mono text-secondary tracking-wider uppercase">BROKER SYNC: ON</span>
+<span class="font-caption-mono text-caption-mono text-tertiary-container font-light">:: 14:32:00</span>
+</div>
+<button class="flex items-center gap-space-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-space-md py-1.5 rounded-full transition-all font-body-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
+<span class="material-symbols-outlined text-body-sm text-secondary">file_download</span>
+<span class="font-caption-mono text-caption-mono tracking-wider uppercase">CSV EXPORT</span>
+</button>
+<button class="flex items-center gap-space-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-space-md py-1.5 rounded-full transition-all font-body-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
+<span class="material-symbols-outlined text-body-sm text-secondary">tune</span>
+<span class="font-caption-mono text-caption-mono tracking-wider uppercase">COLUMNS</span>
+</button>
+</div>
+</div>
+<!-- Lower Sub-strip: Side & Outcome Toggles -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex items-center gap-space-md">
+<!-- Side Pill Group -->
+<div class="flex items-center bg-surface-container p-0.5 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono bg-inverse-surface text-inverse-on-surface font-medium uppercase tracking-wider">SIDE: ALL</button>
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono text-tertiary hover:text-on-surface uppercase tracking-wider transition-colors">LONG (104)</button>
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono text-tertiary hover:text-on-surface uppercase tracking-wider transition-colors">SHORT (70)</button>
+</div>
+<!-- Outcome Pill Group -->
+<div class="flex items-center bg-surface-container p-0.5 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono bg-surface-container-highest text-on-surface font-medium uppercase tracking-wider">OUTCOME: ALL</button>
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono text-tertiary hover:text-on-surface uppercase tracking-wider transition-colors">WINS (113)</button>
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono text-tertiary hover:text-on-surface uppercase tracking-wider transition-colors">LOSSES (53)</button>
+<button class="px-space-md py-1 rounded-full text-caption-mono font-caption-mono text-tertiary hover:text-on-surface uppercase tracking-wider transition-colors">B/E (8)</button>
+</div>
+</div>
+<!-- Telemetry readout right -->
+<div class="flex items-center gap-space-sm text-caption-mono font-caption-mono text-tertiary">
+<span>SHOWING 8 OF 174 EXECUTIONS</span>
+<span>•</span>
+<span class="text-secondary">SORT: TIMESTAMP DESC</span>
+</div>
+</div>
+</div>
+<!-- MAIN DATA LEDGER TABLE CONTAINER -->
+<div class="bg-surface-container-low rounded-xl shadow-lg overflow-hidden flex flex-col">
+<!-- Table Header Bar -->
+<div class="px-space-lg py-space-md bg-surface-container-high/60 flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="font-caption-mono text-caption-mono text-on-surface uppercase tracking-widest font-medium">::: AUDIT_LOG // HISTORICAL EXECUTION REPOSITORIES :::</span>
+</div>
+<div class="flex items-center gap-space-md font-caption-mono text-caption-mono text-tertiary">
+<span>FORMAT: SUB-PENNY IEEE-754</span>
+<span>LATENCY LOGGED</span>
+</div>
+</div>
+<!-- Scrollable Table Wrapper -->
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[1240px]">
+<thead>
+<tr class="bg-surface-container text-tertiary font-caption-mono text-caption-mono uppercase tracking-wider">
+<th class="py-space-md px-space-md text-left font-normal">STATUS &amp; ID</th>
+<th class="py-space-md px-space-md text-left font-normal">TIMESTAMP (EST)</th>
+<th class="py-space-md px-space-md text-left font-normal">ASSET / TICKER</th>
+<th class="py-space-md px-space-md text-left font-normal">SIDE</th>
+<th class="py-space-md px-space-md text-right font-normal">SIZE / UNITS</th>
+<th class="py-space-md px-space-md text-right font-normal">ENTRY ➔ EXIT</th>
+<th class="py-space-md px-space-md text-right font-normal">NET P&amp;L</th>
+<th class="py-space-md px-space-md text-right font-normal">R-MULT</th>
+<th class="py-space-md px-space-md text-left font-normal">STRATEGY PLAYBOOK</th>
+<th class="py-space-md px-space-md text-left font-normal">DISCIPLINE / PSYCH</th>
+<th class="py-space-md px-space-md text-center font-normal">ACTIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-md font-body-md">
+<!-- Row 1: NVDA Long ORB -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0419</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.14 <span class="text-tertiary">09:42:12</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    NV
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">NVDA</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">EQUITY / NASDAQ</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium tracking-wide">
+                  LONG
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                400 Shs
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">$124.20</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-on-surface font-medium">$132.85</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$3,460.00</span>
+<span class="font-caption-mono text-caption-mono text-secondary">+6.96%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-inverse-surface font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">+3.4R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  OPENING RANGE BREAKOUT
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-secondary font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-secondary">check_circle</span>
+                  CLEAN PLAN EXECUTED
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: NQ=F Short VWAP -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-lowest/60">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0418</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.14 <span class="text-tertiary">08:15:40</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    NQ
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">NQ=F</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">FUTURES / CME</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-highest text-secondary font-caption-mono text-caption-mono font-medium tracking-wide">
+                  SHORT
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                4 Ctr
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">19,842.25</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-on-surface font-medium">19,780.00</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$4,980.00</span>
+<span class="font-caption-mono text-caption-mono text-secondary">+0.31%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-inverse-surface font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">+2.1R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  VWAP REJECTION
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-secondary font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-secondary">check_circle</span>
+                  CLEAN PLAN EXECUTED
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: TSLA Loss -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0417</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.13 <span class="text-tertiary">14:10:02</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    TS
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">TSLA</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">EQUITY / NASDAQ</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium tracking-wide">
+                  LONG
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                300 Shs
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">$174.50</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-error font-medium">$171.20</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-error font-semibold">-$990.00</span>
+<span class="font-caption-mono text-caption-mono text-error/80">-1.89%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-error font-medium px-space-sm py-0.5 rounded-full bg-error-container/30">-1.0R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  GAP FILL
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-error font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-error">warning</span>
+                  CHASED ENTRY
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: BTC/USD Liquidity Sweep -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-lowest/60">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0416</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.13 <span class="text-tertiary">03:22:15</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    ₿
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">BTC/USD</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">PERP / COINBASE</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium tracking-wide">
+                  LONG
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                1.75 BTC
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">63,120.00</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-on-surface font-medium">65,490.50</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$4,148.37</span>
+<span class="font-caption-mono text-caption-mono text-secondary">+3.75%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-inverse-surface font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">+4.2R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  LIQUIDITY SWEEP
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-secondary font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-secondary">check_circle</span>
+                  CLEAN PLAN EXECUTED
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 5: SPY Short Breakdown -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0415</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.12 <span class="text-tertiary">11:04:45</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    SP
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">SPY</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">ETF / ARCA</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-highest text-secondary font-caption-mono text-caption-mono font-medium tracking-wide">
+                  SHORT
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                1,000 Shs
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">$512.40</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-on-surface font-medium">$509.80</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$2,600.00</span>
+<span class="font-caption-mono text-caption-mono text-secondary">+0.51%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-inverse-surface font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">+1.8R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  MEAN REVERSION
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-on-surface-variant">schedule</span>
+                  EARLY EXIT
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 6: AAPL Breakeven -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-lowest/60">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0414</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.11 <span class="text-tertiary">15:45:00</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    AP
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">AAPL</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">EQUITY / NASDAQ</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium tracking-wide">
+                  LONG
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                500 Shs
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">$172.10</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-tertiary font-medium">$172.12</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-secondary font-medium">+$10.00</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">+0.01%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-tertiary font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">0.0R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  OPENING RANGE BREAKOUT
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-secondary font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-secondary">check_circle</span>
+                  BREAKEVEN STOP HONORED
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 7: NQ=F Long ORB -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0413</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.11 <span class="text-tertiary">09:35:10</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    NQ
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">NQ=F</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">FUTURES / CME</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium tracking-wide">
+                  LONG
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                6 Ctr
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">19,650.00</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-on-surface font-medium">19,745.50</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$11,460.00</span>
+<span class="font-caption-mono text-caption-mono text-secondary">+0.49%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-inverse-surface font-medium px-space-sm py-0.5 rounded-full bg-surface-container-high">+5.1R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  OPENING RANGE BREAKOUT
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-secondary font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-secondary">check_circle</span>
+                  PERFECT RUNNER CAPTURE
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 8: NVDA Short Mistake Loss -->
+<tr class="group hover:bg-surface-container/70 transition-colors bg-surface-container-lowest/60">
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs font-table-data text-table-data text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container shrink-0"></span>
+<span class="font-medium text-inverse-surface">#TR-0412</span>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap font-caption-mono text-caption-mono text-secondary">
+                2025.04.10 <span class="text-tertiary">13:19:22</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center font-caption-mono text-caption-mono text-on-surface font-semibold">
+                    NV
+                  </div>
+<div class="flex flex-col">
+<span class="font-table-data text-table-data font-semibold text-on-surface">NVDA</span>
+<span class="font-caption-mono text-caption-mono text-tertiary">EQUITY / NASDAQ</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-highest text-secondary font-caption-mono text-caption-mono font-medium tracking-wide">
+                  SHORT
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data text-on-surface">
+                250 Shs
+              </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap font-table-data text-table-data">
+<span class="text-tertiary">$122.00</span>
+<span class="text-tertiary-container mx-1">➔</span>
+<span class="text-error font-medium">$123.60</span>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<div class="flex flex-col items-end">
+<span class="font-table-data text-table-data text-error font-semibold">-$400.00</span>
+<span class="font-caption-mono text-caption-mono text-error/80">-1.31%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<span class="font-table-data text-table-data text-error font-medium px-space-sm py-0.5 rounded-full bg-error-container/30">-1.0R</span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<span class="px-space-md py-1 rounded-full bg-surface-container-high text-on-surface font-caption-mono text-caption-mono">
+                  VWAP REJECTION
+                </span>
+</td>
+<td class="py-space-md px-space-md whitespace-nowrap">
+<div class="flex items-center gap-space-xs text-error font-caption-mono text-caption-mono">
+<span class="material-symbols-outlined text-body-sm text-error">error</span>
+                  COUNTER-TREND IMPULSE
+                </div>
+</td>
+<td class="py-space-md px-space-md text-center whitespace-nowrap">
+<button class="p-1.5 rounded-full hover:bg-surface-container-highest text-tertiary hover:text-on-surface transition-colors" onclick="toggleModal(true)" title="Inspect Trade Detail">
+<span class="material-symbols-outlined text-body-lg">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- TABLE FOOTER & PAGINATION CONTROLLER -->
+<div class="px-space-lg py-space-md bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<!-- Rows per page selection -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase">ROWS PER PAGE:</span>
+<div class="flex items-center bg-surface-container-low rounded-full p-0.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+<button class="px-2.5 py-0.5 rounded-full font-caption-mono text-caption-mono bg-inverse-surface text-inverse-on-surface font-medium">8</button>
+<button class="px-2.5 py-0.5 rounded-full font-caption-mono text-caption-mono text-tertiary hover:text-on-surface">25</button>
+<button class="px-2.5 py-0.5 rounded-full font-caption-mono text-caption-mono text-tertiary hover:text-on-surface">50</button>
+<button class="px-2.5 py-0.5 rounded-full font-caption-mono text-caption-mono text-tertiary hover:text-on-surface">100</button>
+</div>
+</div>
+<span class="font-caption-mono text-caption-mono text-tertiary hidden md:inline">1 - 8 OF 174 ENTRIES</span>
+</div>
+<!-- Page Pills -->
+<div class="flex items-center gap-space-xs">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-tertiary hover:text-on-surface transition-colors shadow-sm">
+<span class="material-symbols-outlined text-body-md">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-inverse-surface text-inverse-on-surface font-caption-mono text-caption-mono font-medium shadow-sm">
+            1
+          </button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high text-tertiary hover:text-on-surface font-caption-mono text-caption-mono transition-colors">
+            2
+          </button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high text-tertiary hover:text-on-surface font-caption-mono text-caption-mono transition-colors">
+            3
+          </button>
+<span class="font-caption-mono text-caption-mono text-tertiary px-1">...</span>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high text-tertiary hover:text-on-surface font-caption-mono text-caption-mono transition-colors">
+            22
+          </button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-tertiary hover:text-on-surface transition-colors shadow-sm">
+<span class="material-symbols-outlined text-body-md">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- PSYCHOLOGY & AUDIT DRILLDOWN BENTO STRIP -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg pt-space-xs">
+<!-- Strategy Distribution Card -->
+<div class="bg-surface-container-low rounded-xl p-space-lg flex flex-col justify-between shadow-md">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">EDGE COMPOSITION // SETUP HIT-RATE</span>
+</div>
+<span class="material-symbols-outlined text-body-sm text-tertiary">pie_chart</span>
+</div>
+<div class="space-y-space-md">
+<div>
+<div class="flex justify-between font-caption-mono text-caption-mono mb-1">
+<span class="text-on-surface">OPENING RANGE BREAKOUT (ORB)</span>
+<span class="text-inverse-surface">78% WIN (39 TRADES)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-inverse-surface rounded-full w-[78%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-caption-mono text-caption-mono mb-1">
+<span class="text-on-surface">LIQUIDITY SWEEP &amp; REVERSAL</span>
+<span class="text-inverse-surface">65% WIN (28 TRADES)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[65%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-caption-mono text-caption-mono mb-1">
+<span class="text-on-surface">VWAP BOUNCE / MEAN REVERSION</span>
+<span class="text-tertiary">48% WIN (44 TRADES)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full w-[48%]"></div>
+</div>
+</div>
+</div>
+<div class="pt-space-md font-caption-mono text-caption-mono text-tertiary flex items-center justify-between">
+<span>PRIMARY ALPHA: ORB (+$52.4K)</span>
+<span class="text-primary-container font-medium">SHARPE: 2.18</span>
+</div>
+</div>
+<!-- Trading Discipline Feedback Strip -->
+<div class="bg-surface-container-low rounded-xl p-space-lg flex flex-col justify-between shadow-md">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">BEHAVIORAL ATTRIBUTION AUDIT</span>
+</div>
+<span class="material-symbols-outlined text-body-sm text-tertiary">psychology</span>
+</div>
+<div class="space-y-space-sm font-caption-mono text-caption-mono">
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<span class="text-on-surface">PLAN COMPLIANCE SCORE</span>
+<span class="text-inverse-surface font-semibold">92.4% / 100</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<span class="text-tertiary">MISTAKE COST: CHASED ENTRIES</span>
+<span class="text-error font-medium">-$4,210.00 (6 TRADES)</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<span class="text-tertiary">MISTAKE COST: PREMATURE EXITS</span>
+<span class="text-on-surface-variant font-medium">-$3,180.00 (8 TRADES)</span>
+</div>
+</div>
+<div class="pt-space-md font-caption-mono text-caption-mono text-secondary">
+          TELEMETRY NOTE: Adherence to take-profit trailing stops increased avg trade expectancy by +0.42R this month.
+        </div>
+</div>
+<!-- Quick Session Hardware Telemetry -->
+<div class="bg-surface-container-low rounded-xl p-space-lg flex flex-col justify-between shadow-md">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase tracking-wider">OPERATIONAL STATS // HARDWARE</span>
+</div>
+<span class="material-symbols-outlined text-body-sm text-tertiary">memory</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">AVG HOLD DURATION</span>
+<span class="font-table-data text-table-data text-on-surface font-semibold">22m 14s</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col">
+<span class="font-table-data text-caption-mono text-tertiary">MAX DRAWDOWN</span>
+<span class="font-table-data text-table-data text-error font-semibold">-2.14%</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">AVG WIN / LOSS</span>
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">$832 / $410</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">LARGEST WINNER</span>
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$11,460</span>
+</div>
+</div>
+<div class="pt-space-md font-caption-mono text-caption-mono text-tertiary flex items-center justify-between">
+<span>GLYPH ARCHIVAL REPO: READY</span>
+<span class="text-secondary">INTEGRITY 100%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- TRADE DETAIL & EXECUTION CHART INSPECT MODAL (DRAWER / OVERLAY) -->
+<div class="fixed inset-0 z-50 bg-surface-container-lowest/80 backdrop-blur-md hidden flex items-center justify-center p-space-md" id="trade-modal">
+<div class="bg-surface-container-low rounded-xl w-full max-w-3xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+<!-- Modal Header -->
+<div class="px-space-lg py-space-md bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-caption-mono text-body-sm font-semibold text-on-surface">INSPECT EXECUTION :: #TR-0419 [NVDA]</span>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-bright text-tertiary hover:text-on-surface flex items-center justify-center transition-colors" onclick="toggleModal(false)">
+<span class="material-symbols-outlined text-body-md">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="p-space-lg flex flex-col gap-space-lg">
+<!-- Snapshot Header Bar -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md bg-surface-container p-space-md rounded-lg">
+<div class="flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">SIDE &amp; SIZE</span>
+<span class="font-table-data text-table-data text-inverse-surface font-medium">LONG / 400 Shs</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">ENTRY / EXIT</span>
+<span class="font-table-data text-table-data text-on-surface font-medium">$124.20 ➔ $132.85</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">NET P&amp;L</span>
+<span class="font-table-data text-table-data text-inverse-surface font-semibold">+$3,460.00 (+3.4R)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption-mono text-caption-mono text-tertiary">TIMESTAMP</span>
+<span class="font-caption-mono text-caption-mono text-secondary">2025.04.14 09:42 EST</span>
+</div>
+</div>
+<!-- Inline Chart Vector Representation -->
+<div class="w-full bg-surface-container-lowest rounded-lg p-space-md flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary">
+<div class="flex items-center gap-2">
+<span class="text-on-surface">NVDA 1M EXECUTION CANDLES</span>
+<span>•</span>
+<span>ORB HIGH LEVEL TRIGGER: $124.20</span>
+</div>
+<span>VOLUME: 1.84M</span>
+</div>
+<!-- Synthetic Chart Visual -->
+<div class="h-44 w-full relative flex items-end justify-between px-space-md pt-space-md">
+<!-- Background grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
+<div class="border-b border-on-surface w-full"></div>
+<div class="border-b border-on-surface w-full"></div>
+<div class="border-b border-on-surface w-full"></div>
+<div class="border-b border-on-surface w-full"></div>
+</div>
+<!-- SVG Price Vector Line -->
+<svg class="absolute inset-0 w-full h-full fill-none pointer-events-none" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="text-inverse-surface" d="M 0 75 Q 15 65, 25 70 T 45 40 T 65 30 T 85 20 L 100 15" stroke="currentColor" stroke-width="1.8"></path>
+<!-- Target Fill Area -->
+<path class="text-inverse-surface/5" d="M 0 75 Q 15 65, 25 70 T 45 40 T 65 30 T 85 20 L 100 15 L 100 100 L 0 100 Z" fill="currentColor"></path>
+<!-- Entry Dot -->
+<circle class="fill-on-surface" cx="25" cy="70" r="3"></circle>
+<!-- Exit Marker with Crimson Dot -->
+<circle class="fill-primary-container" cx="85" cy="20" r="3.5"></circle>
+</svg>
+<!-- Annotation Pills -->
+<div class="absolute left-[20%] bottom-[32%] bg-surface-container-high px-2 py-0.5 rounded-full font-caption-mono text-caption-mono text-on-surface shadow-sm">
+              ▲ ENTRY $124.20
+            </div>
+<div class="absolute right-[12%] top-[14%] bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-caption-mono text-caption-mono shadow-sm">
+              ● EXIT $132.85 (+3.4R)
+            </div>
+</div>
+</div>
+<!-- Strategy & Behavioral Audit Notes -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col gap-1">
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase">SETUP CRITERIA MET</span>
+<p class="font-body-sm text-body-sm text-secondary">
+              Opening Range 5m breakout tested prior day high with surging delta volume. Stop positioned at $121.65 (risk $2.55/sh). Target hit on 2nd standard deviation expansion band.
+            </p>
+</div>
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col gap-1">
+<span class="font-caption-mono text-caption-mono text-tertiary uppercase">PSYCHOLOGICAL OBSERVATION</span>
+<p class="font-body-sm text-body-sm text-secondary">
+              Held entire core position through 10:15 pullback without anxiety. No impulse adjustments or premature stop movement. Plan execution score 10/10.
+            </p>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-space-lg py-space-md bg-surface-container flex items-center justify-between">
+<span class="font-caption-mono text-caption-mono text-tertiary">HASH: 8e91f03a42b109e900c</span>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-tertiary hover:text-on-surface font-caption-mono text-caption-mono uppercase transition-colors" onclick="toggleModal(false)">
+            CLOSE
+          </button>
+<button class="px-space-md py-1.5 rounded-full bg-inverse-surface text-inverse-on-surface hover:bg-on-surface font-caption-mono text-caption-mono font-medium uppercase transition-colors shadow-sm">
+            EDIT JOURNAL NOTE
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- INTERACTION LOGIC (VANILLA JS) -->
+<script>
+    function toggleModal(show) {
+      const modal = document.getElementById('trade-modal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest py-space-lg shadow-[0_-1px_0_0_rgba(255,255,255,0.04)]"><div class="w-full px-gutter-desktop flex flex-col md:flex-row items-center justify-between gap-space-md text-caption-mono text-tertiary font-caption-mono"><div class="flex items-center gap-space-md"><span>::: GLYPH_ENGINE_v4.2.0 :::</span><span>LATENCY: 12ms</span><span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>HARDWARE SYNC ACTIVE</span></div><div class="flex items-center gap-space-lg"><span>TELEMETRY STABLE</span><span>© 2025 GLYPH TRADING SYSTEMS</span></div></div></footer></body></html>
