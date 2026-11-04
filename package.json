@@ -9,7 +9,8 @@
     "preview": "node node_modules/vite/bin/vite.js preview",
     "start": "node node_modules/tsx/dist/cli.mjs server.ts",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
-    "lint": "node node_modules/typescript/bin/tsc --noEmit"
+    "lint": "node node_modules/typescript/bin/tsc --noEmit",
+    "test": "tsx --test src/utils/tradeAnalyticsEngine.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

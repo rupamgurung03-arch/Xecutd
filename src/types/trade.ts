@@ -36,6 +36,8 @@ export interface Trade {
   maxFavorablePrice?: number;
   maeR?: number;
   mfeR?: number;
+  lowestPrice?: number;
+  highestPrice?: number;
   stopLoss: number;
   takeProfit: number;
   quantity?: number;
@@ -116,3 +118,5 @@ export interface UserSettings {
   theme: 'dark' | 'light';
   journalTimeZone?: string;
 }
+
+

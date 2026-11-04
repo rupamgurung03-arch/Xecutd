@@ -373,7 +373,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   setSelectedDayString(cell.dateStr);
                 }}
                 title={`${cell.dateStr}${hasTrades ? ` · ${formatCurrency(cell.stat!.netPnl, currency)}` : ''}`}
-                className={`min-w-0 overflow-hidden rounded-sm p-0.5 sm:p-space-sm h-10 sm:h-24 lg:h-20 flex flex-col justify-between transition-colors cursor-pointer ${cellClass} ${mobilePnlClass}`}
+                className={`calendar-grid-cell min-w-0 overflow-hidden rounded-sm p-0.5 sm:p-space-sm h-10 sm:h-24 lg:h-20 flex flex-col justify-between transition-colors cursor-pointer ${cellClass} ${mobilePnlClass}`}
               >
                 <div className="flex items-center justify-between">
                   <span

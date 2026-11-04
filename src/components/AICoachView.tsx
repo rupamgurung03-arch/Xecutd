@@ -17,7 +17,7 @@ interface ChatMessage {
 
 export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
   const [auditReport, setAuditReport] = useState<string | null>(null);
-  const [auditMode, setAuditMode] = useState<'gemini' | 'heuristic' | null>(null);
+  const [auditMode, setAuditMode] = useState<string | null>(null);
   const [isRunningAudit, setIsRunningAudit] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -209,7 +209,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
               </div>
               {auditMode && (
                 <span className="font-caption-mono text-caption-mono text-secondary font-bold uppercase">
-                  {auditMode === 'gemini' ? 'AI REVIEW' : 'LOCAL REVIEW'}
+                  {auditMode === 'edge-engine' || auditMode === 'heuristic' ? 'LOCAL REVIEW' : `${auditMode.replaceAll('-', ' ')} REVIEW`}
                 </span>
               )}
             </div>

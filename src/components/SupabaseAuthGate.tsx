@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { ArrowRight, KeyRound, LoaderCircle, MailCheck, ShieldCheck, UserPlus } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, KeyRound, LoaderCircle, MailCheck, ShieldCheck, UserPlus } from 'lucide-react';
 import { hasSupabaseConfig, supabase } from '../lib/supabaseClient';
 import { dismissLegacyImportForUser, importLegacyDataForUser, needsLegacyImport } from '../utils/userStorage';
 
@@ -21,6 +21,7 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
   const [accountName, setAccountName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -268,7 +269,10 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
                 Password
                 <span className="relative block">
                   <KeyRound size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true" />
-                  <input type="password" autoComplete={view === 'sign-in' ? 'current-password' : 'new-password'} required minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} className="min-h-11 w-full border border-outline-variant bg-surface-container-low pl-9 pr-3 font-body-md text-on-surface outline-none focus:border-on-surface" placeholder="At least 6 characters" />
+                  <input type={showPassword ? 'text' : 'password'} autoComplete={view === 'sign-in' ? 'current-password' : 'new-password'} required minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} className="min-h-11 w-full border border-outline-variant bg-surface-container-low pl-9 pr-12 font-body-md text-on-surface outline-none focus:border-on-surface" placeholder="At least 6 characters" />
+                  <button type="button" onClick={() => setShowPassword((shown) => !shown)} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword} className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-tertiary hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface">
+                    {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+                  </button>
                 </span>
               </label>
             )}

@@ -338,23 +338,31 @@
 }
 
 @media (max-width: 639px) {
-  .calendar-mobile-win {
-    background: #ffffff !important;
-    border-color: #ffffff !important;
+  .calendar-grid-cell {
+    background: #202124 !important;
+    border-color: #36383d !important;
+    color: #f5f5f5 !important;
   }
 
-  .calendar-mobile-win > div:first-child > span:first-child {
-    color: #111111 !important;
+  .calendar-grid-cell > div:first-child > span:first-child {
+    color: #f5f5f5 !important;
+  }
+
+  .calendar-mobile-win {
+    background: #16833b !important;
+    border-color: #35b85d !important;
   }
 
   .calendar-mobile-loss {
-    background: #e30613 !important;
-    border-color: #e30613 !important;
+    background: #c8101e !important;
+    border-color: #ef3c49 !important;
   }
 
+  .calendar-mobile-win > div:first-child > span:first-child,
   .calendar-mobile-loss > div:first-child > span:first-child {
     color: #ffffff !important;
   }
+
 }
 
 /* Journal surfaces use square corners across every view. Keep full-round utility

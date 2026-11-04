@@ -54,6 +54,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
   const [assetClass, setAssetClass] = useState<AssetClass>(editingTrade?.assetClass || 'Equities');
   const [side, setSide] = useState<TradeSide>(editingTrade?.side || initialSide || 'Long');
   const [status, setStatus] = useState<TradeStatus>(editingTrade?.status || 'Closed');
+  const [isAdvancedLog, setIsAdvancedLog] = useState(Boolean(editingTrade));
   const [tradeStatus, setTradeStatus] = useState<TradeRecordStatus>(editingTrade?.tradeStatus || 'EXECUTED');
   const [missedReason, setMissedReason] = useState<MissedTradeReason | ''>(editingTrade?.missedReason || '');
   const [hypotheticalOutcome, setHypotheticalOutcome] = useState<HypotheticalOutcome | ''>(editingTrade?.hypotheticalOutcome || '');
@@ -273,11 +274,11 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
       }
     }
 
-    if (!showGradePrompt) {
+    if (isAdvancedLog && !showGradePrompt) {
       setShowGradePrompt(true);
       return;
     }
-    if (!tradeGrade) return;
+    if (isAdvancedLog && !tradeGrade) return;
 
     const trade: Trade = {
       id: editingTrade?.id || `TR-${Date.now().toString().slice(-4)}`,
@@ -301,6 +302,8 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
       maxFavorablePrice: maxFavorablePrice.trim() && Number.isFinite(Number(maxFavorablePrice)) ? Number(maxFavorablePrice) : undefined,
       maeR: maeR ?? undefined,
       mfeR: mfeR ?? undefined,
+      lowestPrice: (side === 'Long' ? maxAdversePrice : maxFavorablePrice).trim() && Number.isFinite(Number(side === 'Long' ? maxAdversePrice : maxFavorablePrice)) ? Number(side === 'Long' ? maxAdversePrice : maxFavorablePrice) : undefined,
+      highestPrice: (side === 'Long' ? maxFavorablePrice : maxAdversePrice).trim() && Number.isFinite(Number(side === 'Long' ? maxFavorablePrice : maxAdversePrice)) ? Number(side === 'Long' ? maxFavorablePrice : maxAdversePrice) : undefined,
       stopLoss: numSL,
       takeProfit: numTP,
       quantity: usePartialExits ? undefined : numQty,
@@ -338,7 +341,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-sm"></span>
             <span className="font-caption-mono text-body-sm font-bold text-on-surface uppercase tracking-wider">
-              {editingTrade ? `Edit trade · ${editingTrade.id}` : 'Log a trade'}
+              {editingTrade ? `Edit trade · ${editingTrade.id}` : isAdvancedLog ? 'Advanced log' : 'Quick log'}
             </span>
           </div>
           <button
@@ -351,11 +354,22 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
+          {!editingTrade && <div className="border border-primary-container bg-primary-container/10 p-3">
+            {!isAdvancedLog ? <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div><p className="font-caption-mono text-[11px] font-bold uppercase text-on-surface">Quick trade log</p><p className="mt-1 font-body-sm text-caption-mono text-tertiary">Record the core prices and risk. Add a full review when you need more detail.</p></div>
+              <button type="button" onClick={() => setIsAdvancedLog(true)} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 bg-on-surface px-5 py-2 font-caption-mono text-[11px] font-bold uppercase tracking-wide text-surface-container-lowest shadow-md hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-container">
+                <span className="material-symbols-outlined text-body-sm" aria-hidden="true">tune</span>Advanced log
+              </button>
+            </div> : <div className="flex items-center justify-between gap-3">
+              <div><p className="font-caption-mono text-[11px] font-bold uppercase text-on-surface">Full trade review</p><p className="mt-1 font-body-sm text-caption-mono text-tertiary">Add strategy, psychology, excursions, partial exits, and evidence.</p></div>
+              <button type="button" onClick={() => setIsAdvancedLog(false)} className="shrink-0 border border-outline-variant px-3 py-2 font-caption-mono text-[10px] font-bold uppercase text-on-surface">Quick log</button>
+            </div>}
+          </div>}
           
           <section className="flex flex-col gap-3">
           <h3 className="font-headline-md text-body-lg text-on-surface font-bold">Trade</h3>
           {/* Symbol & Side & Status */}
-          <div className={`grid grid-cols-1 ${isMissed ? 'sm:grid-cols-2' : 'sm:grid-cols-3'} gap-3`}>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">SYMBOL / TICKER</span>
               <input
@@ -366,6 +380,12 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
                 className="min-w-0 bg-surface-container-lowest px-3 py-2.5 rounded-xl text-on-surface font-caption-mono text-body-md uppercase outline-none border border-outline-variant focus:border-on-surface transition-colors"
               />
             </div>
+
+            <label className="flex flex-col gap-1 font-caption-mono text-[11px] font-medium uppercase text-tertiary">Asset class
+              <select value={assetClass} onChange={(event) => setAssetClass(event.target.value as AssetClass)} className="min-w-0 min-h-11 border border-outline-variant bg-surface-container-lowest px-3 font-body-sm text-on-surface outline-none focus:border-on-surface">
+                {(['Equities', 'Futures', 'Forex', 'Crypto', 'Options'] as const).map((asset) => <option key={asset} value={asset}>{asset}</option>)}
+              </select>
+            </label>
             
             <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">SIDE</span>
@@ -407,7 +427,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               </div>
             </div>}
           </div>
-          <div className="flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-low p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className={`${isAdvancedLog ? '' : 'hidden'} flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-low p-3 sm:flex-row sm:items-center sm:justify-between`}>
             <div>
               <span className="block font-caption-mono text-[11px] font-semibold uppercase tracking-wide text-tertiary">Trade record</span>
               <span className="font-body-sm text-body-sm text-tertiary">Separate real fills from setups you missed.</span>
@@ -433,7 +453,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               ))}
             </div>
           </div>
-          {isMissed && <div className="grid grid-cols-1 gap-3 rounded-xl border border-outline-variant bg-surface-container-low p-4 sm:grid-cols-3">
+          {isAdvancedLog && isMissed && <div className="grid grid-cols-1 gap-3 rounded-xl border border-outline-variant bg-surface-container-low p-4 sm:grid-cols-3">
             <label className="flex min-w-0 flex-col gap-1 font-caption-mono text-[11px] font-medium uppercase text-tertiary">
               Missed reason · required
               <select required value={missedReason} onChange={(event) => { setMissedReason(event.target.value as MissedTradeReason | ''); setFormError(''); }} className="min-w-0 rounded-xl border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-sm normal-case text-on-surface outline-none focus:border-on-surface">
@@ -458,10 +478,18 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               <input required type="number" min="0.01" step="0.01" value={plannedRRInput} onChange={(event) => { setPlannedRRInput(event.target.value); setFormError(''); }} placeholder="e.g. 2" className="min-w-0 rounded-xl border border-outline-variant bg-surface-container-lowest px-3 py-2.5 text-body-sm normal-case text-on-surface outline-none focus:border-on-surface" />
             </label>
           </div>}
+          {!isAdvancedLog && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 font-caption-mono text-[10px] uppercase text-tertiary">Entry date &amp; time
+              <span className="flex gap-2"><input type="date" value={entryDate} onChange={(event) => setEntryDate(event.target.value)} className="min-w-0 flex-1 border border-outline-variant bg-surface-container-lowest px-2 py-2 text-on-surface" /><input type="time" value={entryTime} onChange={(event) => setEntryTime(event.target.value)} className="w-28 border border-outline-variant bg-surface-container-lowest px-2 py-2 text-on-surface" /></span>
+            </label>
+            {status === 'Closed' && <label className="flex flex-col gap-1 font-caption-mono text-[10px] uppercase text-tertiary">Exit date &amp; time
+              <span className="flex gap-2"><input type="date" value={exitDate} onChange={(event) => setExitDate(event.target.value)} className="min-w-0 flex-1 border border-outline-variant bg-surface-container-lowest px-2 py-2 text-on-surface" /><input type="time" value={exitTime} onChange={(event) => setExitTime(event.target.value)} className="w-28 border border-outline-variant bg-surface-container-lowest px-2 py-2 text-on-surface" /></span>
+            </label>}
+          </div>}
           </section>
 
           {/* Quick symbol presets */}
-          <div className="flex flex-wrap items-center gap-2 pb-1">
+          <div className={`${isAdvancedLog ? '' : 'hidden'} flex flex-wrap items-center gap-2 pb-1`}>
             {COMMON_SYMBOLS.map((s) => (
               <button
                 type="button"
@@ -482,7 +510,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               {!isMissed && <span className={`font-caption-mono text-[11px] font-bold ${realizedR >= 0 ? 'text-success' : 'text-secondary'}`}>REALIZED {realizedR >= 0 ? '+' : ''}{realizedR.toFixed(1)}R</span>}
             </div>
           </div>
-          {!isMissed && status === 'Closed' && <div className="flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest p-3">
+          {!isMissed && status === 'Closed' && isAdvancedLog && <div className="flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest p-3">
             <label className="flex items-center gap-2 font-caption-mono text-[11px] font-semibold uppercase text-on-surface cursor-pointer">
               <input type="checkbox" checked={usePartialExits} onChange={(event) => { setUsePartialExits(event.target.checked); setFormError(''); }} className="accent-primary-container" />
               Log partial exits by % of position and price
@@ -541,7 +569,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               />
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className={`${isAdvancedLog ? '' : 'hidden'} flex flex-col gap-1`}>
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Take profit</span>
               <input
                 type="number"
@@ -594,7 +622,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               </span>
             )}
           </div>
-          {!isMissed && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
+          {!isMissed && isAdvancedLog && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
             <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MAE · worst price against the trade
               <input type="number" min="0.00000001" step="any" value={maxAdversePrice} onChange={(event) => setMaxAdversePrice(event.target.value)} placeholder={side === 'Long' ? 'Lowest price while open' : 'Highest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
               <span className="normal-case">{maeR === null ? 'Optional · enter the adverse extreme price' : `${maeR.toFixed(2)}R adverse`}</span>
@@ -607,7 +635,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           {formError && <p role="alert" className="rounded-lg border border-error/30 bg-error-container/40 px-3 py-2 font-body-sm text-body-sm text-secondary">{formError}</p>}
           </section>
 
-          <section className="flex flex-col gap-3">
+          <section className={`flex flex-col gap-3 ${isAdvancedLog ? '' : 'hidden'}`}>
           <h3 className="font-headline-md text-body-lg text-on-surface font-bold">Journal</h3>
           {/* Strategy Setup & Timeframe */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -650,7 +678,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
             </div>
             <div className="flex min-w-0 flex-col gap-1">
               <label htmlFor="trade-session" className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Session · required</label>
-              <select id="trade-session" required value={session} onChange={(event) => setSession(event.target.value as TradeSession | '')} className="min-w-0 w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-on-surface font-caption-mono text-body-sm outline-none border border-outline-variant focus:border-on-surface">
+              <select id="trade-session" required={isAdvancedLog} value={session} onChange={(event) => setSession(event.target.value as TradeSession | '')} className="min-w-0 w-full bg-surface-container-lowest px-3 py-2 rounded-lg text-on-surface font-caption-mono text-body-sm outline-none border border-outline-variant focus:border-on-surface">
                 <option value="">Choose session</option>
                 <option value="Asia">Asia</option>
                 <option value="London">London</option>
@@ -661,7 +689,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           </section>
 
           {/* Psychology, plan adherence, mistakes, and execution quality only apply to executed trades. */}
-          {!isMissed && <div className="flex flex-col gap-2 bg-surface-container-low p-4 rounded-xl border border-outline-variant">
+          {!isMissed && isAdvancedLog && <div className="flex flex-col gap-2 bg-surface-container-low p-4 rounded-xl border border-outline-variant">
             <div className="flex items-center justify-between">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Psychology &amp; plan</span>
               <label className="flex items-center gap-2 cursor-pointer font-caption-mono text-caption-mono">
@@ -729,7 +757,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           </div>}
 
           {/* Notes and screenshot */}
-          <div className="flex flex-col gap-2">
+          <div className={`${isAdvancedLog ? '' : 'hidden'} flex flex-col gap-2`}>
             <div className="flex items-center justify-between gap-3">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Notes</span>
               <div className="flex items-center gap-2">
@@ -807,3 +835,4 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
     </div>
   );
 };
+
