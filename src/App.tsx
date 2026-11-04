@@ -3,22 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useMemo } from 'react';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
 import { useSupabaseJournal } from './hooks/useSupabaseJournal';
 import type { JournalSnapshot } from './types/journal';
 import { calculateStats, generateEquityCurveData } from './utils/calculations';
 import { Header } from './components/Header';
-import { DashboardView } from './components/DashboardView';
-import { TradesLogView } from './components/TradesLogView';
-import { CalendarView } from './components/CalendarView';
-import { PlaybookView } from './components/PlaybookView';
-import { AnalysisView } from './components/AnalysisView';
-import { SettingsView } from './components/SettingsView';
-import { AICoachView } from './components/AICoachView';
-import { NewTradeModal } from './components/NewTradeModal';
-import { TradeDetailModal } from './components/TradeDetailModal';
+
+const DashboardView = lazy(() => import('./components/DashboardView').then((module) => ({ default: module.DashboardView })));
+const TradesLogView = lazy(() => import('./components/TradesLogView').then((module) => ({ default: module.TradesLogView })));
+const CalendarView = lazy(() => import('./components/CalendarView').then((module) => ({ default: module.CalendarView })));
+const PlaybookView = lazy(() => import('./components/PlaybookView').then((module) => ({ default: module.PlaybookView })));
+const AnalysisView = lazy(() => import('./components/AnalysisView').then((module) => ({ default: module.AnalysisView })));
+const SettingsView = lazy(() => import('./components/SettingsView').then((module) => ({ default: module.SettingsView })));
+const AICoachView = lazy(() => import('./components/AICoachView').then((module) => ({ default: module.AICoachView })));
+const NewTradeModal = lazy(() => import('./components/NewTradeModal').then((module) => ({ default: module.NewTradeModal })));
+const TradeDetailModal = lazy(() => import('./components/TradeDetailModal').then((module) => ({ default: module.TradeDetailModal })));
 
 export default function App() {
   return <SupabaseAuthGate>{(userId, onSignOut, welcomeKind) => <JournalApp userId={userId} onSignOut={onSignOut} welcomeKind={welcomeKind} />}</SupabaseAuthGate>;
@@ -144,6 +145,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
       {/* Main Workspace Canvas with top padding for fixed header */}
       <main className="flex-1 w-full pt-16 pb-12 bg-background">
         <div className="w-full px-gutter-desktop py-space-lg">
+          <Suspense fallback={<div className="flex min-h-48 items-center justify-center font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading journal section…</div>}>
           {currentTab === 'dashboard' && (
             <DashboardView
               stats={stats}
@@ -209,6 +211,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
               trades={trades}
             />
           )}
+          </Suspense>
         </div>
       </main>
 
@@ -230,7 +233,7 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
       </footer>
 
       {/* Modals */}
-      <NewTradeModal
+      {isNewTradeOpen && <Suspense fallback={null}><NewTradeModal
         key={newTradeOpenKey}
         isOpen={isNewTradeOpen}
         onClose={() => {
@@ -250,16 +253,16 @@ function JournalApp({ userId, onSignOut, welcomeKind }: { userId: string; onSign
         setCustomQualities={setCustomQualities}
         customGrades={journal.customGrades}
         setCustomGrades={setCustomGrades}
-      />
+      /></Suspense>}
 
-      <TradeDetailModal
+      {selectedTrade && <Suspense fallback={null}><TradeDetailModal
         isOpen={!!selectedTrade}
         trade={selectedTrade}
         onClose={() => setSelectedTrade(null)}
         onEdit={handleEditTradeTrigger}
         onDelete={handleDeleteTrade}
         currency={settings.currency}
-      />
+      /></Suspense>}
 
     </div>
   );

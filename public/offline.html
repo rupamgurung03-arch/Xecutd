@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <title>Offline · Xecutd Journal</title>
+    <style>
+      :root { color-scheme: light; font-family: system-ui, sans-serif; color: #151515; background: #f5f5f7; }
+      * { box-sizing: border-box; }
+      body { min-height: 100svh; margin: 0; display: grid; place-items: center; padding: 24px; }
+      main { width: min(100%, 420px); padding: 32px; border: 1px solid #d9d9de; background: #fff; }
+      .mark { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 28px; border-radius: 50%; background: #111; color: #ed0014; font-size: 22px; }
+      p { color: #62626a; line-height: 1.55; }
+      button { min-height: 44px; padding: 0 18px; border: 0; background: #111; color: #fff; font: inherit; font-weight: 650; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="mark" aria-hidden="true">●</div>
+      <p>PERSONAL TRADING JOURNAL</p>
+      <h1>You’re offline</h1>
+      <p>Your journal needs a connection to sync trades and account data. Reconnect, then try again.</p>
+      <button onclick="location.reload()">Try again</button>
+    </main>
+  </body>
+</html>
