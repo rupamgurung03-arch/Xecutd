@@ -312,7 +312,7 @@ async function callOpenAiCompatible(url: string, apiKey: string, model: string, 
 }
 
 async function generateWithFallback(env: Env, messages: AiMessage[]): Promise<ProviderResult | null> {
-  const order = (env.AI_PROVIDER_ORDER || 'sambanova,cloudflare,groq,cerebras,together,openrouter,gemini')
+  const order = (env.AI_PROVIDER_ORDER || 'cloudflare,groq,cerebras,sambanova,together,openrouter,gemini')
     .split(',').map((provider) => provider.trim().toLowerCase()).filter(Boolean);
   const providers: Record<string, () => Promise<string>> = {
     cloudflare: async () => {
