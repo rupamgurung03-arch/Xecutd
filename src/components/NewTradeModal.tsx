@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { Trade, PartialExit, AssetClass, TradeSide, TradeStatus, TradeRecordStatus, MissedTradeReason, HypotheticalOutcome, TradeSession, UserSettings } from '../types/trade';
+import { Trade, PartialExit, AssetClass, TradeSide, TradeStatus, TradeRecordStatus, EntryOrderType, MissedTradeReason, HypotheticalOutcome, TradeSession, UserSettings } from '../types/trade';
 import { calculateTradePnL, calculatePlannedR, calculateRealizedR, formatCurrency } from '../utils/calculations';
 
 interface NewTradeModalProps {
@@ -57,6 +57,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
   const [isAdvancedLog, setIsAdvancedLog] = useState(Boolean(editingTrade));
   const [quickOutcome, setQuickOutcome] = useState<'WIN' | 'LOSS' | null>(null);
   const [tradeStatus, setTradeStatus] = useState<TradeRecordStatus>(editingTrade?.tradeStatus || 'EXECUTED');
+  const [entryOrderType, setEntryOrderType] = useState<EntryOrderType>(editingTrade?.entryOrderType || 'Market');
   const [missedReason, setMissedReason] = useState<MissedTradeReason | ''>(editingTrade?.missedReason || '');
   const [hypotheticalOutcome, setHypotheticalOutcome] = useState<HypotheticalOutcome | ''>(editingTrade?.hypotheticalOutcome || '');
   const [plannedRRInput, setPlannedRRInput] = useState(editingTrade?.plannedRR ? String(editingTrade.plannedRR) : '');
@@ -303,6 +304,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
       side,
       status: isMissed ? 'Closed' : status,
       tradeStatus,
+      entryOrderType,
       missedReason: isMissed ? missedReason || undefined : undefined,
       hypotheticalOutcome: isMissed ? hypotheticalOutcome || undefined : undefined,
       plannedRR: isMissed ? numPlannedRR : undefined,
@@ -360,8 +362,8 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               {editingTrade ? `Edit trade · ${editingTrade.id}` : isAdvancedLog ? 'Advanced log' : 'Quick log'}
             </span>
           </div>
-          {!editingTrade && !isMissed && status === 'Closed' && !usePartialExits && <div className="flex shrink-0 items-center gap-1.5" aria-label="Quick result">
-            {(['WIN', 'LOSS'] as const).map((outcome) => <button key={outcome} type="button" aria-pressed={quickOutcome === outcome} onClick={() => { setQuickOutcome(outcome); setFormError(''); }} className={`min-h-9 min-w-14 border-2 px-3 py-1.5 font-caption-mono text-[11px] font-extrabold uppercase tracking-wide shadow-sm transition-colors ${quickOutcome === outcome ? outcome === 'WIN' ? 'border-emerald-800 bg-emerald-700 text-white' : 'border-red-800 bg-red-700 text-white' : outcome === 'WIN' ? 'border-emerald-700 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' : 'border-red-700 bg-red-50 text-red-800 hover:bg-red-100'}`}>{outcome}</button>)}
+          {!editingTrade && !isMissed && status === 'Closed' && !usePartialExits && <div className="flex shrink-0 items-center gap-1 rounded-full border border-outline-variant bg-surface-container-lowest p-1" role="group" aria-label="Quick result">
+            {(['WIN', 'LOSS'] as const).map((outcome) => <button key={outcome} type="button" aria-pressed={quickOutcome === outcome} onClick={() => { setQuickOutcome(outcome); setFormError(''); }} className={`min-h-8 rounded-full px-3 py-1 font-caption-mono text-[10px] font-bold uppercase tracking-wide transition-colors ${quickOutcome === outcome ? 'bg-on-surface text-surface-container-lowest shadow-sm' : 'text-tertiary hover:text-on-surface'}`}>{outcome}</button>)}
           </div>}
           <button
             onClick={onClose}
@@ -449,7 +451,9 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           <div className={`${isAdvancedLog ? '' : 'hidden'} flex flex-col gap-2 rounded-xl border border-outline-variant bg-surface-container-low p-3 sm:flex-row sm:items-center sm:justify-between`}>
             <div>
               <span className="block font-caption-mono text-[11px] font-semibold uppercase tracking-wide text-tertiary">Trade record</span>
-              <span className="font-body-sm text-body-sm text-tertiary">Separate real fills from setups you missed.</span>
+            </div>
+            <div className="flex min-w-0 items-center gap-1 rounded-full border border-outline-variant bg-surface-container-lowest p-1" role="group" aria-label="Entry type">
+              {(['Limit', 'Market', 'Stop'] as const).map((orderType) => <button key={orderType} type="button" aria-pressed={entryOrderType === orderType} onClick={() => setEntryOrderType(orderType)} className={`rounded-full px-3 py-1.5 font-caption-mono text-[10px] font-bold uppercase tracking-wide transition-colors ${entryOrderType === orderType ? 'bg-on-surface text-surface-container-lowest' : 'text-tertiary hover:text-on-surface'}`}>{orderType}</button>)}
             </div>
             <div className="flex min-w-0 items-center gap-1 rounded-full border border-outline-variant bg-surface-container-lowest p-1">
               {(['EXECUTED', 'MISSED'] as const).map((recordStatus) => (
@@ -650,11 +654,9 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           {!isMissed && isAdvancedLog && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
             <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MAE · worst price against the trade
               <input type="number" min={side === 'Short' ? String(numEntry) : '0.00000001'} max={side === 'Long' ? String(numEntry) : undefined} step="any" value={maxAdversePrice} onChange={(event) => setMaxAdversePrice(event.target.value)} placeholder={side === 'Long' ? 'Lowest price while open' : 'Highest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
-              <span className="normal-case">{maeR === null ? 'Optional · enter the adverse extreme price' : `${maeR.toFixed(2)}R adverse`}</span>
             </label>
             <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MFE · best price in your favor
               <input type="number" min={side === 'Long' ? String(numEntry) : '0.00000001'} max={side === 'Short' ? String(numEntry) : undefined} step="any" value={maxFavorablePrice} onChange={(event) => setMaxFavorablePrice(event.target.value)} placeholder={side === 'Long' ? 'Highest price while open' : 'Lowest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
-              <span className="normal-case">{mfeR === null ? 'Optional · enter the favorable extreme price' : `${mfeR.toFixed(2)}R favorable`}</span>
             </label>
           </div>}
           {formError && <p role="alert" className="rounded-lg border border-error/30 bg-error-container/40 px-3 py-2 font-body-sm text-body-sm text-secondary">{formError}</p>}

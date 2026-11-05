@@ -1,6 +1,7 @@
 export type AssetClass = 'Equities' | 'Crypto' | 'Futures' | 'Forex' | 'Options';
 export type TradeSide = 'Long' | 'Short';
 export type TradeStatus = 'Closed' | 'Open' | 'Pending';
+export type EntryOrderType = 'Market' | 'Limit' | 'Stop';
 export type TradeOutcome = 'Win' | 'Loss' | 'BreakEven';
 export type TradeRecordStatus = 'EXECUTED' | 'MISSED';
 export type MissedTradeReason = 'Hesitation' | 'Distraction' | 'Limit Not Filled (Spread/Slippage)' | 'Other';
@@ -21,6 +22,7 @@ export interface Trade {
   side: TradeSide;
   status: TradeStatus;
   tradeStatus?: TradeRecordStatus;
+  entryOrderType?: EntryOrderType;
   missedReason?: MissedTradeReason;
   hypotheticalOutcome?: HypotheticalOutcome;
   plannedRR?: number;

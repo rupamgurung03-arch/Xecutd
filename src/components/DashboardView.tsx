@@ -690,7 +690,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* RECENT EXECUTED TRADES SNIPPET */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 sm:p-space-lg shadow-sm flex flex-col gap-2 sm:gap-space-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 sm:p-space-lg shadow-sm flex flex-col gap-2 sm:gap-space-md lg:flex-1">
             <div className="flex items-center justify-between border-b border-outline-variant/60 pb-space-sm">
               <div className="flex items-center gap-space-sm">
                 <div className="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
@@ -796,23 +796,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {/* RIGHT COLUMN: 4 COLUMNS (WIDGETS & HARDWARE-INSPIRED OS MODULES) */}
         <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-space-lg min-w-0">
-          <div className="hidden lg:flex bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-lg shadow-sm flex-col gap-space-md">
-            <div className="flex items-start justify-between gap-space-sm">
-              <div>
-                <p className="flex items-center gap-1.5 font-caption-mono text-caption-mono text-tertiary tracking-widest uppercase"><span className="h-1.5 w-1.5 rounded-full bg-primary-container" />Trade entry</p>
-                <h2 className="font-headline-md text-headline-md text-on-surface font-bold mt-1">Log a trade</h2>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">Start here, then add the execution details.</p>
-              </div>
-              <button onClick={() => onOpenNewTrade()} aria-label="Open trade form" className="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-[0_4px_12px_rgba(227,6,19,0.3)] shrink-0 cursor-pointer">
-                <span className="material-symbols-outlined text-headline-md">add</span>
-              </button>
-            </div>
-            <div className="flex items-center justify-between gap-space-sm font-caption-mono text-caption-mono text-tertiary">
-              <span>Opens the full trade form</span>
-              <button onClick={() => onOpenNewTrade()} className="font-semibold text-on-surface underline cursor-pointer">Advanced entry</button>
-            </div>
-          </div>
-
           <section className="relative bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-md shadow-sm flex flex-col gap-space-sm overflow-hidden">
             <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-outline-variant" />
             <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-outline-variant" />
