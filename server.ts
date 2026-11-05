@@ -1,6 +1,5 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
-import { GoogleGenAI } from '@google/genai';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -69,122 +68,13 @@ app.get('/api/economic-calendar', async (_req, res) => {
   }
 });
 
-// Initialize Google Gen AI client with telemetry user-agent header
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || '',
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    },
-  },
-});
-
-// In-memory flag tracking quota exhaustion to prevent futile external calls and avoid error spam
-let isQuotaExhausted = false;
-
-// Helper to run promise with timeout
-function withTimeout<T>(promise: Promise<T>, ms: number = 7000): Promise<T> {
-  let timer: any;
-  const timeout = new Promise<T>((_, reject) => {
-    timer = setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms);
-  });
-  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
-}
-
-// Call wrapper with graceful error handling and quota exhaustion detection
-async function safeCallGemini(callFn: () => Promise<any>): Promise<{ result?: any; quotaExceeded: boolean }> {
-  if (isQuotaExhausted) {
-    return { quotaExceeded: true };
-  }
-
-  try {
-    const result = await withTimeout(callFn(), 7000);
-    return { result, quotaExceeded: false };
-  } catch (err: any) {
-    const msg = String(err?.message || '');
-    const is429 = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('quota') || err?.status === 429;
-    
-    if (is429) {
-      // Mark quota exhausted for this session
-      isQuotaExhausted = true;
-    }
-    return { quotaExceeded: is429 };
-  }
-}
-
-app.get('/api/test-models', async (_req, res) => {
-  const models = ['gemini-2.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
-  const results: any = {};
-  for (const m of models) {
-    try {
-      const response = await ai.models.generateContent({
-        model: m,
-        contents: 'Say hello in 3 words',
-      });
-      results[m] = { success: true, text: response.text?.trim() };
-    } catch (err: any) {
-      results[m] = { success: false, status: err?.status, msg: err?.message?.slice(0, 80) };
-    }
-  }
-  res.json(results);
-});
-
-
 // AI Coach Journal Audit Endpoint with Search Grounding
 app.post('/api/coach/analyze', async (req, res) => {
   const { stats, tradesSummary, topMistakes, topSetups } = req.body;
-
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || key === 'MY_GEMINI_API_KEY' || isQuotaExhausted) {
-    return res.json({
-      analysis: generateHeuristicAudit(stats, topMistakes, topSetups),
-      mode: 'edge-engine',
-      quotaExceeded: isQuotaExhausted,
-    });
-  }
-
-  const prompt = `You are an elite institutional trading psychologist and risk manager.
-Analyze this trader's journal data and deliver a high-impact, direct critique.
-
-TRADER PERFORMANCE DATA:
-- Total Trades: ${stats?.totalTrades} (Win Rate: ${stats?.winRate}%)
-- Net P&L: $${stats?.netPnL}
-- Profit Factor: ${stats?.profitFactor}
-- Avg Win: $${stats?.avgWin} | Avg Loss: $${stats?.avgLoss} (Win/Loss P&L Ratio: ${stats?.winLossRatio})
-- Max Drawdown: ${stats?.maxDrawdown}%
-- Rules Followed Rate: ${stats?.rulesCompliance}%
-- Top Setups: ${JSON.stringify(topSetups)}
-- Reported Mistakes & Leaks: ${JSON.stringify(topMistakes)}
-- Recent Trade Sample: ${JSON.stringify(tradesSummary)}
-
-Provide a structured, sharp trading audit in Markdown with these 4 sections:
-1. Executive Assessment (Edge & Risk Health)
-2. The Primary Profit Leaks (Be specific about mistake tags or setups)
-3. Psychological & Discipline Patterns
-4. Concrete 3-Step Protocol For Next 20 Trades`;
-
-  const { result, quotaExceeded } = await safeCallGemini(() =>
-    ai.models.generateContent({
-      model: 'gemini-3.8-flash',
-      contents: prompt,
-      config: {
-        systemInstruction: 'You are an institutional trading performance coach who analyzes real execution data and behavioral leaks.',
-      },
-    })
-  );
-
-  if (result && result.text) {
-    return res.json({
-      analysis: result.text,
-      mode: 'gemini',
-      quotaExceeded: false,
-    });
-  }
-
   return res.json({
     analysis: generateHeuristicAudit(stats, topMistakes, topSetups),
     mode: 'edge-engine',
-    quotaExceeded,
+    quotaExceeded: false,
   });
 });
 
@@ -195,121 +85,21 @@ app.post('/api/coach/trade-review', async (req, res) => {
     return res.status(400).json({ error: 'Trade data required' });
   }
 
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || key === 'MY_GEMINI_API_KEY' || isQuotaExhausted) {
-    return res.json({
-      review: generateHeuristicTradeReview(trade),
-      mode: 'edge-engine',
-      quotaExceeded: isQuotaExhausted,
-    });
-  }
-
-  const prompt = `You are an expert trading coach reviewing a single trade post-mortem.
-Trade Details:
-- Symbol: ${trade.symbol} (${trade.assetClass})
-- Direction: ${trade.side}
-- Entry Price: $${trade.entryPrice} | Exit Price: $${trade.exitPrice}
-- Stop Loss: $${trade.stopLoss} | Take Profit: $${trade.takeProfit}
-- Quantity: ${trade.quantity}
-- Net P&L: $${trade.pnl} (${trade.pnlPercent}%) | Realized R: ${trade.realizedR}R
-- Strategy/Setup: ${trade.setup}
-- Rules Followed: ${trade.rulesFollowed ? 'YES' : 'NO'}
-- Trader Emotion/Mindset: ${trade.emotion}
-- Mistake Tags: ${trade.mistakes?.join(', ') || 'None'}
-- Trader Notes: ${trade.notes || 'None'}
-
-Provide a concise, candid tactical post-mortem in Markdown covering:
-1. Execution Grade (A, B, C, or F) with justification
-2. Risk-to-Reward & Management Critique
-3. Psychology & Behavioral Insight
-4. Key Takeaway to Log in Playbook`;
-
-  const { result, quotaExceeded } = await safeCallGemini(() =>
-    ai.models.generateContent({
-      model: 'gemini-3.8-flash',
-      contents: prompt,
-      config: {
-        systemInstruction: 'You are an elite trading performance psychologist. Give candid, practical trade feedback.',
-      },
-    })
-  );
-
-  if (result && result.text) {
-    return res.json({
-      review: result.text,
-      mode: 'gemini',
-      quotaExceeded: false,
-    });
-  }
-
   return res.json({
     review: generateHeuristicTradeReview(trade),
     mode: 'edge-engine',
-    quotaExceeded,
+    quotaExceeded: false,
   });
 });
 
 // Interactive Coach Chat Endpoint with Google Search Grounding
 app.post('/api/coach/chat', async (req, res) => {
   const { message, journalContext, trades = [] } = req.body;
-
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || key === 'MY_GEMINI_API_KEY' || isQuotaExhausted) {
-    return res.json({
-      reply: generateComprehensiveCoachReply(message, journalContext, trades),
-      mode: 'edge-engine',
-      sources: [],
-      quotaExceeded: isQuotaExhausted,
-    });
-  }
-
-  const prompt = `Trader Journal Context:
-- Total Trades: ${journalContext?.totalTrades}
-- Win Rate: ${journalContext?.winRate}%
-- Net P&L: $${journalContext?.netPnL}
-- Top Leaks: ${journalContext?.topMistakes?.join(', ') || 'None reported'}
-
-Trader Question/Message: "${message}"
-
-Instructions:
-1. Answer the question directly, thoroughly, and practically.
-2. If the user asks about current market events, ticker news (e.g. NVDA, AAPL, BTC, SPY), economic releases (CPI, FOMC, Fed interest rates), or live financial trends, use the Google Search tool to ground your response in the latest real-world data.
-3. If they ask about their personal trades or risk management, analyze their specific numbers.
-4. Keep the tone professional, objective, and institutional.`;
-
-  const { result, quotaExceeded } = await safeCallGemini(() =>
-    ai.models.generateContent({
-      model: 'gemini-3.8-flash',
-      contents: prompt,
-      config: {
-        systemInstruction: 'You are Raku, an elite trading coach and market analyst. Use Google Search grounding when current market news, macro data, ticker prices, or financial events are relevant.',
-        tools: [{ googleSearch: {} }],
-      },
-    })
-  );
-
-  if (result && result.text) {
-    const groundingChunks = result.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-    const sources = groundingChunks
-      .filter((chunk: any) => chunk.web && chunk.web.uri)
-      .map((chunk: any) => ({
-        title: chunk.web.title || chunk.web.uri,
-        uri: chunk.web.uri,
-      }));
-
-    return res.json({
-      reply: result.text,
-      mode: 'gemini',
-      sources,
-      quotaExceeded: false,
-    });
-  }
-
   return res.json({
     reply: generateComprehensiveCoachReply(message, journalContext, trades),
     mode: 'edge-engine',
     sources: [],
-    quotaExceeded,
+    quotaExceeded: false,
   });
 });
 

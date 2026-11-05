@@ -6,7 +6,7 @@ A private trading journal with Supabase email authentication, account-isolated j
 
 1. Install dependencies with `npm install`.
 2. Copy `.env.example` to `.env.local` and set the Supabase project URL and public publishable/anon key.
-3. Add `GEMINI_API_KEY` if you want Raku's AI endpoints to use Gemini locally. `FINANCE_CALENDAR_API_KEY` is optional.
+3. Add `FINANCE_CALENDAR_API_KEY` to enable the local economic calendar endpoint (optional). The local Express server uses the built-in Raku fallback; deployed AI provider routing is handled by the Cloudflare Worker.
 4. Run `npm run dev` and open the local URL printed in the terminal.
 
 ## Supabase setup
@@ -23,7 +23,7 @@ Set the browser values `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE
 
 - `SUPABASE_URL` — the Supabase project URL.
 - `SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_ANON_KEY` — the same project's public key used by the browser.
-- `GEMINI_API_KEY` — a server-side secret for Gemini-backed Raku responses.
+- `GEMINI_API_KEY` — an optional server-side provider secret. Gemini remains available in the Worker's AI provider chain when configured.
 - `FINANCE_CALENDAR_API_KEY` — optional server-side secret for the economic calendar.
 
 The Worker verifies each Supabase access token before using Gemini or the economic-calendar service. Build-time `VITE_` values do not automatically become Worker runtime bindings. Never use a service-role key for session verification, and do not commit `.env.local` or other `.env` files. `.gitignore` excludes them and build artifacts while keeping `.env.example` as a safe template.
