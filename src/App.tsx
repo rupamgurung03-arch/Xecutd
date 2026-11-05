@@ -89,13 +89,23 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
 
   // Apply the account's saved appearance preference.
   useEffect(() => {
-    if (settings.theme === 'light') {
+    const isDark = settings.theme === 'dark';
+    if (!isDark) {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
     } else {
       document.documentElement.classList.remove('light');
       document.documentElement.classList.add('dark');
     }
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    const themeColor = isDark ? '#0a0a0a' : '#f5f5f7';
+    let themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (!themeMeta) {
+      themeMeta = document.createElement('meta');
+      themeMeta.name = 'theme-color';
+      document.head.appendChild(themeMeta);
+    }
+    themeMeta.content = themeColor;
   }, [settings.theme]);
   useEffect(() => {
     if (!ready) return;

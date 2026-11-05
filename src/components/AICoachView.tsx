@@ -244,7 +244,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
             <span>RAKU</span>
           </div>
           <h1 className="font-headline-lg text-headline-lg tracking-tight text-on-surface uppercase font-bold">
-            Raku, your trading coach
+            Raku, your trading homie
           </h1>
           <p className="font-body-md text-body-md text-tertiary">
             Review your logged trades, setups, and plan-following patterns.
@@ -368,7 +368,15 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
               </span>
             </div>
             {showChatHistory && <div className="absolute right-4 top-full z-30 mt-2 max-h-72 w-72 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-lowest p-2 shadow-lg">
-              <div className="px-2 py-1.5 font-caption-mono text-[10px] font-bold uppercase tracking-wider text-tertiary">Previous chats</div>
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <span className="font-caption-mono text-[10px] font-bold uppercase tracking-wider text-tertiary">Previous chats</span>
+                {savedChatSessions.length > 0 && <button type="button" onClick={() => {
+                  if (window.confirm(`Delete all ${savedChatSessions.length} saved chats? This cannot be undone.`)) {
+                    onChatSessionsChange([]);
+                    setSavedChatSessions([]);
+                  }
+                }} className="font-caption-mono text-[10px] uppercase text-secondary hover:underline">Clear all</button>}
+              </div>
               {savedChatSessions.length ? savedChatSessions.map((session) => (
                 <div key={session.id} className="flex items-start gap-1 rounded-lg px-1 hover:bg-surface-container-low">
                   <button type="button" onClick={() => openSavedChat(session)} className="flex min-w-0 flex-1 flex-col gap-1 px-1 py-2 text-left">
