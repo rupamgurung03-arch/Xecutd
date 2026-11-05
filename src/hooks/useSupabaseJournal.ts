@@ -44,6 +44,7 @@ const readLocalSnapshot = (userId: string): JournalSnapshot => {
     customMistakes: readUserValue(userId, 'apextrade_custom_mistakes', []),
     customQualities: readUserValue(userId, 'apextrade_execution_qualities', []),
     customGrades: readUserValue(userId, 'apextrade_custom_grades', []),
+    propFirmSim: readUserValue(userId, 'apextrade_prop_firm_sim', undefined),
   };
 };
 
@@ -60,6 +61,7 @@ const normalizeSnapshot = (value: unknown): JournalSnapshot => {
     customMistakes: Array.isArray(saved.customMistakes) ? saved.customMistakes : defaults.customMistakes,
     customQualities: Array.isArray(saved.customQualities) ? saved.customQualities : defaults.customQualities,
     customGrades: Array.isArray(saved.customGrades) ? saved.customGrades : defaults.customGrades,
+    propFirmSim: saved.propFirmSim,
   };
 };
 

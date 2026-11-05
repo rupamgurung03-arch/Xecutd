@@ -1,4 +1,5 @@
 import type { Trade, PlaybookSetup, TradingRule, UserSettings } from './trade';
+import type { ChallengeSpecInput } from '@luxalgo/prop-firm-sim-core';
 
 export interface AnalysisShape {
   id: string;
@@ -28,4 +29,24 @@ export interface JournalSnapshot {
   customMistakes: string[];
   customQualities: string[];
   customGrades: string[];
+  propFirmSim?: {
+    challengeKey?: string;
+    profileMode?: 'journal' | 'custom';
+    customProfile?: { winRate: number; avgWinR: number; avgLossR: number };
+    customChallenges?: Array<{
+      id: string;
+      firmName: string;
+      name: string;
+      spec?: ChallengeSpecInput;
+      instantRules?: Omit<ChallengeSpecInput, 'steps'>;
+      accountType?: 'evaluation' | 'instant';
+      createdAt: string;
+      riskPerTradePct?: number;
+      includeExecutionCosts?: boolean;
+    }>;
+    riskMode: 'percent-of-initial' | 'percent-of-balance' | 'fixed-amount';
+    riskValue: number;
+    tradesPerDay: number;
+    paths: number;
+  };
 }

@@ -4,6 +4,7 @@
  */
 
 import React, { lazy, Suspense, useState, useEffect, useMemo } from 'react';
+import packageInfo from '../package.json';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
 import { useSupabaseJournal } from './hooks/useSupabaseJournal';
@@ -18,6 +19,7 @@ const PlaybookView = lazy(() => import('./components/PlaybookView').then((module
 const AnalysisView = lazy(() => import('./components/AnalysisView').then((module) => ({ default: module.AnalysisView })));
 const SettingsView = lazy(() => import('./components/SettingsView').then((module) => ({ default: module.SettingsView })));
 const AICoachView = lazy(() => import('./components/AICoachView').then((module) => ({ default: module.AICoachView })));
+const PropFirmSimulatorView = lazy(() => import('./components/PropFirmSimulatorView').then((module) => ({ default: module.PropFirmSimulatorView })));
 const NewTradeModal = lazy(() => import('./components/NewTradeModal').then((module) => ({ default: module.NewTradeModal })));
 const TradeDetailModal = lazy(() => import('./components/TradeDetailModal').then((module) => ({ default: module.TradeDetailModal })));
 
@@ -220,6 +222,13 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
 
           {currentTab === 'analysis' && <AnalysisView pages={journal.analysisPages} setPages={setAnalysisPages} syncStatus={status} />}
 
+          {currentTab === 'prop-firm' && <PropFirmSimulatorView
+            trades={trades}
+            currency={settings.currency}
+            config={journal.propFirmSim}
+            onConfigChange={(config) => updateField('propFirmSim', config)}
+          />}
+
           {currentTab === 'settings' && (
             <SettingsView
               settings={settings}
@@ -252,6 +261,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
             {status === 'error' && ready && <button type='button' onClick={retry} className='font-caption-mono text-[10px] underline underline-offset-4'>Retry sync</button>}
           </div>
           <div className="flex items-center gap-space-lg">
+            <span>v{packageInfo.version}</span>
             <span>{trades.length} trades logged</span>
           </div>
         </div>
