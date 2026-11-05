@@ -62,6 +62,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
   const [hypotheticalOutcome, setHypotheticalOutcome] = useState<HypotheticalOutcome | ''>(editingTrade?.hypotheticalOutcome || '');
   const [plannedRRInput, setPlannedRRInput] = useState(editingTrade?.plannedRR ? String(editingTrade.plannedRR) : '');
   const [session, setSession] = useState<TradeSession | ''>(editingTrade?.session || '');
+  const [showStrategyOptions, setShowStrategyOptions] = useState(false);
   
   const [entryDate, setEntryDate] = useState(editingTrade?.entryDate || defaultDate);
   const [entryTime, setEntryTime] = useState(editingTrade?.entryTime || '09:45');
@@ -77,6 +78,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
   })) : [{ percentage: 100, exitPrice: editingTrade?.exitPrice ?? editingTrade?.entryPrice ?? 0 }]);
   const [maxAdversePrice, setMaxAdversePrice] = useState(editingTrade?.maxAdversePrice === undefined ? '' : String(editingTrade.maxAdversePrice));
   const [maxFavorablePrice, setMaxFavorablePrice] = useState(editingTrade?.maxFavorablePrice === undefined ? '' : String(editingTrade.maxFavorablePrice));
+  const [showExcursionInfo, setShowExcursionInfo] = useState(false);
   const [stopLoss, setStopLoss] = useState<string>(editingTrade ? String(editingTrade.stopLoss) : '');
   const [takeProfit, setTakeProfit] = useState<string>(editingTrade ? String(editingTrade.takeProfit) : '');
   const [riskAmount, setRiskAmount] = useState<string>(editingTrade?.riskAmount !== undefined ? String(editingTrade.riskAmount) : '');
@@ -651,12 +653,19 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
               </span>
             )}
           </div>
-          {!isMissed && isAdvancedLog && <div className="grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MAE · worst price against the trade
-              <input type="number" min={side === 'Short' ? String(numEntry) : '0.00000001'} max={side === 'Long' ? String(numEntry) : undefined} step="any" value={maxAdversePrice} onChange={(event) => setMaxAdversePrice(event.target.value)} placeholder={side === 'Long' ? 'Lowest price while open' : 'Highest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
-            </label>
-            <label className="flex flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MFE · best price in your favor
-              <input type="number" min={side === 'Long' ? String(numEntry) : '0.00000001'} max={side === 'Short' ? String(numEntry) : undefined} step="any" value={maxFavorablePrice} onChange={(event) => setMaxFavorablePrice(event.target.value)} placeholder={side === 'Long' ? 'Highest price while open' : 'Lowest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+          {!isMissed && isAdvancedLog && <div className="relative grid grid-cols-1 gap-3 border border-outline-variant bg-surface-container-low p-3 sm:grid-cols-2">
+            <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex items-center gap-1">
+                <label htmlFor="trade-mae-price" className="font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MAE · worst price against the trade</label>
+                <button type="button" aria-label="Explain MAE and MFE" aria-expanded={showExcursionInfo} aria-controls="trade-excursion-info" onClick={() => setShowExcursionInfo((shown) => !shown)} className="inline-flex h-[10px] w-[10px] shrink-0 items-center justify-center rounded-full border border-outline-variant text-[7px] font-bold leading-none text-tertiary hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" title="What are MAE and MFE?">
+                  <span aria-hidden="true">i</span>
+                </button>
+              </div>
+              {showExcursionInfo && <p id="trade-excursion-info" role="note" className="absolute right-2 top-7 z-20 max-w-xs rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm leading-relaxed text-tertiary shadow-md">MAE is the worst price movement against your trade while it was open. MFE is the best movement in your favor. Enter those extreme prices if you know them; leave them blank if you didn’t track them.</p>}
+              <input id="trade-mae-price" type="number" min={side === 'Short' ? String(numEntry) : '0.00000001'} max={side === 'Long' ? String(numEntry) : undefined} step="any" value={maxAdversePrice} onChange={(event) => setMaxAdversePrice(event.target.value)} placeholder={side === 'Long' ? 'Lowest price while open' : 'Highest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
+            </div>
+            <label htmlFor="trade-mfe-price" className="flex min-w-0 flex-col gap-1 font-caption-mono text-[10px] font-semibold uppercase text-tertiary">MFE · best price in your favor
+              <input id="trade-mfe-price" type="number" min={side === 'Long' ? String(numEntry) : '0.00000001'} max={side === 'Short' ? String(numEntry) : undefined} step="any" value={maxFavorablePrice} onChange={(event) => setMaxFavorablePrice(event.target.value)} placeholder={side === 'Long' ? 'Highest price while open' : 'Lowest price while open'} className="min-w-0 border border-outline-variant bg-surface-container-lowest px-3 py-2 font-caption-mono text-body-sm text-on-surface" />
             </label>
           </div>}
           {formError && <p role="alert" className="rounded-lg border border-error/30 bg-error-container/40 px-3 py-2 font-body-sm text-body-sm text-secondary">{formError}</p>}
@@ -668,16 +677,30 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Strategy</span>
-              <input
-                value={setup}
-                onChange={(e) => setSetup(e.target.value)}
-                placeholder="Create or choose a strategy"
-                list="apextrade-strategy-suggestions"
-                className="bg-surface-container-lowest px-3 py-2 rounded-lg text-on-surface font-caption-mono text-body-sm outline-none border border-outline-variant focus:border-on-surface"
-              />
-              <datalist id="apextrade-strategy-suggestions">
-                {strategyOptions.map((strategy) => <option key={strategy} value={strategy} />)}
-              </datalist>
+              <div className="relative">
+                <input
+                  value={setup}
+                  onChange={(e) => setSetup(e.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'ArrowDown') {
+                      event.preventDefault();
+                      setShowStrategyOptions(true);
+                    } else if (event.key === 'Escape') setShowStrategyOptions(false);
+                  }}
+                  placeholder="Create or choose a strategy"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded={showStrategyOptions}
+                  aria-controls="trade-strategy-options"
+                  className="w-full rounded-lg border border-outline-variant bg-surface-container-lowest py-2 pl-3 pr-10 font-caption-mono text-body-sm text-on-surface outline-none focus:border-on-surface"
+                />
+                <button type="button" aria-label={showStrategyOptions ? 'Hide saved strategies' : 'Show saved strategies'} aria-expanded={showStrategyOptions} onClick={() => setShowStrategyOptions((open) => !open)} className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-lg text-tertiary hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                  <span className="material-symbols-outlined text-body-sm">{showStrategyOptions ? 'expand_less' : 'expand_more'}</span>
+                </button>
+                {showStrategyOptions && <div id="trade-strategy-options" role="listbox" aria-label="Saved strategies" className="absolute left-0 right-0 top-full z-30 mt-1 max-h-48 overflow-y-auto rounded-lg border border-outline-variant bg-surface-container-lowest p-1 shadow-xl">
+                  {strategyOptions.length ? strategyOptions.map((strategy) => <button key={strategy} type="button" role="option" aria-selected={setup === strategy} onClick={() => { setSetup(strategy); setShowStrategyOptions(false); }} className={`block w-full rounded-md px-3 py-2 text-left font-caption-mono text-body-sm transition-colors ${setup === strategy ? 'bg-surface-container-high text-on-surface font-semibold' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'}`}>{strategy}</button>) : <p className="px-3 py-2 font-caption-mono text-[11px] leading-relaxed text-tertiary">No saved strategies yet. Type a name here, or add one in Playbook.</p>}
+                </div>}
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               <span className="font-caption-mono text-[11px] text-tertiary uppercase font-medium">Date &amp; time</span>

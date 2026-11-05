@@ -1,22 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trade, TradeStats } from '../types/trade';
+import type { RakuChatMessage } from '../types/journal';
 import { getJournalAuthHeaders } from '../lib/supabaseClient';
 import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 
 interface AICoachViewProps {
   stats: TradeStats;
   trades: Trade[];
+  chatHistory: RakuChatMessage[];
+  onChatHistoryChange: (history: RakuChatMessage[]) => void;
 }
 
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'coach';
-  text: string;
-  timestamp: string;
-  sources?: { title: string; uri: string }[];
-}
-
-export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
+export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHistory, onChatHistoryChange }) => {
   const [reviewScope, setReviewScope] = useState<'overall' | 'last-week' | 'last-month' | 'month' | 'custom'>('overall');
   const [reviewMonth, setReviewMonth] = useState(new Date().toISOString().slice(0, 7));
   const [customStart, setCustomStart] = useState(new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10));
@@ -24,16 +19,21 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
   const [auditReport, setAuditReport] = useState<string | null>(null);
   const [auditMode, setAuditMode] = useState<string | null>(null);
   const [isRunningAudit, setIsRunningAudit] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      sender: 'coach',
-      text: `I’m Raku. I can help review the ${trades.length} trades in your journal. Ask about your results, setups, or plan-following patterns.`,
-      timestamp: 'READY',
-    },
-  ]);
+  const [chatMessages, setChatMessages] = useState<RakuChatMessage[]>(chatHistory);
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  useEffect(() => {
+    if (chatMessages.length) onChatHistoryChange(chatMessages);
+  }, [chatMessages, onChatHistoryChange]);
+
+  const welcomeMessage: RakuChatMessage = {
+    id: 'welcome',
+    sender: 'coach',
+    text: `I’m Raku. I can help review the ${trades.length} trades in your journal. Ask about your results, setups, or plan-following patterns.`,
+    timestamp: 'READY',
+  };
+  const visibleChatMessages = chatMessages.length ? chatMessages : [welcomeMessage];
 
   const getBuddyScope = () => {
     if (reviewScope === 'overall') return { type: 'overall' as const };
@@ -95,14 +95,14 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
     const query = customText || inputMessage;
     if (!query.trim() || isSending) return;
 
-    const userMsg: ChatMessage = {
+    const userMsg: RakuChatMessage = {
       id: `user-${Date.now()}`,
       sender: 'user',
       text: query,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    setChatMessages((prev) => [...prev, userMsg]);
+    setChatMessages((prev) => [...(prev.length ? prev : [welcomeMessage]), userMsg]);
     if (!customText) setInputMessage('');
     setIsSending(true);
 
@@ -120,7 +120,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || `Raku service returned HTTP ${res.status}.`);
       if (!data.reply) throw new Error('The AI endpoint returned no reply. Check the Worker API deployment and runtime settings.');
-      const botMsg: ChatMessage = {
+      const botMsg: RakuChatMessage = {
         id: `coach-${Date.now()}`,
         sender: 'coach',
         text: data.reply || 'Analysis received.',
@@ -130,7 +130,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
       setChatMessages((prev) => [...prev, botMsg]);
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Unknown connection error.';
-      const botMsg: ChatMessage = {
+      const botMsg: RakuChatMessage = {
         id: `coach-${Date.now()}`,
         sender: 'coach',
         text: `Raku couldn't complete that request: ${reason}\n\nYour journal has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`,
@@ -272,7 +272,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
 
           {/* Messages scroll area */}
           <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-4">
-            {chatMessages.map((msg) => {
+            {visibleChatMessages.map((msg) => {
               const isCoach = msg.sender === 'coach';
 
               return (

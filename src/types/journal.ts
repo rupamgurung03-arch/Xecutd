@@ -20,6 +20,14 @@ export interface AnalysisPage {
   updatedAt: string;
 }
 
+export interface RakuChatMessage {
+  id: string;
+  sender: 'user' | 'coach';
+  text: string;
+  timestamp: string;
+  sources?: { title: string; uri: string }[];
+}
+
 export interface JournalSnapshot {
   settings: UserSettings;
   trades: Trade[];
@@ -29,6 +37,7 @@ export interface JournalSnapshot {
   customMistakes: string[];
   customQualities: string[];
   customGrades: string[];
+  rakuChatHistory?: RakuChatMessage[];
   propFirmSim?: {
     challengeKey?: string;
     profileMode?: 'journal' | 'custom';

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { lazy, Suspense, useState, useEffect, useMemo } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import packageInfo from '../package.json';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
 import { useSupabaseJournal } from './hooks/useSupabaseJournal';
-import type { JournalSnapshot } from './types/journal';
+import type { JournalSnapshot, RakuChatMessage } from './types/journal';
 import { calculateStats, generateEquityCurveData } from './utils/calculations';
 import { Header } from './components/Header';
 
@@ -41,6 +41,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   const setCustomMistakes: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customMistakes', value);
   const setCustomQualities: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customQualities', value);
   const setCustomGrades: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customGrades', value);
+  const setRakuChatHistory = useCallback((history: RakuChatMessage[]) => updateField('rakuChatHistory', history), [updateField]);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [showWelcome, setShowWelcome] = useState(true);
@@ -244,6 +245,8 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
             <AICoachView
               stats={stats}
               trades={trades}
+              chatHistory={journal.rakuChatHistory || []}
+              onChatHistoryChange={setRakuChatHistory}
             />
           )}
           </Suspense>

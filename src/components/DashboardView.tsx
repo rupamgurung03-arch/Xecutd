@@ -48,7 +48,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   });
   const [sessionPerformancePeriod, setSessionPerformancePeriod] = useState<'D' | 'W' | 'M' | 'ALL'>('M');
-  const [sessionWidgetExpanded, setSessionWidgetExpanded] = useState(true);
   const [clockNow, setClockNow] = useState(() => new Date());
   useEffect(() => {
     const timer = window.setInterval(() => setClockNow(new Date()), 1000);
@@ -845,14 +844,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <section className="flex min-w-0 flex-col gap-space-sm">
               <div className="flex items-center justify-between gap-2">
-                <button type="button" aria-expanded={sessionWidgetExpanded} onClick={() => setSessionWidgetExpanded((expanded) => !expanded)} className="flex min-w-0 items-center gap-1 font-caption-mono text-[10px] font-bold tracking-wider text-on-surface uppercase cursor-pointer">
-                  <span className="text-secondary">[03]</span><span>Trades by session</span><span className="material-symbols-outlined text-body-sm text-tertiary">{sessionWidgetExpanded ? 'expand_less' : 'expand_more'}</span>
-                </button>
+                <div className="flex min-w-0 items-center gap-1 font-caption-mono text-[10px] font-bold tracking-wider text-on-surface uppercase">
+                  <span className="text-secondary">[03]</span><span>Trades by session</span>
+                </div>
                 <div className="inline-flex shrink-0 rounded-full bg-surface-container-highest p-0.5" role="group" aria-label="Session performance period">
                   {(['D', 'W', 'M', 'ALL'] as const).map((period) => <button key={period} type="button" aria-pressed={sessionPerformancePeriod === period} onClick={() => setSessionPerformancePeriod(period)} className={`rounded-full px-2 py-1 font-caption-mono text-[9px] font-bold transition-colors ${sessionPerformancePeriod === period ? 'bg-on-surface text-surface-container-lowest' : 'text-on-surface-variant hover:text-on-surface'}`}>{period}</button>)}
                 </div>
               </div>
-              {sessionWidgetExpanded && <>
               <div className="space-y-2">
                 {sessionPerformance.map((session) => {
                   const recent = [...session.records].sort((a, b) => `${b.exitDate || b.entryDate}T${b.exitTime || b.entryTime || '00:00'}`.localeCompare(`${a.exitDate || a.entryDate}T${a.exitTime || a.entryTime || '00:00'}`)).slice(0, 10).reverse();
@@ -873,7 +871,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 })}
                 {!sessionPerformance.some((session) => session.count > 0) && <p className="font-caption-mono text-[9px] text-tertiary">No session-tagged closed trades in this period.</p>}
               </div>
-              </>}
             </section>
           </section>
 
