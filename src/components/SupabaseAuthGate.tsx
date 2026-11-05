@@ -154,6 +154,26 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    if (!supabase) return;
+    setSubmitting(true);
+    setError('');
+    setNotice('');
+    try {
+      const { error: authError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: redirectUrl() },
+      });
+      if (authError) {
+        setError(authError.message);
+        setSubmitting(false);
+      }
+    } catch {
+      setError('Could not start Google sign-in. Please try again.');
+      setSubmitting(false);
+    }
+  };
+
   const switchView = (nextView: AuthView) => {
     setView(nextView);
     setError('');
@@ -252,6 +272,24 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
+            {(view === 'sign-in' || view === 'sign-up') && (
+              <>
+                <button type="button" onClick={() => { void handleGoogleSignIn(); }} disabled={submitting} className="inline-flex min-h-11 items-center justify-center gap-3 border border-outline-variant bg-surface-container-low px-4 py-2 font-caption-mono text-caption-mono font-semibold uppercase tracking-wider text-on-surface transition hover:bg-surface-container disabled:cursor-wait disabled:opacity-60">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.09-1.92 3.27-4.74 3.27-8.1Z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.65l-3.57-2.77c-.99.66-2.25 1.06-3.71 1.06-2.86 0-5.28-1.93-6.15-4.53H2.16v2.84A11 11 0 0 0 12 23Z" />
+                    <path fill="#FBBC05" d="M5.85 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.16a11 11 0 0 0 0 9.9l3.69-2.84Z" />
+                    <path fill="#EA4335" d="M12 4.36c1.62 0 3.07.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0A11 11 0 0 0 2.16 7.05l3.69 2.84C6.72 7.29 9.14 4.36 12 4.36Z" />
+                  </svg>
+                  Continue with Google
+                </button>
+                <div className="flex items-center gap-3 font-caption-mono text-[10px] uppercase tracking-wider text-tertiary" aria-hidden="true">
+                  <span className="h-px flex-1 bg-outline-variant" />
+                  or use email
+                  <span className="h-px flex-1 bg-outline-variant" />
+                </div>
+              </>
+            )}
             {view === 'sign-up' && (
               <label className="flex flex-col gap-1.5 font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">
                 Username

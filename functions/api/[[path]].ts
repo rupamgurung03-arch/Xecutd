@@ -292,7 +292,7 @@ function heuristicBuddyReview(payloadJson: string): string {
 function getModel(env: Env, provider: string) {
   const configured = (env as Record<string, string | undefined>)[`${provider.toUpperCase()}_AI_MODEL`];
   const defaults: Record<string, string> = {
-    CLOUDFLARE: '@cf/meta/llama-3.1-8b-instruct', GROQ: 'openai/gpt-oss-20b',
+    CLOUDFLARE: '@cf/meta/llama-3.1-8b-instruct-fp8', GROQ: 'openai/gpt-oss-20b',
     TOGETHER: 'meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo',
     CEREBRAS: 'llama3.1-8b', SAMBANOVA: 'Meta-Llama-3.1-8B-Instruct',
     OPENROUTER: 'openrouter/free', GEMINI: 'gemini-3.8-flash',
