@@ -24,10 +24,10 @@ const NewTradeModal = lazy(() => import('./components/NewTradeModal').then((modu
 const TradeDetailModal = lazy(() => import('./components/TradeDetailModal').then((module) => ({ default: module.TradeDetailModal })));
 
 export default function App() {
-  return <SupabaseAuthGate>{(userId, onSignOut, welcomeKind, accountName) => <JournalApp userId={userId} onSignOut={onSignOut} welcomeKind={welcomeKind} accountName={accountName} />}</SupabaseAuthGate>;
+  return <SupabaseAuthGate>{(userId, onSignOut, welcomeKind, accountName, accountEmail) => <JournalApp userId={userId} onSignOut={onSignOut} welcomeKind={welcomeKind} accountName={accountName} accountEmail={accountEmail} />}</SupabaseAuthGate>;
 }
 
-function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: string; onSignOut: () => Promise<void>; welcomeKind: WelcomeKind; accountName: string }) {
+function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail }: { userId: string; onSignOut: () => Promise<void>; welcomeKind: WelcomeKind; accountName: string; accountEmail: string }) {
   const { journal, updateField, status, error: syncError, retry, ready } = useSupabaseJournal(userId, accountName);
   const settings = journal.settings;
   const trades = journal.trades;
@@ -236,6 +236,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
               trades={trades}
               onImportTrades={handleImportTrades}
               onSignOut={onSignOut}
+              accountEmail={accountEmail}
             />
           )}
 

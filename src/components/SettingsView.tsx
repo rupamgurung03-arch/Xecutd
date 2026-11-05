@@ -9,6 +9,7 @@ interface SettingsViewProps {
   trades: Trade[];
   onImportTrades: (imported: Trade[]) => void;
   onSignOut: () => Promise<void>;
+  accountEmail: string;
 }
 
 const isTradeArray = (value: unknown): value is Trade[] =>
@@ -21,7 +22,7 @@ const isTradeArray = (value: unknown): value is Trade[] =>
     typeof item.pnl === 'number'
   );
 
-export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSettings, trades, onImportTrades, onSignOut }) => {
+export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSettings, trades, onImportTrades, onSignOut, accountEmail }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
@@ -179,7 +180,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSetting
       <section className="flex flex-col gap-4 border border-outline-variant bg-surface-container-lowest p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="account-heading">
         <div>
           <h2 id="account-heading" className="font-headline-md text-headline-md font-semibold text-on-surface">Account</h2>
-          <p className="mt-1 font-body-sm text-body-sm text-tertiary">Sign out of this journal on this device.</p>
+          <p className="mt-1 font-body-sm text-body-sm text-tertiary">{accountEmail || 'Signed-in account'} · Sign out of this journal on this device.</p>
         </div>
         <button type="button" onClick={() => { void onSignOut(); }} className="inline-flex min-h-11 items-center justify-center gap-2 border border-outline-variant bg-surface-container-low px-4 py-2 font-body-sm text-body-sm font-semibold text-on-surface transition hover:bg-surface-container">
           <LogOut size={16} aria-hidden="true" /> Sign out

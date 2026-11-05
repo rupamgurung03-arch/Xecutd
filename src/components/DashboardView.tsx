@@ -38,7 +38,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [selectedEmotion, setSelectedEmotion] = useState<string>('NEUTRAL');
   const [quickTicker, setQuickTicker] = useState<string>('');
   const [quickSide, setQuickSide] = useState<TradeSide>('Long');
-  const [riskPeriod, setRiskPeriod] = useState<'daily' | 'weekly'>('daily');
+  const [riskPeriod, setRiskPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'custom'>('daily');
+  const [customRiskStart, setCustomRiskStart] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+  });
+  const [customRiskEnd, setCustomRiskEnd] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  });
   const [sessionPerformancePeriod, setSessionPerformancePeriod] = useState<'D' | 'W' | 'M' | 'ALL'>('M');
   const [sessionWidgetExpanded, setSessionWidgetExpanded] = useState(true);
   const [clockNow, setClockNow] = useState(() => new Date());
@@ -195,7 +203,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const sundayKey = localDateKey(sunday);
     return trades.filter((trade) => trade.entryDate >= mondayKey && trade.entryDate <= sundayKey);
   }, [trades, clockNow]);
-  const riskTrades = riskPeriod === 'daily' ? todayTrades : weekTrades;
+  const monthTrades = useMemo(() => trades.filter((trade) => trade.entryDate.slice(0, 7) === localDateKey(clockNow).slice(0, 7)), [trades, clockNow]);
+  const customRangeTrades = useMemo(() => trades.filter((trade) => trade.entryDate >= customRiskStart && trade.entryDate <= customRiskEnd), [trades, customRiskStart, customRiskEnd]);
+  const riskTrades = riskPeriod === 'daily' ? todayTrades : riskPeriod === 'weekly' ? weekTrades : riskPeriod === 'monthly' ? monthTrades : customRangeTrades;
   const executedRiskTrades = riskTrades.filter((trade) => trade.tradeStatus !== 'MISSED');
   const followedPlanCount = executedRiskTrades.filter((trade) => trade.rulesFollowed).length;
   const adherencePercent = executedRiskTrades.length ? Math.round((followedPlanCount / executedRiskTrades.length) * 100) : null;
@@ -208,8 +218,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     : adherencePercent >= 70 ? 'C'
     : adherencePercent >= 60 ? 'D'
     : 'F';
-  const dailyDrawdown = useMemo(() => {
-    const closed = todayTrades.filter((trade) => trade.tradeStatus !== 'MISSED' && trade.status === 'Closed').sort((a, b) => `${a.entryDate}T${a.entryTime || '00:00'}`.localeCompare(`${b.entryDate}T${b.entryTime || '00:00'}`));
+  const periodDrawdown = useMemo(() => {
+    const closed = riskTrades.filter((trade) => trade.tradeStatus !== 'MISSED' && trade.status === 'Closed').sort((a, b) => `${a.entryDate}T${a.entryTime || '00:00'}`.localeCompare(`${b.entryDate}T${b.entryTime || '00:00'}`));
     let runningPnl = 0;
     let peakPnl = 0;
     let maxDrawdown = 0;
@@ -219,7 +229,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       maxDrawdown = Math.max(maxDrawdown, peakPnl - runningPnl);
     });
     return maxDrawdown;
-  }, [todayTrades]);
+  }, [riskTrades]);
+  const riskPeriodLabel = riskPeriod === 'daily' ? 'Daily' : riskPeriod === 'weekly' ? 'Weekly' : riskPeriod === 'monthly' ? 'Monthly' : 'Range';
   const latestRiskTrade = [...executedRiskTrades].sort((a, b) => `${b.entryDate}T${b.entryTime || '00:00'}`.localeCompare(`${a.entryDate}T${a.entryTime || '00:00'}`))[0];
   const sessionPerformance = useMemo(() => {
     const todayKey = localDateKey(clockNow);
@@ -241,6 +252,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [trades, clockNow, sessionPerformancePeriod]);
   const sessionPerformancePnl = sessionPerformance.reduce((sum, session) => sum + session.pnl, 0);
   const sessionMaxAbsPnl = Math.max(1, ...sessionPerformance.map((session) => Math.abs(session.pnl)));
+  const dashboardRankings = useMemo(() => {
+    const mistakeCounts = new Map<string, number>();
+    const strategyPnl = new Map<string, { pnl: number; trades: number }>();
+    trades.forEach((trade) => {
+      (trade.mistakes || []).forEach((mistake) => {
+        const label = mistake.trim();
+        if (label) mistakeCounts.set(label, (mistakeCounts.get(label) || 0) + 1);
+      });
+      if (trade.tradeStatus === 'MISSED' || trade.status !== 'Closed') return;
+      const strategy = trade.setup?.trim();
+      if (!strategy) return;
+      const current = strategyPnl.get(strategy) || { pnl: 0, trades: 0 };
+      strategyPnl.set(strategy, { pnl: current.pnl + (trade.pnl || 0), trades: current.trades + 1 });
+    });
+    const totalMistakes = [...mistakeCounts.values()].reduce((sum, count) => sum + count, 0);
+    const profitableStrategies = [...strategyPnl].map(([name, value]) => ({ name, ...value })).filter((strategy) => strategy.pnl > 0).sort((a, b) => b.pnl - a.pnl || a.name.localeCompare(b.name));
+    const totalStrategyGains = profitableStrategies.reduce((sum, strategy) => sum + strategy.pnl, 0);
+    return {
+      mistakes: [...mistakeCounts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 3).map(([name, count]) => ({ name, count, share: totalMistakes ? Math.round((count / totalMistakes) * 100) : 0 })),
+      strategies: profitableStrategies.slice(0, 3).map((strategy) => ({ ...strategy, share: totalStrategyGains ? Math.round((strategy.pnl / totalStrategyGains) * 100) : 0 })),
+    };
+  }, [trades]);
   const sessionClock = (timeZone: string) => new Intl.DateTimeFormat(undefined, { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(clockNow);
   const sessionState = (timeZone: string, opensAt: number, closesAt: number) => {
     const parts = new Intl.DateTimeFormat('en-US', { timeZone, weekday: 'short', hour: '2-digit', hourCycle: 'h23' }).formatToParts(clockNow);
@@ -787,13 +820,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span aria-hidden="true" className="pointer-events-none absolute right-2 bottom-2 h-2 w-2 border-r border-b border-outline-variant" />
             <div className="flex items-center justify-between gap-space-sm border-b border-outline-variant/60 pb-space-sm px-1">
               <span className="flex items-center gap-2 font-caption-mono text-caption-mono text-on-surface tracking-[0.22em] uppercase font-bold"><span className="h-1.5 w-1.5 rounded-full bg-primary-container shadow-[0_0_8px_rgba(227,6,19,0.5)]" />Risk check-in</span>
-              <div className="inline-flex rounded-full bg-surface-container-low p-0.5" role="group" aria-label="Risk check-in period">
-                {(['daily', 'weekly'] as const).map((period) => <button key={period} type="button" aria-pressed={riskPeriod === period} onClick={() => setRiskPeriod(period)} className={`px-2.5 py-1 rounded-full font-caption-mono text-[10px] tracking-wider uppercase transition-colors cursor-pointer ${riskPeriod === period ? 'bg-on-surface text-surface-container-lowest shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}>{period}</button>)}
+              <div className="inline-flex shrink-0 rounded-full bg-surface-container-low p-0.5" role="group" aria-label="Risk check-in period">
+                {(['daily', 'weekly', 'monthly', 'custom'] as const).map((period) => <button key={period} type="button" aria-pressed={riskPeriod === period} onClick={() => setRiskPeriod(period)} className={`px-2 py-1 rounded-full font-caption-mono text-[9px] sm:text-[10px] tracking-wider uppercase transition-colors cursor-pointer ${riskPeriod === period ? 'bg-on-surface text-surface-container-lowest shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}>{period === 'custom' ? 'Dates' : period}</button>)}
               </div>
             </div>
+            {riskPeriod === 'custom' && <div className="flex items-center gap-2 px-1" aria-label="Custom risk adherence date range"><label className="min-w-0 flex-1"><span className="sr-only">Start date</span><input type="date" value={customRiskStart} max={customRiskEnd} onChange={(event) => setCustomRiskStart(event.target.value)} className="min-h-8 w-full min-w-0 rounded-md border border-outline-variant bg-surface-container-low px-2 font-caption-mono text-[10px] text-on-surface" /></label><span className="font-caption-mono text-[10px] text-tertiary">to</span><label className="min-w-0 flex-1"><span className="sr-only">End date</span><input type="date" value={customRiskEnd} min={customRiskStart} max={localDateKey(clockNow)} onChange={(event) => setCustomRiskEnd(event.target.value)} className="min-h-8 w-full min-w-0 rounded-md border border-outline-variant bg-surface-container-low px-2 font-caption-mono text-[10px] text-on-surface" /></label></div>}
             <div className="grid grid-cols-2 divide-x divide-outline-variant/70 py-1">
-              <div className="pr-3"><p className="font-caption-mono text-[10px] text-tertiary tracking-wider uppercase">Plan followed · {riskPeriod}</p><p className="font-display text-4xl leading-none text-on-surface font-bold mt-1">{adherencePercent === null ? '—' : <>{adherencePercent}<span className="text-xl text-tertiary">%</span></>}</p><p className="font-caption-mono text-[10px] text-on-surface-variant mt-1.5">{followedPlanCount} of {executedRiskTrades.length} executed trades</p></div>
-              <div className="pl-3"><p className="font-caption-mono text-[10px] text-tertiary tracking-wider uppercase">{dailyDrawdown > 0 ? 'Daily drawdown' : 'Adherence grade'}</p><p className={`font-display text-4xl leading-none font-bold tracking-tight mt-1 ${dailyDrawdown > 0 ? 'text-secondary' : 'text-on-surface'}`}>{dailyDrawdown > 0 ? `−${formatCurrency(dailyDrawdown, currency)}` : adherenceGrade.endsWith('′') ? <>{adherenceGrade.slice(0, -1)}<span className="text-primary-container">′</span></> : adherenceGrade}</p><p className="font-caption-mono text-[10px] text-on-surface-variant mt-1.5">{dailyDrawdown > 0 ? 'From session peak' : adherencePercent === null ? 'No score yet' : `${adherencePercent}% adherence`}</p></div>
+              <div className="pr-3"><p className="font-caption-mono text-[10px] text-tertiary tracking-wider uppercase">Plan followed · {riskPeriodLabel}</p><p className="font-display text-4xl leading-none text-on-surface font-bold mt-1">{adherencePercent === null ? '—' : <>{adherencePercent}<span className="text-xl text-tertiary">%</span></>}</p><p className="font-caption-mono text-[10px] text-on-surface-variant mt-1.5">{followedPlanCount} of {executedRiskTrades.length} executed trades</p></div>
+              <div className="pl-3"><p className="font-caption-mono text-[10px] text-tertiary tracking-wider uppercase">{periodDrawdown > 0 ? `${riskPeriodLabel} drawdown` : 'Adherence grade'}</p><p className={`font-display text-4xl leading-none font-bold tracking-tight mt-1 ${periodDrawdown > 0 ? 'text-secondary' : 'text-on-surface'}`}>{periodDrawdown > 0 ? `−${formatCurrency(periodDrawdown, currency)}` : adherenceGrade.endsWith('′') ? <>{adherenceGrade.slice(0, -1)}<span className="text-primary-container">′</span></> : adherenceGrade}</p><p className="font-caption-mono text-[10px] text-on-surface-variant mt-1.5">{periodDrawdown > 0 ? 'From period peak' : adherencePercent === null ? 'No score yet' : `${adherencePercent}% adherence`}</p></div>
             </div>
             <div className="h-[3px] rounded-full bg-surface-container-highest overflow-hidden" aria-label={`${adherencePercent ?? 0}% plan adherence`}><div className={`h-full transition-all ${adherencePercent !== null && adherencePercent < 70 ? 'bg-secondary' : 'bg-primary'}`} style={{ width: `${adherencePercent ?? 0}%` }} /></div>
             <div className="flex items-center justify-between gap-2 border-t border-outline-variant/60 pt-space-sm px-1 min-w-0">
@@ -804,8 +838,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <section className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-md shadow-sm flex flex-col gap-space-sm">
             <div className="flex items-center justify-between border-b border-outline-variant/60 pb-space-sm">
-              <div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-on-surface" /><span className="font-caption-mono text-caption-mono text-on-surface tracking-widest uppercase font-semibold">GLOBAL_SESSIONS</span></div>
-              <span className="flex items-center gap-1.5 font-caption-mono text-[10px] text-tertiary"><span className="h-1.5 w-1.5 rounded-full bg-primary-container animate-pulse" />SYNC: REALTIME</span>
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-2 text-left">
+                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-on-surface" /><span className="font-caption-mono text-caption-mono text-on-surface tracking-widest uppercase font-semibold">GLOBAL_SESSIONS</span></span>
+              </div>
+              <span className="ml-2 flex shrink-0 items-center gap-1.5 font-caption-mono text-[10px] text-tertiary"><span className="h-1.5 w-1.5 rounded-full bg-primary-container animate-pulse" />REALTIME</span>
             </div>
             <div className="grid grid-cols-3 gap-1.5 text-center">
               {[
@@ -826,13 +862,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <section className="flex min-w-0 flex-col gap-space-sm">
               <div className="flex items-center justify-between gap-2">
-
-<span className="font-caption-mono text-[10px] font-bold tracking-wider text-on-surface uppercase"><span className="text-secondary mr-1">[03]</span>Trades by session</span>
+                <button type="button" aria-expanded={sessionWidgetExpanded} onClick={() => setSessionWidgetExpanded((expanded) => !expanded)} className="flex min-w-0 items-center gap-1 font-caption-mono text-[10px] font-bold tracking-wider text-on-surface uppercase cursor-pointer">
+                  <span className="text-secondary">[03]</span><span>Trades by session</span><span className="material-symbols-outlined text-body-sm text-tertiary">{sessionWidgetExpanded ? 'expand_less' : 'expand_more'}</span>
+                </button>
                 <div className="inline-flex shrink-0 rounded-full bg-surface-container-highest p-0.5" role="group" aria-label="Session performance period">
                   {(['D', 'W', 'M', 'ALL'] as const).map((period) => <button key={period} type="button" aria-pressed={sessionPerformancePeriod === period} onClick={() => setSessionPerformancePeriod(period)} className={`rounded-full px-2 py-1 font-caption-mono text-[9px] font-bold transition-colors ${sessionPerformancePeriod === period ? 'bg-on-surface text-surface-container-lowest' : 'text-on-surface-variant hover:text-on-surface'}`}>{period}</button>)}
                 </div>
               </div>
-              
+              {sessionWidgetExpanded && <>
               <div className="space-y-2">
                 {sessionPerformance.map((session) => {
                   const recent = [...session.records].sort((a, b) => `${b.exitDate || b.entryDate}T${b.exitTime || b.entryTime || '00:00'}`.localeCompare(`${a.exitDate || a.entryDate}T${a.exitTime || a.entryTime || '00:00'}`)).slice(0, 10).reverse();
@@ -853,8 +890,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 })}
                 {!sessionPerformance.some((session) => session.count > 0) && <p className="font-caption-mono text-[9px] text-tertiary">No session-tagged closed trades in this period.</p>}
               </div>
-
+              </>}
             </section>
+          </section>
+
+          <section className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-md shadow-sm flex flex-col gap-space-sm" aria-label="Trading insights">
+            <div className="flex items-center justify-between gap-2 border-b border-outline-variant/60 pb-space-sm"><div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-primary-container" /><h2 className="font-caption-mono text-[10px] tracking-[0.16em] text-on-surface uppercase font-bold">Trade insights</h2></div><span className="border border-outline-variant bg-surface-container-low px-2 py-1 font-caption-mono text-[8px] tracking-wider text-tertiary uppercase">Session diagnostics</span></div>
+            <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-1">
+              <div className="min-w-0">
+                <div className="mb-1.5 flex items-center justify-between gap-2"><p className="font-caption-mono text-[8px] tracking-[0.14em] text-tertiary uppercase">Most tagged mistakes</p><span className="font-caption-mono text-[7px] tracking-wider text-tertiary uppercase">Relative frequency</span></div>
+                {dashboardRankings.mistakes.length ? <ol className="space-y-2">{dashboardRankings.mistakes.map(({ name, count, share }, index) => <li key={name} className="min-w-0"><div className="mb-1 flex min-w-0 items-center justify-between gap-2"><span className="truncate font-caption-mono text-[9px] text-on-surface"><span className="mr-1.5 text-tertiary">0{index + 1}</span>{name}</span><span className="shrink-0 font-caption-mono text-[8px] tabular-nums text-secondary">{count}× <span className="text-tertiary">({share}%)</span></span></div><div className="h-1 rounded-full bg-surface-container-highest"><div className="h-full rounded-full bg-primary-container" style={{ width: `${share}%` }} /></div></li>)}</ol> : <p className="font-caption-mono text-[9px] text-tertiary">No mistakes tagged yet.</p>}
+              </div>
+              <div className="min-w-0 border-t border-outline-variant/60 pt-space-sm sm:border-l sm:border-t-0 sm:pl-space-md sm:pt-0 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-space-sm">
+                <div className="mb-1.5 flex items-center justify-between gap-2"><p className="font-caption-mono text-[8px] tracking-[0.14em] text-tertiary uppercase">Most profitable strategies</p><span className="font-caption-mono text-[7px] tracking-wider text-tertiary uppercase">Gain share</span></div>
+                {dashboardRankings.strategies.length ? <ol className="space-y-2">{dashboardRankings.strategies.map((strategy, index) => <li key={strategy.name} className="min-w-0"><div className="mb-1 flex min-w-0 items-center justify-between gap-2"><span className="truncate font-caption-mono text-[9px] text-on-surface"><span className="mr-1.5 text-tertiary">0{index + 1}</span>{strategy.name}</span><span className="shrink-0 font-caption-mono text-[8px] tabular-nums text-on-surface">+{formatCurrency(strategy.pnl, currency)} <span className="text-tertiary">({strategy.share}%)</span></span></div><div className="h-1 rounded-full bg-surface-container-highest"><div className="h-full rounded-full bg-on-surface" style={{ width: `${strategy.share}%` }} /></div></li>)}</ol> : <p className="font-caption-mono text-[9px] text-tertiary">No profitable strategy results yet.</p>}
+              </div>
+            </div>
           </section>
 
           <div className="hidden">

@@ -10,7 +10,7 @@ export type WelcomeKind = 'new' | 'daily' | 'returning';
 const localDayKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 interface SupabaseAuthGateProps {
-  children: (userId: string, onSignOut: () => Promise<void>, welcomeKind: WelcomeKind, accountName: string) => React.ReactNode;
+  children: (userId: string, onSignOut: () => Promise<void>, welcomeKind: WelcomeKind, accountName: string, accountEmail: string) => React.ReactNode;
 }
 
 export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) => {
@@ -199,7 +199,7 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
     if (!legacyChoiceRequired) {
       const metadataName = session.user.user_metadata?.display_name;
       const accountName = typeof metadataName === 'string' ? metadataName.trim() : '';
-      return <>{children(session.user.id, handleSignOut, welcomeKind, accountName)}</>;
+      return <>{children(session.user.id, handleSignOut, welcomeKind, accountName, session.user.email || '')}</>;
     }
 
     return (
