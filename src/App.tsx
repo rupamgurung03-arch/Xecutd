@@ -42,6 +42,13 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [showWelcome, setShowWelcome] = useState(true);
+  const [loadingTheme, setLoadingTheme] = useState<'dark' | 'light'>(() => {
+    try {
+      return localStorage.getItem('xecutd_theme') === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  });
 
   const navigateToTab = (tab: string) => {
     setShowWelcome(false);
@@ -73,6 +80,15 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
       document.documentElement.classList.add('dark');
     }
   }, [settings.theme]);
+  useEffect(() => {
+    if (!ready) return;
+    setLoadingTheme(settings.theme);
+    try {
+      localStorage.setItem('xecutd_theme', settings.theme);
+    } catch {
+      // The saved account preference still applies when browser storage is unavailable.
+    }
+  }, [ready, settings.theme]);
   // Derived statistics and curves
   const stats = useMemo(() => calculateStats(trades), [trades]);
   const equityData = useMemo(() => generateEquityCurveData(trades), [trades]);
@@ -131,7 +147,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
   };
 
   if (status === 'loading') {
-    return <main className="flex min-h-screen items-center justify-center bg-background font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading your journal from Supabase…</main>;
+    return <main className={`flex min-h-screen items-center justify-center bg-background ${loadingTheme === 'dark' ? 'dark' : ''}`} role="status" aria-live="polite"><span className="sr-only">Loading your journal</span><div aria-hidden="true" className="h-14 w-14 rounded-full border border-outline-variant bg-surface-container-lowest p-1 xecutd-login-loader"><img src="/icons/xecutd-logo.svg" alt="" className="h-full w-full rounded-full object-cover" /></div></main>;
   }
   if (status === 'error' && !ready) {
     return <main className="flex min-h-screen items-center justify-center bg-background px-4 text-on-surface"><section className="w-full max-w-xl border border-outline-variant bg-surface-container-lowest p-6"><h1 className="font-headline-md text-headline-md font-semibold">Could not load your journal</h1><p className="mt-3 font-body-sm text-body-sm text-tertiary">{syncError || 'Check the Supabase journal table and your connection.'}</p><button type="button" onClick={retry} className="mt-5 bg-primary px-4 py-2 font-caption-mono text-caption-mono font-semibold uppercase text-on-primary">Retry</button></section></main>;

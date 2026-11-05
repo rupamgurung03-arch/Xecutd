@@ -364,3 +364,20 @@
 .analysis-editor-content img {
   border-radius: 0 !important;
 }
+
+@keyframes xecutd-login-spin-bounce {
+  0% { transform: translateY(0) rotate(0deg); }
+  22% { transform: translateY(-7px) rotate(90deg); }
+  50% { transform: translateY(0) rotate(180deg); }
+  72% { transform: translateY(-4px) rotate(270deg); }
+  100% { transform: translateY(0) rotate(360deg); }
+}
+
+.xecutd-login-loader {
+  animation: xecutd-login-spin-bounce 1.25s cubic-bezier(.45, 0, .55, 1) infinite;
+  filter: drop-shadow(0 5px 12px rgb(227 6 19 / 18%));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xecutd-login-loader { animation: none; }
+}
