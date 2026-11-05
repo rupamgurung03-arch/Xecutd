@@ -86,7 +86,9 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
 
   const startNewChat = () => {
     const currentSession = createChatSession(chatMessages);
-    if (currentSession) setSavedChatSessions((sessions) => [currentSession, ...sessions]);
+    const nextSessions = currentSession ? [currentSession, ...savedChatSessions] : savedChatSessions;
+    onChatSessionsChange(nextSessions);
+    setSavedChatSessions(nextSessions);
     onChatHistoryChange([]);
     setChatMessages([]);
     setShowChatHistory(false);
@@ -94,10 +96,13 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
 
   const openSavedChat = (session: RakuChatSession) => {
     const currentSession = createChatSession(chatMessages);
-    setSavedChatSessions((sessions) => [
+    const nextSessions = [
       ...(currentSession ? [currentSession] : []),
-      ...sessions.filter((item) => item.id !== session.id),
-    ]);
+      ...savedChatSessions.filter((item) => item.id !== session.id),
+    ];
+    onChatSessionsChange(nextSessions);
+    setSavedChatSessions(nextSessions);
+    onChatHistoryChange(session.messages);
     setChatMessages(session.messages);
     setShowChatHistory(false);
   };
@@ -177,7 +182,12 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
 
     if (shouldStartFreshThread) {
       const oldSession = createChatSession(chatMessages);
-      if (oldSession) setSavedChatSessions((sessions) => [oldSession, ...sessions]);
+      if (oldSession) {
+        const nextSessions = [oldSession, ...savedChatSessions];
+        onChatSessionsChange(nextSessions);
+        setSavedChatSessions(nextSessions);
+      }
+      onChatHistoryChange([welcomeMessage, userMsg]);
       setChatMessages([welcomeMessage, userMsg]);
     } else {
       setChatMessages((prev) => [...(prev.length ? prev : [welcomeMessage]), userMsg]);
@@ -367,7 +377,9 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
                   </button>
                   <button type="button" aria-label={`Delete chat: ${session.title}`} title="Delete chat" onClick={() => {
                     if (window.confirm(`Delete this saved chat?\n\n${session.title}`)) {
-                      setSavedChatSessions((sessions) => sessions.filter((item) => item.id !== session.id));
+                      const nextSessions = savedChatSessions.filter((item) => item.id !== session.id);
+                      onChatSessionsChange(nextSessions);
+                      setSavedChatSessions(nextSessions);
                     }
                   }} className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-tertiary hover:bg-error-container/40 hover:text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">×</button>
                 </div>
