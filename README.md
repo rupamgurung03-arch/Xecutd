@@ -15,18 +15,18 @@ Run [`supabase/migrations/20261104_user_journals.sql`](supabase/migrations/20261
 
 Configure Supabase Auth URL settings with the deployed site URL and the local development URL as allowed redirects. The browser uses only the project URL and public publishable/anon key; never use a service-role or secret key in a `VITE_` variable.
 
-## Cloudflare Pages deployment
+## Cloudflare Worker deployment
 
-Connect the GitHub repository to Cloudflare Pages with the repository root as the project root, `npm run build` as the build command, and `dist` as the build output directory. The `functions/` directory provides the Buddy and economic-calendar API routes for Pages.
+This project deploys as a Cloudflare Worker using `worker.ts` and `wrangler.jsonc`, with the built Vite app served from `dist`. Build with `npm run build`, then deploy the Worker with `npx wrangler deploy` (or use the repository's connected Worker deployment).
 
-Set these values in Cloudflare Pages project settings:
+Set the browser values `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY` in the build environment. Also set these bindings in the deployed Worker's **runtime** Variables and Secrets settings:
 
-- `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY` as build environment variables. The publishable key variable takes precedence.
-- `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as Pages Function variables for verifying signed-in requests. Use the same Supabase project and public key as the browser settings.
-- `GEMINI_API_KEY` as a server-side Pages Function secret for Gemini-backed Buddy responses.
-- `FINANCE_CALENDAR_API_KEY` as an optional server-side Pages Function secret if the economic calendar endpoint is enabled.
+- `SUPABASE_URL` — the Supabase project URL.
+- `SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_ANON_KEY` — the same project's public key used by the browser.
+- `GEMINI_API_KEY` — a server-side secret for Gemini-backed Buddy responses.
+- `FINANCE_CALENDAR_API_KEY` — optional server-side secret for the economic calendar.
 
-The Pages Functions verify the Supabase access token before using Gemini or the economic-calendar service. Do not commit `.env.local` or other `.env` files. `.gitignore` excludes them and build artifacts while keeping `.env.example` as a safe template.
+The Worker verifies each Supabase access token before using Gemini or the economic-calendar service. Build-time `VITE_` values do not automatically become Worker runtime bindings. Never use a service-role key for session verification, and do not commit `.env.local` or other `.env` files. `.gitignore` excludes them and build artifacts while keeping `.env.example` as a safe template.
 
 ## Install as an app
 

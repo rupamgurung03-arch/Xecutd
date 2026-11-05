@@ -17,6 +17,7 @@ type Env = {
   FINANCE_CALENDAR_API_KEY?: string;
   SUPABASE_URL?: string;
   SUPABASE_PUBLISHABLE_KEY?: string;
+  SUPABASE_ANON_KEY?: string;
   VITE_SUPABASE_URL?: string;
   VITE_SUPABASE_PUBLISHABLE_KEY?: string;
   VITE_SUPABASE_ANON_KEY?: string;
@@ -347,10 +348,17 @@ async function generateWithFallback(env: Env, messages: AiMessage[]): Promise<Pr
 
 async function verifyAccountSession(request: Request, env: Env): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
   const url = (env.SUPABASE_URL || env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
-  const key = env.SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY;
+  const key = env.SUPABASE_PUBLISHABLE_KEY
+    || env.SUPABASE_ANON_KEY
+    || env.VITE_SUPABASE_PUBLISHABLE_KEY
+    || env.VITE_SUPABASE_ANON_KEY;
   const authorization = request.headers.get('Authorization');
   if (!authorization?.startsWith('Bearer ')) return { ok: false, status: 401, error: 'Sign in to use this feature.' };
-  if (!url || !key) return { ok: false, status: 503, error: 'Supabase verification is not configured for this deployment.' };
+  if (!url || !key) return {
+    ok: false,
+    status: 503,
+    error: 'Supabase Worker settings are missing. Add SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY or SUPABASE_ANON_KEY as runtime variables.',
+  };
   try {
     const response = await fetch(`${url}/auth/v1/user`, { headers: { apikey: key, Authorization: authorization } });
     return response.ok
