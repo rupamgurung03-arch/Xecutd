@@ -19,7 +19,7 @@ Configure Supabase Auth URL settings with the deployed site URL and the local de
 
 This project deploys as a Cloudflare Worker using `worker.ts` and `wrangler.jsonc`, with the built Vite app served from `dist`. Build with `npm run build`, then deploy the Worker with `npx wrangler deploy` (or use the repository's connected Worker deployment).
 
-Set the browser values `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY` in the build environment. Also set these bindings in the deployed Worker's **runtime** Variables and Secrets settings:
+Set the browser values `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY` in the build environment. Also set these bindings in the deployed Worker's **runtime** Variables and Secrets settings. `keep_vars` is enabled in `wrangler.jsonc`, so dashboard-managed plain variables are preserved by future Wrangler deployments:
 
 - `SUPABASE_URL` — the Supabase project URL.
 - `SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_ANON_KEY` — the same project's public key used by the browser.
