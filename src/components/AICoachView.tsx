@@ -27,6 +27,27 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+
+  useEffect(() => () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }, []);
+
+  const toggleReplySpeech = (message: RakuChatMessage) => {
+    if (!('speechSynthesis' in window)) return;
+    if (speakingMessageId === message.id) {
+      window.speechSynthesis.cancel();
+      setSpeakingMessageId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(message.text);
+    utterance.lang = navigator.language || 'en-US';
+    utterance.onend = () => setSpeakingMessageId(null);
+    utterance.onerror = () => setSpeakingMessageId(null);
+    setSpeakingMessageId(message.id);
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     setChatMessages(chatHistory);
@@ -66,6 +87,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
   const startNewChat = () => {
     const currentSession = createChatSession(chatMessages);
     if (currentSession) setSavedChatSessions((sessions) => [currentSession, ...sessions]);
+    onChatHistoryChange([]);
     setChatMessages([]);
     setShowChatHistory(false);
   };
@@ -381,6 +403,11 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
                       }`}
                     >
                       {msg.text}
+
+                      {isCoach && <button type="button" onClick={() => toggleReplySpeech(msg)} disabled={!(typeof window !== 'undefined' && 'speechSynthesis' in window)} aria-label={speakingMessageId === msg.id ? 'Stop reading reply' : 'Read reply aloud'} title={speakingMessageId === msg.id ? 'Stop' : 'Listen'} className="mt-2 inline-flex items-center gap-1 rounded-md px-1.5 py-1 font-caption-mono text-[10px] text-tertiary hover:bg-surface-container-lowest hover:text-on-surface disabled:cursor-not-allowed disabled:opacity-50">
+                        <span className="material-symbols-outlined text-[13px]" aria-hidden="true">{speakingMessageId === msg.id ? 'volume_off' : 'volume_up'}</span>
+                        {speakingMessageId === msg.id ? 'STOP' : 'LISTEN'}
+                      </button>}
 
                       {msg.sources && msg.sources.length > 0 && (
                         <div className="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
