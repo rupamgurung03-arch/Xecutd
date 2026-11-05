@@ -169,7 +169,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-space-lg">
+    <div className="w-full flex flex-col gap-3 sm:gap-space-lg">
       
       {/* LEDGER SUMMARY + GLYPH ANIMATION */}
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(240px,0.75fr)_minmax(0,1.25fr)] gap-space-md">

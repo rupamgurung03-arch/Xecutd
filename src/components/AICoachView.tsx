@@ -28,7 +28,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
     {
       id: 'welcome',
       sender: 'coach',
-      text: `I can help review the ${trades.length} trades in your journal. Ask about your results, setups, or plan-following patterns.`,
+      text: `I’m Raku. I can help review the ${trades.length} trades in your journal. Ask about your results, setups, or plan-following patterns.`,
       timestamp: 'READY',
     },
   ]);
@@ -78,12 +78,12 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
         body: JSON.stringify({ scope, trades: getBuddyRecords(scope) }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || `Buddy service returned HTTP ${res.status}.`);
+      if (!res.ok || data.error) throw new Error(data.error || `Raku service returned HTTP ${res.status}.`);
       setAuditReport(data.analysis || 'Analysis complete.');
       setAuditMode(data.mode || 'heuristic');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Unknown connection error.';
-      setAuditReport(`Buddy could not complete the review: ${reason}\n\nYour journal currently has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`);
+      setAuditReport(`Raku could not complete the review: ${reason}\n\nYour journal currently has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`);
       setAuditMode('heuristic');
     } finally {
       setIsRunningAudit(false);
@@ -118,7 +118,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
         }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || `Buddy service returned HTTP ${res.status}.`);
+      if (!res.ok || data.error) throw new Error(data.error || `Raku service returned HTTP ${res.status}.`);
       if (!data.reply) throw new Error('The AI endpoint returned no reply. Check the Worker API deployment and runtime settings.');
       const botMsg: ChatMessage = {
         id: `coach-${Date.now()}`,
@@ -133,7 +133,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
       const botMsg: ChatMessage = {
         id: `coach-${Date.now()}`,
         sender: 'coach',
-        text: `Buddy couldn't complete that request: ${reason}\n\nYour journal has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`,
+        text: `Raku couldn't complete that request: ${reason}\n\nYour journal has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setChatMessages((prev) => [...prev, botMsg]);
@@ -143,17 +143,17 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div className="w-full flex flex-col gap-3 sm:gap-6">
       
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-outline-variant pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2 text-caption-mono font-caption-mono text-tertiary">
             <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-sm"></span>
-            <span>BUDDY</span>
+            <span>RAKU</span>
           </div>
           <h1 className="font-headline-lg text-headline-lg tracking-tight text-on-surface uppercase font-bold">
-            Your trading buddy
+            Raku, your trading coach
           </h1>
           <p className="font-body-md text-body-md text-tertiary">
             Review your logged trades, setups, and plan-following patterns.
@@ -185,10 +185,10 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
       </div>
 
       {/* Main Grid: 12 Columns */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 sm:gap-6 items-start">
         
         {/* Left: Audit Report & Metrics (5 cols) */}
-        <div className="xl:col-span-5 flex flex-col gap-6">
+        <div className="xl:col-span-5 flex flex-col gap-3 sm:gap-6">
           
           {/* Quick Metrics pod */}
           <div className="bg-surface-container-lowest rounded-xl p-5 shadow-xs border border-outline-variant flex flex-col gap-4">
@@ -262,7 +262,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-sm"></span>
               <span className="font-caption-mono text-body-sm font-bold text-on-surface uppercase tracking-wider">
-                COACH INTERACTION CONSOLE
+                RAKU INTERACTION CONSOLE
               </span>
             </div>
             <span className="font-caption-mono text-caption-mono text-tertiary">
@@ -283,7 +283,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-caption-mono text-[10px] text-tertiary uppercase font-medium">
-                    <span>{isCoach ? 'XECUTD COACH' : 'YOU'}</span>
+                    <span>{isCoach ? 'RAKU' : 'YOU'}</span>
                     <span>•</span>
                     <span>{msg.timestamp}</span>
                   </div>
@@ -356,7 +356,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades }) => {
             <input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="ASK QUANT COACH (e.g. 'Review stop placement on my losses')..."
+              placeholder="ASK RAKU (e.g. 'Review stop placement on my losses')..."
               className="flex-1 bg-surface-container-lowest px-4 py-2.5 rounded-full font-caption-mono text-body-sm text-on-surface outline-none border border-outline-variant focus:border-on-surface placeholder:text-tertiary transition-colors shadow-2xs"
             />
             <button

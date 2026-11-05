@@ -338,16 +338,6 @@
 }
 
 @media (max-width: 639px) {
-  .calendar-grid-cell {
-    background: #202124 !important;
-    border-color: #36383d !important;
-    color: #f5f5f5 !important;
-  }
-
-  .calendar-grid-cell > div:first-child > span:first-child {
-    color: #f5f5f5 !important;
-  }
-
   .calendar-mobile-win {
     background: #16833b !important;
     border-color: #35b85d !important;

@@ -183,7 +183,7 @@ export const PlaybookView: React.FC<PlaybookViewProps> = ({
     <div className="w-full flex flex-col gap-space-xl">
       
       {/* Top Bar: Playbook System Meta & Global CTA */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 sm:gap-space-lg">
         <div className="flex flex-col gap-space-xs">
           <div className="flex items-center gap-space-xs text-caption-mono font-caption-mono text-tertiary">
             <span className="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
@@ -318,7 +318,7 @@ export const PlaybookView: React.FC<PlaybookViewProps> = ({
       </div>
 
       {/* Playbook Cards Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-space-lg">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-space-lg">
         {filteredPlaybooks.map((setup, index) => {
           const stats = getSetupStats(setup.name);
 

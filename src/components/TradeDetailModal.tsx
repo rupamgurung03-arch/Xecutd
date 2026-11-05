@@ -189,7 +189,7 @@ export const TradeDetailModal: React.FC<TradeDetailModalProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-space-xs font-caption-mono text-caption-mono text-tertiary uppercase font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
-                <span>AI QUANT COACH TRADE AUDIT</span>
+                <span>RAKU TRADE REVIEW</span>
               </div>
               <button
                 onClick={handleRequestAiReview}

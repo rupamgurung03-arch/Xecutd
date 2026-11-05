@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'calendar', label: 'CALENDAR' },
     { id: 'playbook', label: 'PLAYBOOK' },
     { id: 'analysis', label: 'ANALYSIS' },
-    { id: 'coach', label: 'BUDDY' },
+    { id: 'coach', label: 'RAKU' },
   ];
 
   const toggleTheme = () => {

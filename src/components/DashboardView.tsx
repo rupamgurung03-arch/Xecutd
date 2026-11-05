@@ -64,15 +64,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   // SVG coordinates calculation for equity curve
   const chartGeometry = useMemo(() => {
     const baseCapital = startingBalance;
+    const actualPeakPnL = Math.max(0, ...filteredEquity.map((point) => point.cumulativePnL));
     if (!filteredEquity || filteredEquity.length < 2) {
       return {
         pathPoints: '20,260 980,260',
         flawlessPathPoints: '20,260 980,260',
         fillPoints: '20,260 980,260 980,300 20,300',
-        peak: { x: 980, y: 260, val: baseCapital + (stats.netPnL || 0) },
+        peak: { x: 980, y: 260, val: actualPeakPnL },
         dots: [] as { x: number; y: number; isWin: boolean; isMissed: boolean }[],
         minVal: baseCapital,
-        maxVal: baseCapital + (stats.netPnL || 0),
+        maxVal: baseCapital + actualPeakPnL,
       };
     }
 
@@ -131,12 +132,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       pathPoints,
       flawlessPathPoints,
       fillPoints,
-      peak: { x: pts[maxIdx].x, y: pts[maxIdx].y, val: highest },
+      peak: { x: pts[maxIdx].x, y: pts[maxIdx].y, val: actualPeakPnL },
       dots,
       minVal,
       maxVal,
     };
-  }, [filteredEquity, stats.netPnL, startingBalance]);
+  }, [filteredEquity, startingBalance]);
 
   // Recent 5 executed trades
   const recentTrades = useMemo(() => {
@@ -178,7 +179,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const chartAxis = filteredEquity.length > 1
     ? [0, 0.25, 0.5, 0.75, 1].map((fraction) => filteredEquity[Math.round((filteredEquity.length - 1) * fraction)].date)
     : [];
-  const endingBalance = startingBalance + (filteredEquity.at(-1)?.cumulativePnL ?? 0);
+  const netPnL = stats.netPnL;
   const lastEquityPoint = equityData.at(-1);
   // Show the distance between the two cumulative R curves. A missed Loss moves
   // the flawless curve down by 1R, so the gap is still a positive 1R distance.
@@ -257,7 +258,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return ((localOpenHour * 60 - offset) % 1440 + 1440) % 1440;
   };
   return (
-    <div className="w-full flex flex-col gap-space-lg" onClickCapture={(event) => {
+    <div className="w-full flex flex-col gap-3 sm:gap-space-lg" onClickCapture={(event) => {
       if (!(event.target as HTMLElement).closest('[data-welcome-card]')) onBeginUsing();
     }}>
 
@@ -283,10 +284,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </section>}
       
       {/* TOP SUMMARY METRICS BAR */}
-      <section className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-6 gap-2 sm:gap-space-md">
+      <section className="grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-2.5 shadow-sm sm:gap-space-md sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none xl:grid-cols-6">
         
         {/* Metric 1: Net Cumulative P&L */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="relative flex min-w-0 min-h-[112px] flex-col justify-between overflow-hidden border-r border-b border-outline-variant/60 p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm sm:hover:shadow-md sm:hover:border-outline sm:transition-all">
           <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary-container/10 blur-xl pointer-events-none"></div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
@@ -318,7 +319,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Metric 2: Win Rate */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="flex min-w-0 min-h-[112px] flex-col justify-between border-b border-outline-variant/60 p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm sm:hover:shadow-md sm:hover:border-outline sm:transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
@@ -378,7 +379,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Metric 3: Profit Factor & R:R */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="flex min-w-0 min-h-[112px] flex-col justify-between border-r border-b border-outline-variant/60 p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm sm:hover:shadow-md sm:hover:border-outline sm:transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
@@ -408,7 +409,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Metric 4: Avg Trade Expectancy */}
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-outline transition-all">
+        <div className="flex min-w-0 min-h-[112px] flex-col justify-between border-b border-outline-variant/60 p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm sm:hover:shadow-md sm:hover:border-outline sm:transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-space-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
@@ -439,7 +440,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm">
+        <div className="flex min-w-0 min-h-[112px] flex-col justify-between border-r border-outline-variant/60 p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm">
           <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary uppercase tracking-wider font-semibold"><span className="sm:hidden">MAX DD</span><span className="hidden sm:inline">MAX DRAWDOWN</span></span>
           <div className="my-2 sm:my-space-sm">
             <span className="font-numeric-stat text-xl sm:text-numeric-stat text-secondary font-bold truncate">{formatCurrency(-Math.abs(stats.maxDrawdownAmount), currency)}</span>
@@ -448,7 +449,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <span className="hidden sm:inline font-caption-mono text-caption-mono text-tertiary">Closed trades only</span>
         </div>
 
-        <div className="bg-surface-container-lowest border border-outline-variant p-2.5 sm:p-space-lg min-h-[112px] sm:min-h-0 rounded-xl flex flex-col justify-between shadow-sm">
+        <div className="flex min-w-0 min-h-[112px] flex-col justify-between p-2.5 sm:min-h-0 sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm">
           <span className="font-caption-mono text-[9px] sm:text-caption-mono text-tertiary uppercase tracking-wider font-semibold"><span className="sm:hidden">AVG R / TRADE</span><span className="hidden sm:inline">AVERAGE R / TRADE</span></span>
           <div className="my-2 sm:my-space-sm">
             <span className={`font-numeric-stat text-xl sm:text-numeric-stat font-bold ${stats.avgRealizedR < 0 ? 'text-secondary' : 'text-on-surface'}`}>{stats.avgRealizedR >= 0 ? '+' : ''}{stats.avgRealizedR.toFixed(2)}R</span>
@@ -472,13 +473,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </section>
 
       {/* MAIN GRID LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-space-lg">
         
         {/* LEFT / CENTER: 8 COLUMNS */}
-        <div className="lg:col-span-8 flex flex-col gap-space-lg min-w-0">
+        <div className="lg:col-span-8 flex flex-col gap-3 sm:gap-space-lg min-w-0">
           
           {/* EQUITY CURVE & DRAWDOWN MODULE */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+          <div className="flex min-w-0 flex-col gap-3 bg-transparent p-0 shadow-none sm:gap-space-md sm:rounded-xl sm:border sm:border-outline-variant sm:bg-surface-container-lowest sm:p-space-lg sm:shadow-sm">
             
             {/* Chart controls: compact range and balance row on mobile */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-space-md pb-space-sm border-b border-outline-variant/60">
@@ -523,7 +524,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <span className="material-symbols-outlined text-sm" aria-hidden="true">expand_more</span>
                 </label>
                 <button type="button" aria-expanded={showEquityDetails} onClick={() => setShowEquityDetails((open) => !open)} className="flex min-w-0 items-center justify-between gap-1 border border-outline-variant bg-surface-container-low px-2.5 py-2 text-left">
-                  <span className="min-w-0"><span className="block font-caption-mono text-[8px] uppercase tracking-wide text-tertiary">Ending balance</span><span className="block truncate font-table-data text-xs font-bold text-on-surface">{formatCurrency(endingBalance, currency)}</span></span>
+                  <span className="min-w-0"><span className="block font-caption-mono text-[8px] uppercase tracking-wide text-tertiary">Net P&amp;L</span><span className="block truncate font-table-data text-xs font-bold text-on-surface">{formatCurrency(netPnL, currency)}</span></span>
                   <span className="material-symbols-outlined text-base text-tertiary" aria-hidden="true">{showEquityDetails ? 'expand_less' : 'expand_more'}</span>
                 </button>
               </div>
@@ -533,7 +534,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="hidden sm:flex flex-wrap items-center gap-space-md font-caption-mono text-caption-mono text-tertiary py-space-xs">
               <div className="flex items-center gap-space-xs">
                 <span className="w-2 h-2 rounded-full bg-primary"></span>
-                  <span className="text-on-surface font-medium">ENDING BALANCE: {formatCurrency(endingBalance, currency)}</span>
+                  <span className="text-on-surface font-medium">NET P&amp;L: {formatCurrency(netPnL, currency)}</span>
               </div>
               <span>//</span>
               <div className="flex items-center gap-space-xs">
@@ -560,7 +561,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>}
 
             {/* Geometric Light/Dark Vector Line Chart (Inline SVG) */}
-            <div className="relative w-full h-72 sm:h-80 bg-surface-container-low border border-outline-variant rounded-xl p-space-md flex flex-col justify-between overflow-hidden shadow-inner group">
+            <div className="group relative flex h-[clamp(14rem,62vw,20rem)] w-full min-w-0 flex-col justify-between overflow-hidden rounded-xl border border-outline-variant bg-surface-container-low p-space-md shadow-inner sm:h-80">
               
               {/* Grid Matrix Background Lines */}
               <div className="absolute inset-0 grid grid-cols-6 grid-rows-4 pointer-events-none opacity-40">
@@ -642,7 +643,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className="relative z-10 self-end bg-white/95 dark:bg-surface-container/95 backdrop-blur-md border border-outline-variant px-space-md py-space-xs rounded-full shadow-sm flex items-center gap-space-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
                 <span className="font-caption-mono text-caption-mono text-on-surface font-bold">
-                  PEAK BALANCE: {formatCurrency(chartGeometry.peak.val, currency)}
+                  PEAK P&L: {formatCurrency(chartGeometry.peak.val, currency)}
                 </span>
                 <span className="font-caption-mono text-caption-mono text-tertiary">| OPEN TRADES: {stats.openTrades}</span>
               </div>
@@ -761,7 +762,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* RIGHT COLUMN: 4 COLUMNS (WIDGETS & HARDWARE-INSPIRED OS MODULES) */}
-        <div className="lg:col-span-4 flex flex-col gap-space-lg min-w-0">
+        <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-space-lg min-w-0">
           <div className="hidden lg:flex bg-surface-container-lowest border border-outline-variant rounded-2xl p-space-lg shadow-sm flex-col gap-space-md">
             <div className="flex items-start justify-between gap-space-sm">
               <div>
@@ -823,7 +824,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>;
               })}
             </div>
-            <section className="rounded-xl border border-outline-variant bg-surface-container-low p-space-sm flex flex-col gap-space-sm">
+            <section className="flex min-w-0 flex-col gap-space-sm">
               <div className="flex items-center justify-between gap-2">
 
 <span className="font-caption-mono text-[10px] font-bold tracking-wider text-on-surface uppercase"><span className="text-secondary mr-1">[03]</span>Trades by session</span>

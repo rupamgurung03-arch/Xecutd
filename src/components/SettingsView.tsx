@@ -98,7 +98,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSetting
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:gap-6">
       <header className="flex flex-col gap-2">
         <p className="font-caption-mono text-caption-mono uppercase tracking-[.16em] text-tertiary">Settings</p>
         <h1 className="font-headline-lg text-headline-lg font-semibold tracking-tight text-on-surface">Your preferences</h1>

@@ -150,8 +150,8 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName }: { userId: s
       />
 
       {/* Main Workspace Canvas with top padding for fixed header */}
-      <main className="flex-1 w-full pt-28 lg:pt-16 pb-12 bg-background">
-        <div className="w-full px-gutter-desktop py-space-lg">
+      <main className="flex-1 w-full pt-24 lg:pt-16 pb-4 lg:pb-12 bg-background">
+        <div className="w-full px-3 py-1 sm:px-gutter-desktop sm:py-space-lg">
           <Suspense fallback={<div className="flex min-h-48 items-center justify-center font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading journal section…</div>}>
           {currentTab === 'dashboard' && (
             <DashboardView

@@ -188,7 +188,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   }, [selectedDayTrades]);
 
   return (
-    <div className="w-full flex flex-col gap-space-lg">
+    <div className="w-full flex flex-col gap-3 sm:gap-space-lg">
       
       {/* TOP TOOLBAR: Month Navigation & Mode Switchers */}
       <div className="w-full min-w-0 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 sm:gap-space-md bg-surface-container-lowest p-2.5 sm:p-space-md rounded-xl shadow-sm border border-outline-variant">
@@ -325,7 +325,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-lg items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-space-lg items-start">
       {/* MAIN INTERACTIVE HEATMAP MATRIX */}
       <div className="lg:col-span-2 order-1 min-w-0 w-full bg-surface-container-lowest rounded-xl p-2.5 sm:p-space-lg shadow-sm flex flex-col gap-2 sm:gap-space-md border border-outline-variant">
         
@@ -435,7 +435,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       </div>
 
-      <div className="order-2 min-w-0 flex flex-col gap-space-lg">
+      <div className="order-2 min-w-0 flex flex-col gap-3 sm:gap-space-lg">
       {/* Best and lowest trading day cards */}
       <div className="bg-surface-container-lowest rounded-xl p-space-lg flex flex-col justify-between shadow-sm border border-outline-variant">
         <div className="flex items-center justify-between text-caption-mono font-caption-mono text-tertiary tracking-widest uppercase font-semibold">

@@ -496,7 +496,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({ pages, setPages, syn
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-space-lg">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 sm:gap-space-lg">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div><p className="font-caption-mono text-caption-mono uppercase tracking-widest text-tertiary">Your workspace</p><h1 className="font-headline-lg text-headline-lg font-bold text-on-surface">Analysis</h1><p className="mt-1 text-on-surface-variant">Build trade ideas, annotate charts, and keep your review notes together.</p></div>
         <div className="flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-low px-3 py-2 font-caption-mono text-[11px] text-tertiary"><span className="h-2 w-2 rounded-full bg-success" />{saveMessage}</div>

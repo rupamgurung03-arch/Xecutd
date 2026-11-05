@@ -282,7 +282,7 @@ Instructions:
       model: 'gemini-3.8-flash',
       contents: prompt,
       config: {
-        systemInstruction: 'You are an elite institutional trading coach and market analyst. Use Google Search grounding when current market news, macro data, ticker prices, or financial events are relevant.',
+        systemInstruction: 'You are Raku, an elite trading coach and market analyst. Use Google Search grounding when current market news, macro data, ticker prices, or financial events are relevant.',
         tools: [{ googleSearch: {} }],
       },
     })
