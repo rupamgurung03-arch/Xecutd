@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { lazy, Suspense, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import packageInfo from '../package.json';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
@@ -29,6 +29,7 @@ export default function App() {
 
 function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail }: { userId: string; onSignOut: () => Promise<void>; welcomeKind: WelcomeKind; accountName: string; accountEmail: string }) {
   const { journal, updateField, status, error: syncError, retry, ready } = useSupabaseJournal(userId, accountName);
+  const lastJournalActivityRef = useRef(Date.now());
   const settings = journal.settings;
   const trades = journal.trades;
   const playbooks = journal.playbooks;
@@ -43,6 +44,18 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   const setCustomGrades: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customGrades', value);
   const setRakuChatHistory = useCallback((history: RakuChatMessage[]) => updateField('rakuChatHistory', history), [updateField]);
   const setRakuChatSessions = useCallback((sessions: RakuChatSession[]) => updateField('rakuChatSessions', sessions), [updateField]);
+  const getLastJournalActivityAt = useCallback(() => lastJournalActivityRef.current, []);
+
+  useEffect(() => {
+    const markJournalActivity = (event: Event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest('[data-raku-chat-area]')) return;
+      lastJournalActivityRef.current = Date.now();
+    };
+    const events = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const;
+    events.forEach((eventName) => window.addEventListener(eventName, markJournalActivity, { passive: true }));
+    return () => events.forEach((eventName) => window.removeEventListener(eventName, markJournalActivity));
+  }, []);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [showWelcome, setShowWelcome] = useState(true);
@@ -250,6 +263,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
               onChatHistoryChange={setRakuChatHistory}
               chatSessions={journal.rakuChatSessions || []}
               onChatSessionsChange={setRakuChatSessions}
+              getLastJournalActivityAt={getLastJournalActivityAt}
             />
           )}
           </Suspense>

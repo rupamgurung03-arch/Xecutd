@@ -11,9 +11,10 @@ interface AICoachViewProps {
   onChatHistoryChange: (history: RakuChatMessage[]) => void;
   chatSessions: RakuChatSession[];
   onChatSessionsChange: (sessions: RakuChatSession[]) => void;
+  getLastJournalActivityAt: () => number;
 }
 
-export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHistory, onChatHistoryChange, chatSessions, onChatSessionsChange }) => {
+export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHistory, onChatHistoryChange, chatSessions, onChatSessionsChange, getLastJournalActivityAt }) => {
   const [reviewScope, setReviewScope] = useState<'overall' | 'last-week' | 'last-month' | 'month' | 'custom'>('overall');
   const [reviewMonth, setReviewMonth] = useState(new Date().toISOString().slice(0, 7));
   const [customStart, setCustomStart] = useState(new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10));
@@ -57,7 +58,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
     return {
       id: `raku-chat-${Date.now()}`,
       title: firstUserMessage.trim().slice(0, 58) || 'Raku conversation',
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(Math.max(...messages.map((message) => message.createdAt ?? Date.now()))).toISOString(),
       messages,
     };
   };
@@ -139,14 +140,26 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
     const query = customText || inputMessage;
     if (!query.trim() || isSending) return;
 
+    const now = Date.now();
+    const firstMessageAt = chatMessages.find((message) => message.sender === 'user')?.createdAt;
+    const idleTooLong = now - getLastJournalActivityAt() >= 10 * 60 * 1000;
+    const threadTooOld = firstMessageAt !== undefined && now - firstMessageAt >= 30 * 60 * 1000;
+    const shouldStartFreshThread = chatMessages.some((message) => message.sender === 'user') && (idleTooLong || threadTooOld);
     const userMsg: RakuChatMessage = {
       id: `user-${Date.now()}`,
       sender: 'user',
       text: query,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      createdAt: now,
     };
 
-    setChatMessages((prev) => [...(prev.length ? prev : [welcomeMessage]), userMsg]);
+    if (shouldStartFreshThread) {
+      const oldSession = createChatSession(chatMessages);
+      if (oldSession) setSavedChatSessions((sessions) => [oldSession, ...sessions]);
+      setChatMessages([welcomeMessage, userMsg]);
+    } else {
+      setChatMessages((prev) => [...(prev.length ? prev : [welcomeMessage]), userMsg]);
+    }
     if (!customText) setInputMessage('');
     setIsSending(true);
 
@@ -169,6 +182,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
         sender: 'coach',
         text: data.reply || 'Analysis received.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: Date.now(),
         sources: data.sources || [],
       };
       setChatMessages((prev) => [...prev, botMsg]);
@@ -179,6 +193,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
         sender: 'coach',
         text: `Raku couldn't complete that request: ${reason}\n\nYour journal has ${stats.closedTrades} closed trades and a ${stats.winRate}% win rate.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: Date.now(),
       };
       setChatMessages((prev) => [...prev, botMsg]);
     } finally {
@@ -299,7 +314,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
         </div>
 
         {/* Right: Interactive Terminal Chat (7 cols) */}
-        <div className="xl:col-span-7 bg-surface-container-lowest rounded-xl shadow-xs border border-outline-variant flex flex-col h-[650px] overflow-hidden">
+        <div data-raku-chat-area className="xl:col-span-7 bg-surface-container-lowest rounded-xl shadow-xs border border-outline-variant flex flex-col h-[650px] overflow-hidden">
           
           {/* Terminal header */}
           <div className="relative px-6 py-4 bg-surface-container-low flex items-center justify-between border-b border-outline-variant shrink-0">
@@ -323,10 +338,17 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
             {showChatHistory && <div className="absolute right-4 top-full z-30 mt-2 max-h-72 w-72 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-lowest p-2 shadow-lg">
               <div className="px-2 py-1.5 font-caption-mono text-[10px] font-bold uppercase tracking-wider text-tertiary">Previous chats</div>
               {savedChatSessions.length ? savedChatSessions.map((session) => (
-                <button key={session.id} type="button" onClick={() => openSavedChat(session)} className="flex w-full flex-col gap-1 rounded-lg px-2 py-2 text-left hover:bg-surface-container-low">
-                  <span className="line-clamp-2 font-body-sm text-body-sm text-on-surface">{session.title}</span>
-                  <span className="font-caption-mono text-[10px] text-tertiary">{new Date(session.updatedAt).toLocaleString()} · {session.messages.length} messages</span>
-                </button>
+                <div key={session.id} className="flex items-start gap-1 rounded-lg px-1 hover:bg-surface-container-low">
+                  <button type="button" onClick={() => openSavedChat(session)} className="flex min-w-0 flex-1 flex-col gap-1 px-1 py-2 text-left">
+                    <span className="line-clamp-2 font-body-sm text-body-sm text-on-surface">{session.title}</span>
+                    <span className="font-caption-mono text-[10px] text-tertiary">{new Date(session.updatedAt).toLocaleString()} · {session.messages.length} messages</span>
+                  </button>
+                  <button type="button" aria-label={`Delete chat: ${session.title}`} title="Delete chat" onClick={() => {
+                    if (window.confirm(`Delete this saved chat?\n\n${session.title}`)) {
+                      setSavedChatSessions((sessions) => sessions.filter((item) => item.id !== session.id));
+                    }
+                  }} className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-tertiary hover:bg-error-container/40 hover:text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">×</button>
+                </div>
               )) : <p className="px-2 py-2 font-body-sm text-body-sm text-tertiary">No saved chats yet. Start a new chat to keep this conversation here.</p>}
             </div>}
           </div>

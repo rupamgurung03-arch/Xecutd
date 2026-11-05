@@ -25,6 +25,7 @@ export interface RakuChatMessage {
   sender: 'user' | 'coach';
   text: string;
   timestamp: string;
+  createdAt?: number;
   sources?: { title: string; uri: string }[];
 }
 
