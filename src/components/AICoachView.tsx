@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trade, TradeStats } from '../types/trade';
-import type { RakuChatMessage } from '../types/journal';
+import type { RakuChatMessage, RakuChatSession } from '../types/journal';
 import { getJournalAuthHeaders } from '../lib/supabaseClient';
 import { getTradeExcursionDisplay } from '../utils/tradeAnalyticsEngine';
 
@@ -9,9 +9,11 @@ interface AICoachViewProps {
   trades: Trade[];
   chatHistory: RakuChatMessage[];
   onChatHistoryChange: (history: RakuChatMessage[]) => void;
+  chatSessions: RakuChatSession[];
+  onChatSessionsChange: (sessions: RakuChatSession[]) => void;
 }
 
-export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHistory, onChatHistoryChange }) => {
+export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHistory, onChatHistoryChange, chatSessions, onChatSessionsChange }) => {
   const [reviewScope, setReviewScope] = useState<'overall' | 'last-week' | 'last-month' | 'month' | 'custom'>('overall');
   const [reviewMonth, setReviewMonth] = useState(new Date().toISOString().slice(0, 7));
   const [customStart, setCustomStart] = useState(new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10));
@@ -20,12 +22,26 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
   const [auditMode, setAuditMode] = useState<string | null>(null);
   const [isRunningAudit, setIsRunningAudit] = useState(false);
   const [chatMessages, setChatMessages] = useState<RakuChatMessage[]>(chatHistory);
+  const [savedChatSessions, setSavedChatSessions] = useState<RakuChatSession[]>(chatSessions);
+  const [showChatHistory, setShowChatHistory] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
+    setChatMessages(chatHistory);
+  }, [chatHistory]);
+
+  useEffect(() => {
+    setSavedChatSessions(chatSessions);
+  }, [chatSessions]);
+
+  useEffect(() => {
     if (chatMessages.length) onChatHistoryChange(chatMessages);
   }, [chatMessages, onChatHistoryChange]);
+
+  useEffect(() => {
+    if (savedChatSessions.length) onChatSessionsChange(savedChatSessions);
+  }, [savedChatSessions, onChatSessionsChange]);
 
   const welcomeMessage: RakuChatMessage = {
     id: 'welcome',
@@ -34,6 +50,34 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
     timestamp: 'READY',
   };
   const visibleChatMessages = chatMessages.length ? chatMessages : [welcomeMessage];
+
+  const createChatSession = (messages: RakuChatMessage[]): RakuChatSession | null => {
+    if (!messages.some((message) => message.sender === 'user')) return null;
+    const firstUserMessage = messages.find((message) => message.sender === 'user')?.text ?? 'Raku conversation';
+    return {
+      id: `raku-chat-${Date.now()}`,
+      title: firstUserMessage.trim().slice(0, 58) || 'Raku conversation',
+      updatedAt: new Date().toISOString(),
+      messages,
+    };
+  };
+
+  const startNewChat = () => {
+    const currentSession = createChatSession(chatMessages);
+    if (currentSession) setSavedChatSessions((sessions) => [currentSession, ...sessions]);
+    setChatMessages([]);
+    setShowChatHistory(false);
+  };
+
+  const openSavedChat = (session: RakuChatSession) => {
+    const currentSession = createChatSession(chatMessages);
+    setSavedChatSessions((sessions) => [
+      ...(currentSession ? [currentSession] : []),
+      ...sessions.filter((item) => item.id !== session.id),
+    ]);
+    setChatMessages(session.messages);
+    setShowChatHistory(false);
+  };
 
   const getBuddyScope = () => {
     if (reviewScope === 'overall') return { type: 'overall' as const };
@@ -149,7 +193,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-outline-variant pb-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2 text-caption-mono font-caption-mono text-tertiary">
-            <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-sm"></span>
+            <img src="/raku-avatar.png" alt="Raku" className="h-7 w-7 rounded-full border border-outline-variant object-cover" />
             <span>RAKU</span>
           </div>
           <h1 className="font-headline-lg text-headline-lg tracking-tight text-on-surface uppercase font-bold">
@@ -258,16 +302,33 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
         <div className="xl:col-span-7 bg-surface-container-lowest rounded-xl shadow-xs border border-outline-variant flex flex-col h-[650px] overflow-hidden">
           
           {/* Terminal header */}
-          <div className="px-6 py-4 bg-surface-container-low flex items-center justify-between border-b border-outline-variant shrink-0">
+          <div className="relative px-6 py-4 bg-surface-container-low flex items-center justify-between border-b border-outline-variant shrink-0">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-sm"></span>
+              <img src="/raku-avatar.png" alt="" className="h-7 w-7 rounded-full border border-outline-variant object-cover" />
               <span className="font-caption-mono text-body-sm font-bold text-on-surface uppercase tracking-wider">
                 RAKU INTERACTION CONSOLE
               </span>
             </div>
-            <span className="font-caption-mono text-caption-mono text-tertiary">
-              {trades.length} logged trades
-            </span>
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={() => setShowChatHistory((open) => !open)} aria-expanded={showChatHistory} className="rounded-lg border border-outline-variant px-2.5 py-1.5 font-caption-mono text-[10px] text-tertiary hover:text-on-surface">
+                HISTORY {savedChatSessions.length > 0 ? `· ${savedChatSessions.length}` : ''}
+              </button>
+              <button type="button" onClick={startNewChat} className="rounded-lg border border-outline-variant bg-surface-container-lowest px-2.5 py-1.5 font-caption-mono text-[10px] font-semibold text-on-surface hover:border-primary">
+                NEW CHAT
+              </button>
+              <span className="hidden font-caption-mono text-caption-mono text-tertiary sm:inline">
+                {trades.length} logged trades
+              </span>
+            </div>
+            {showChatHistory && <div className="absolute right-4 top-full z-30 mt-2 max-h-72 w-72 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-lowest p-2 shadow-lg">
+              <div className="px-2 py-1.5 font-caption-mono text-[10px] font-bold uppercase tracking-wider text-tertiary">Previous chats</div>
+              {savedChatSessions.length ? savedChatSessions.map((session) => (
+                <button key={session.id} type="button" onClick={() => openSavedChat(session)} className="flex w-full flex-col gap-1 rounded-lg px-2 py-2 text-left hover:bg-surface-container-low">
+                  <span className="line-clamp-2 font-body-sm text-body-sm text-on-surface">{session.title}</span>
+                  <span className="font-caption-mono text-[10px] text-tertiary">{new Date(session.updatedAt).toLocaleString()} · {session.messages.length} messages</span>
+                </button>
+              )) : <p className="px-2 py-2 font-body-sm text-body-sm text-tertiary">No saved chats yet. Start a new chat to keep this conversation here.</p>}
+            </div>}
           </div>
 
           {/* Messages scroll area */}
@@ -278,44 +339,47 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
               return (
                 <div
                   key={msg.id}
-                  className={`flex flex-col gap-1 max-w-[85%] ${
-                    isCoach ? 'self-start' : 'self-end items-end'
+                  className={`flex gap-2 max-w-[90%] ${
+                    isCoach ? 'self-start items-start' : 'self-end'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 font-caption-mono text-[10px] text-tertiary uppercase font-medium">
-                    <span>{isCoach ? 'RAKU' : 'YOU'}</span>
-                    <span>•</span>
-                    <span>{msg.timestamp}</span>
-                  </div>
+                  {isCoach && <img src="/raku-avatar.png" alt="Raku" className="mt-4 h-7 w-7 shrink-0 rounded-full border border-outline-variant object-cover" />}
+                  <div className={`flex min-w-0 flex-col gap-1 ${isCoach ? '' : 'items-end'}`}>
+                    <div className="flex items-center gap-1.5 font-caption-mono text-[10px] text-tertiary uppercase font-medium">
+                      <span>{isCoach ? 'RAKU' : 'YOU'}</span>
+                      <span>•</span>
+                      <span>{msg.timestamp}</span>
+                    </div>
 
-                  <div
-                    className={`p-4 rounded-xl font-caption-mono text-caption-mono whitespace-pre-line leading-relaxed shadow-xs ${
-                      isCoach
-                        ? 'bg-surface-container-low text-on-surface border border-outline-variant'
-                        : 'bg-on-surface text-surface-container-lowest font-medium'
-                    }`}
-                  >
-                    {msg.text}
+                    <div
+                      className={`p-4 rounded-xl font-caption-mono text-caption-mono whitespace-pre-line leading-relaxed shadow-xs ${
+                        isCoach
+                          ? 'bg-surface-container-low text-on-surface border border-outline-variant'
+                          : 'bg-on-surface text-surface-container-lowest font-medium'
+                      }`}
+                    >
+                      {msg.text}
 
-                    {msg.sources && msg.sources.length > 0 && (
-                      <div className="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
-                        <span className="text-[10px] text-tertiary block w-full uppercase font-medium">
-                          SOURCES:
-                        </span>
-                        {msg.sources.map((src, sIdx) => (
-                          <a
-                            key={sIdx}
-                            href={src.uri}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-2 py-0.5 rounded bg-surface-container-lowest text-[10px] text-primary hover:underline flex items-center gap-1 border border-outline-variant"
-                          >
-                            <span className="material-symbols-outlined text-[12px]">open_in_new</span>
-                            {src.title}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+                      {msg.sources && msg.sources.length > 0 && (
+                        <div className="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+                          <span className="text-[10px] text-tertiary block w-full uppercase font-medium">
+                            SOURCES:
+                          </span>
+                          {msg.sources.map((src, sIdx) => (
+                            <a
+                              key={sIdx}
+                              href={src.uri}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-0.5 rounded bg-surface-container-lowest text-[10px] text-primary hover:underline flex items-center gap-1 border border-outline-variant"
+                            >
+                              <span className="material-symbols-outlined text-[12px]">open_in_new</span>
+                              {src.title}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

@@ -28,6 +28,13 @@ export interface RakuChatMessage {
   sources?: { title: string; uri: string }[];
 }
 
+export interface RakuChatSession {
+  id: string;
+  title: string;
+  updatedAt: string;
+  messages: RakuChatMessage[];
+}
+
 export interface JournalSnapshot {
   settings: UserSettings;
   trades: Trade[];
@@ -38,6 +45,7 @@ export interface JournalSnapshot {
   customQualities: string[];
   customGrades: string[];
   rakuChatHistory?: RakuChatMessage[];
+  rakuChatSessions?: RakuChatSession[];
   propFirmSim?: {
     challengeKey?: string;
     profileMode?: 'journal' | 'custom';

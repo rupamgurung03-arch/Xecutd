@@ -45,6 +45,7 @@ const readLocalSnapshot = (userId: string): JournalSnapshot => {
     customQualities: readUserValue(userId, 'apextrade_execution_qualities', []),
     customGrades: readUserValue(userId, 'apextrade_custom_grades', []),
     rakuChatHistory: readUserValue(userId, 'apextrade_raku_chat_history', []),
+    rakuChatSessions: readUserValue(userId, 'apextrade_raku_chat_sessions', []),
     propFirmSim: readUserValue(userId, 'apextrade_prop_firm_sim', undefined),
   };
 };
@@ -63,6 +64,7 @@ const normalizeSnapshot = (value: unknown): JournalSnapshot => {
     customQualities: Array.isArray(saved.customQualities) ? saved.customQualities : defaults.customQualities,
     customGrades: Array.isArray(saved.customGrades) ? saved.customGrades : defaults.customGrades,
     rakuChatHistory: Array.isArray(saved.rakuChatHistory) ? saved.rakuChatHistory : defaults.rakuChatHistory,
+    rakuChatSessions: Array.isArray(saved.rakuChatSessions) ? saved.rakuChatSessions : defaults.rakuChatSessions,
     propFirmSim: saved.propFirmSim,
   };
 };

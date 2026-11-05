@@ -8,7 +8,7 @@ import packageInfo from '../package.json';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
 import { useSupabaseJournal } from './hooks/useSupabaseJournal';
-import type { JournalSnapshot, RakuChatMessage } from './types/journal';
+import type { JournalSnapshot, RakuChatMessage, RakuChatSession } from './types/journal';
 import { calculateStats, generateEquityCurveData } from './utils/calculations';
 import { Header } from './components/Header';
 
@@ -42,6 +42,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   const setCustomQualities: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customQualities', value);
   const setCustomGrades: React.Dispatch<React.SetStateAction<string[]>> = (value) => updateField('customGrades', value);
   const setRakuChatHistory = useCallback((history: RakuChatMessage[]) => updateField('rakuChatHistory', history), [updateField]);
+  const setRakuChatSessions = useCallback((sessions: RakuChatSession[]) => updateField('rakuChatSessions', sessions), [updateField]);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [showWelcome, setShowWelcome] = useState(true);
@@ -247,6 +248,8 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
               trades={trades}
               chatHistory={journal.rakuChatHistory || []}
               onChatHistoryChange={setRakuChatHistory}
+              chatSessions={journal.rakuChatSessions || []}
+              onChatSessionsChange={setRakuChatSessions}
             />
           )}
           </Suspense>
