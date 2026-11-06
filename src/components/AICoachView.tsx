@@ -133,6 +133,7 @@ export const AICoachView: React.FC<AICoachViewProps> = ({ stats, trades, chatHis
       const excursion = getTradeExcursionDisplay(trade);
       return {
         status: trade.status, tradeStatus: trade.tradeStatus, entryDate: trade.entryDate, entryTime: trade.entryTime,
+        symbol: trade.symbol, assetClass: trade.assetClass, pnl: trade.pnl,
         side: trade.side, setup: trade.setup, session: trade.session, plannedR: trade.plannedR, realizedR: trade.realizedR,
         mfeR: excursion.mfeR, maeR: excursion.maeR, rulesFollowed: trade.rulesFollowed,
         disciplineScore: trade.disciplineScore, mistakes: trade.mistakes, psychologyTags: trade.psychologyTags, emotion: trade.emotion,
