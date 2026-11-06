@@ -402,3 +402,12 @@
   .xecutd-login-loader,
   .journal-page-enter { animation: none; }
 }
+
+/* Swap theme palettes atomically so transition utilities on cards cannot flash
+   their previous light/dark colors for a frame during the toggle. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}

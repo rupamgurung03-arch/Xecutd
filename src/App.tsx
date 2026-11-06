@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { lazy, Suspense, useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useLayoutEffect, useMemo, useCallback, useRef } from 'react';
 import packageInfo from '../package.json';
 import { Trade, TradeSide, PlaybookSetup, TradingRule, UserSettings } from './types/trade';
 import { SupabaseAuthGate, type WelcomeKind } from './components/SupabaseAuthGate';
@@ -154,16 +154,13 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   };
 
   // Apply the account's saved appearance preference.
-  useEffect(() => {
+  useLayoutEffect(() => {
     const isDark = settings.theme === 'dark';
-    if (!isDark) {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
-    }
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+    root.classList.toggle('dark', isDark);
+    root.classList.toggle('light', !isDark);
+    root.style.colorScheme = isDark ? 'dark' : 'light';
     const themeColor = isDark ? '#0a0a0a' : '#f5f5f7';
     let themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     if (!themeMeta) {
@@ -172,6 +169,10 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
       document.head.appendChild(themeMeta);
     }
     themeMeta.content = themeColor;
+    const firstPaint = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => root.classList.remove('theme-switching'));
+    });
+    return () => window.cancelAnimationFrame(firstPaint);
   }, [settings.theme]);
   useEffect(() => {
     if (!ready) return;
