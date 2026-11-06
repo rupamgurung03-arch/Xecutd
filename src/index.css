@@ -378,6 +378,27 @@
   filter: drop-shadow(0 5px 12px rgb(227 6 19 / 18%));
 }
 
+@keyframes journal-tab-enter-forward {
+  from { opacity: 0.72; transform: translate3d(16px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes journal-tab-enter-backward {
+  from { opacity: 0.72; transform: translate3d(-16px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.journal-page-enter {
+  animation-duration: 190ms;
+  animation-timing-function: cubic-bezier(.2, .75, .25, 1);
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+.journal-page-enter--forward { animation-name: journal-tab-enter-forward; }
+.journal-page-enter--backward { animation-name: journal-tab-enter-backward; }
+
 @media (prefers-reduced-motion: reduce) {
-  .xecutd-login-loader { animation: none; }
+  .xecutd-login-loader,
+  .journal-page-enter { animation: none; }
 }

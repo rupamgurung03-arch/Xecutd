@@ -58,7 +58,9 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   }, []);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
-  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const swipeStartRef = useRef<{ x: number; y: number; at: number } | null>(null);
+  const blockSwipeClickRef = useRef(false);
+  const [tabMotion, setTabMotion] = useState<'forward' | 'backward'>('forward');
   const [showWelcome, setShowWelcome] = useState(true);
   const [loadingTheme, setLoadingTheme] = useState<'dark' | 'light'>(() => {
     try {
@@ -69,6 +71,10 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   });
 
   const navigateToTab = (tab: string) => {
+    const swipeTabs = ['dashboard', 'trades', 'calendar', 'playbook', 'analysis', 'coach'];
+    const from = swipeTabs.indexOf(currentTab);
+    const to = swipeTabs.indexOf(tab);
+    if (from >= 0 && to >= 0 && from !== to) setTabMotion(to > from ? 'forward' : 'backward');
     setShowWelcome(false);
     setCurrentTab(tab);
   };
@@ -79,12 +85,12 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
       return;
     }
     const target = event.target;
-    if (!(target instanceof Element) || target.closest('button, a, input, textarea, select, [role="button"], [contenteditable="true"], .overflow-x-auto, .mobile-nav-scroll, [data-no-page-swipe]')) {
+    if (!(target instanceof Element) || target.closest('a, input, textarea, select, [contenteditable="true"], .overflow-x-auto, .mobile-nav-scroll, [data-no-page-swipe]')) {
       swipeStartRef.current = null;
       return;
     }
     const touch = event.touches[0];
-    swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+    swipeStartRef.current = { x: touch.clientX, y: touch.clientY, at: Date.now() };
   };
 
   const handlePageSwipeEnd = (event: React.TouchEvent<HTMLElement>) => {
@@ -94,13 +100,32 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
     const touch = event.changedTouches[0];
     const deltaX = touch.clientX - start.x;
     const deltaY = touch.clientY - start.y;
-    if (Math.abs(deltaX) < 72 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) return;
+    const elapsed = Math.max(1, Date.now() - start.at);
+    const distance = Math.abs(deltaX);
+    const velocity = distance / elapsed;
+    const distanceThreshold = Math.min(76, Math.max(48, window.innerWidth * 0.12));
+    const isClearHorizontalSwipe = distance >= distanceThreshold && distance >= Math.abs(deltaY) * 1.2;
+    const isQuickHorizontalFlick = distance >= 32 && velocity >= 0.55 && distance >= Math.abs(deltaY) * 1.35;
+    if (!isClearHorizontalSwipe && !isQuickHorizontalFlick) return;
 
-    const swipeTabs = ['dashboard', 'trades', 'calendar', 'playbook', 'analysis', 'coach', 'settings'];
+    const swipeTabs = ['dashboard', 'trades', 'calendar', 'playbook', 'analysis', 'coach'];
     const currentIndex = swipeTabs.indexOf(currentTab);
     if (currentIndex < 0) return;
     const nextIndex = deltaX < 0 ? Math.min(swipeTabs.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
-    if (nextIndex !== currentIndex) navigateToTab(swipeTabs[nextIndex]);
+    if (nextIndex !== currentIndex) {
+      blockSwipeClickRef.current = true;
+      window.setTimeout(() => { blockSwipeClickRef.current = false; }, 450);
+      navigateToTab(swipeTabs[nextIndex]);
+    }
+  };
+
+  const handlePageSwipeClickCapture = (event: React.MouseEvent<HTMLElement>) => {
+    if (!blockSwipeClickRef.current) return;
+    if (event.target instanceof Element && event.target.closest('button, a, [role="button"]')) {
+      event.preventDefault();
+      event.stopPropagation();
+      blockSwipeClickRef.current = false;
+    }
   };
 
   // Modal states
@@ -224,8 +249,9 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
       />
 
       {/* Main Workspace Canvas with top padding for fixed header */}
-      <main className="flex-1 w-full pt-24 lg:pt-16 pb-4 lg:pb-12 bg-background touch-pan-y" onTouchStart={handlePageSwipeStart} onTouchEnd={handlePageSwipeEnd} onTouchCancel={() => { swipeStartRef.current = null; }}>
+      <main className="flex-1 w-full pt-24 lg:pt-16 pb-4 lg:pb-12 bg-background touch-pan-y" onTouchStart={handlePageSwipeStart} onTouchEnd={handlePageSwipeEnd} onTouchCancel={() => { swipeStartRef.current = null; }} onClickCapture={handlePageSwipeClickCapture}>
         <div className="w-full px-3 py-1 sm:px-gutter-desktop sm:py-space-lg">
+          <div key={currentTab} className={`journal-page-enter journal-page-enter--${tabMotion}`}>
           <Suspense fallback={<div className="flex min-h-48 items-center justify-center font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading journal section…</div>}>
           {currentTab === 'dashboard' && (
             <DashboardView
@@ -308,6 +334,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
             />
           )}
           </Suspense>
+          </div>
         </div>
       </main>
 
