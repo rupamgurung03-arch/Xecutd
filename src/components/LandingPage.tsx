@@ -66,7 +66,7 @@ export const LandingPage: React.FC = () => (
         </div>
       </section>
 
-      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-black/10 py-6 text-xs text-black/40"><span className="font-mono tracking-wider">XECUTD JOURNAL</span><span>A place to study your process.</span><a href="/journal" className="font-semibold text-black/65 hover:text-black">Open journal →</a></footer>
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-black/10 py-6 text-xs text-black/40"><span className="font-mono tracking-wider">XECUTD JOURNAL</span><span>A place to study your process.</span><nav className="flex flex-wrap items-center gap-4" aria-label="Legal and app links"><a href="/privacypolicy" className="hover:text-black">Privacy Policy</a><a href="/termsofservice" className="hover:text-black">Terms of Service</a><a href="/journal" className="font-semibold text-black/65 hover:text-black">Open journal →</a></nav></footer>
     </div>
   </main>
 );

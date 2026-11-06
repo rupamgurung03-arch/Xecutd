@@ -58,6 +58,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   }, []);
 
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const [loadingTheme, setLoadingTheme] = useState<'dark' | 'light'>(() => {
     try {
@@ -70,6 +71,36 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   const navigateToTab = (tab: string) => {
     setShowWelcome(false);
     setCurrentTab(tab);
+  };
+
+  const handlePageSwipeStart = (event: React.TouchEvent<HTMLElement>) => {
+    if (event.touches.length !== 1) {
+      swipeStartRef.current = null;
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('button, a, input, textarea, select, [role="button"], [contenteditable="true"], .overflow-x-auto, .mobile-nav-scroll, [data-no-page-swipe]')) {
+      swipeStartRef.current = null;
+      return;
+    }
+    const touch = event.touches[0];
+    swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handlePageSwipeEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const start = swipeStartRef.current;
+    swipeStartRef.current = null;
+    if (!start || event.changedTouches.length !== 1) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    if (Math.abs(deltaX) < 72 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) return;
+
+    const swipeTabs = ['dashboard', 'trades', 'calendar', 'playbook', 'analysis', 'coach', 'settings'];
+    const currentIndex = swipeTabs.indexOf(currentTab);
+    if (currentIndex < 0) return;
+    const nextIndex = deltaX < 0 ? Math.min(swipeTabs.length - 1, currentIndex + 1) : Math.max(0, currentIndex - 1);
+    if (nextIndex !== currentIndex) navigateToTab(swipeTabs[nextIndex]);
   };
 
   // Modal states
@@ -193,7 +224,7 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
       />
 
       {/* Main Workspace Canvas with top padding for fixed header */}
-      <main className="flex-1 w-full pt-24 lg:pt-16 pb-4 lg:pb-12 bg-background">
+      <main className="flex-1 w-full pt-24 lg:pt-16 pb-4 lg:pb-12 bg-background touch-pan-y" onTouchStart={handlePageSwipeStart} onTouchEnd={handlePageSwipeEnd} onTouchCancel={() => { swipeStartRef.current = null; }}>
         <div className="w-full px-3 py-1 sm:px-gutter-desktop sm:py-space-lg">
           <Suspense fallback={<div className="flex min-h-48 items-center justify-center font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">Loading journal section…</div>}>
           {currentTab === 'dashboard' && (
@@ -292,6 +323,10 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
             {status === 'error' && ready && <button type='button' onClick={retry} className='font-caption-mono text-[10px] underline underline-offset-4'>Retry sync</button>}
           </div>
           <div className="flex items-center gap-space-lg">
+            <nav className="flex items-center gap-space-md" aria-label="Legal pages">
+              <a href="/privacypolicy" className="hover:text-on-surface">Privacy</a>
+              <a href="/termsofservice" className="hover:text-on-surface">Terms</a>
+            </nav>
             <span>v{packageInfo.version}</span>
             <span>{trades.length} trades logged</span>
           </div>

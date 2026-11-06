@@ -395,6 +395,9 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
             const isLoss = !isMissed && trade.status === 'Closed' && trade.pnl < 0;
             const profitText = isMissed ? 'MISSED' : trade.status === 'Closed' ? formatCurrency(trade.pnl, currency) : 'OPEN';
             const excursion = getTradeExcursionDisplay(trade);
+            const tradeDate = /^\d{4}-\d{2}-\d{2}$/.test(trade.entryDate)
+              ? new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${trade.entryDate}T00:00:00Z`))
+              : trade.entryDate;
             return (
               <article key={trade.id} role="button" tabIndex={0} aria-label={`${trade.symbol}, ${trade.side}, ${profitText}. Tap to review trade.`} onClick={() => onSelectTrade(trade)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectTrade(trade); } }} className="flex min-h-14 flex-col gap-1.5 border border-outline-variant bg-surface-container-low px-3 py-2.5 cursor-pointer active:bg-surface-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface">
                 <div className="flex min-w-0 items-center justify-between gap-3">
@@ -404,6 +407,7 @@ export const TradesLogView: React.FC<TradesLogViewProps> = ({
                   </div>
                   <span className={`shrink-0 font-table-data text-sm font-bold ${isWin ? 'text-success' : isLoss ? 'text-secondary' : 'text-on-surface'}`}>{profitText}</span>
                 </div>
+                <div className="font-caption-mono text-[10px] uppercase tracking-wide text-tertiary">{tradeDate}{trade.entryTime ? ` · ${trade.entryTime}` : ''}{isMissed && trade.missedReason ? ` · Missed: ${trade.missedReason}` : ''}</div>
                 {(excursion.mfeR !== null || excursion.maeR !== null || excursion.exitEfficiencyPct !== null) && <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-outline-variant/70 pt-1.5 font-caption-mono text-[9px] uppercase tracking-wide">
                   {excursion.mfeR !== null && <span className="text-cyan-700 dark:text-cyan-300">MFE +{excursion.mfeR.toFixed(1)}R</span>}
                   {excursion.maeR !== null && <span className="text-amber-700 dark:text-amber-300">MAE -{Math.abs(excursion.maeR).toFixed(1)}R</span>}
