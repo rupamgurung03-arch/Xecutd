@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xecutd-shell-v4';
+const CACHE_NAME = 'xecutd-shell-v5';
 const APP_SHELL = [
   '/',
   '/journal',

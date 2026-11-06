@@ -11,6 +11,7 @@ import { useSupabaseJournal } from './hooks/useSupabaseJournal';
 import type { JournalSnapshot, RakuChatMessage, RakuChatSession } from './types/journal';
 import { calculateStats, generateEquityCurveData } from './utils/calculations';
 import { Header } from './components/Header';
+import { FirstVisitPopup } from './components/FirstVisitPopup';
 
 const DashboardView = lazy(() => import('./components/DashboardView').then((module) => ({ default: module.DashboardView })));
 const TradesLogView = lazy(() => import('./components/TradesLogView').then((module) => ({ default: module.TradesLogView })));
@@ -24,7 +25,7 @@ const NewTradeModal = lazy(() => import('./components/NewTradeModal').then((modu
 const TradeDetailModal = lazy(() => import('./components/TradeDetailModal').then((module) => ({ default: module.TradeDetailModal })));
 
 export default function App() {
-  return <SupabaseAuthGate>{(userId, onSignOut, welcomeKind, accountName, accountEmail) => <JournalApp userId={userId} onSignOut={onSignOut} welcomeKind={welcomeKind} accountName={accountName} accountEmail={accountEmail} />}</SupabaseAuthGate>;
+  return <SupabaseAuthGate>{(userId, onSignOut, welcomeKind, accountName, accountEmail) => <JournalApp key={userId} userId={userId} onSignOut={onSignOut} welcomeKind={welcomeKind} accountName={accountName} accountEmail={accountEmail} />}</SupabaseAuthGate>;
 }
 
 function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail }: { userId: string; onSignOut: () => Promise<void>; welcomeKind: WelcomeKind; accountName: string; accountEmail: string }) {
@@ -62,6 +63,15 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
   const blockSwipeClickRef = useRef(false);
   const [tabMotion, setTabMotion] = useState<'forward' | 'backward'>('forward');
   const [showWelcome, setShowWelcome] = useState(true);
+  const firstVisitKey = `xecutd_dev_welcome_seen_v1_${userId}`;
+  const [showFirstVisitPopup, setShowFirstVisitPopup] = useState(() => {
+    try { return localStorage.getItem(firstVisitKey) !== 'true'; } catch { return false; }
+  });
+  const dismissFirstVisitPopup = useCallback(() => {
+    try { localStorage.setItem(firstVisitKey, 'true'); } catch { /* Keep the dismissal for this app session. */ }
+    setShowWelcome(false);
+    setShowFirstVisitPopup(false);
+  }, [firstVisitKey]);
   const [loadingTheme, setLoadingTheme] = useState<'dark' | 'light'>(() => {
     try {
       return localStorage.getItem('xecutd_theme') === 'dark' ? 'dark' : 'light';
@@ -359,6 +369,8 @@ function JournalApp({ userId, onSignOut, welcomeKind, accountName, accountEmail 
           </div>
         </div>
       </footer>
+
+      {ready && showFirstVisitPopup && <FirstVisitPopup onClose={dismissFirstVisitPopup} />}
 
       {/* Modals */}
       {isNewTradeOpen && <Suspense fallback={null}><NewTradeModal
