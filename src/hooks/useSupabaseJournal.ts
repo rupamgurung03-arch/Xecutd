@@ -81,6 +81,14 @@ export const useSupabaseJournal = (userId: string, accountName = '') => {
   latestJournalRef.current = journal;
 
   const loadFromCloud = useCallback(async () => {
+    if (userId === 'guest-local') {
+      const local = readLocalSnapshot(userId);
+      setJournal(local);
+      setReady(true);
+      setStatus('ready');
+      setError('');
+      return;
+    }
     if (!supabase) {
       setError('Supabase is not configured for this build.');
       setStatus('error');
@@ -113,6 +121,24 @@ export const useSupabaseJournal = (userId: string, accountName = '') => {
   }, [userId, accountName]);
 
   const saveToCloud = useCallback(async (snapshot: JournalSnapshot, revision: number) => {
+    if (userId === 'guest-local') {
+      try {
+        const values: Record<string, unknown> = {
+          apextrade_settings: snapshot.settings, apextrade_trades: snapshot.trades,
+          apextrade_playbooks: snapshot.playbooks, apextrade_rules: snapshot.rules,
+          apextrade_analysis_pages: snapshot.analysisPages, apextrade_custom_mistakes: snapshot.customMistakes,
+          apextrade_execution_qualities: snapshot.customQualities, apextrade_custom_grades: snapshot.customGrades,
+          apextrade_raku_chat_history: snapshot.rakuChatHistory || [], apextrade_raku_chat_sessions: snapshot.rakuChatSessions || [],
+          apextrade_prop_firm_sim: snapshot.propFirmSim,
+        };
+        Object.entries(values).forEach(([key, value]) => localStorage.setItem(userStorageKey(key, userId), JSON.stringify(value)));
+        if (revision === revisionRef.current) { dirtyRef.current = false; setStatus('saved'); }
+      } catch {
+        setError('Could not save this guest journal in this browser.');
+        setStatus('error');
+      }
+      return;
+    }
     const client = supabase;
     if (!client) return;
     setStatus('saving');
@@ -139,6 +165,7 @@ export const useSupabaseJournal = (userId: string, accountName = '') => {
   }, [loadFromCloud]);
 
   useEffect(() => {
+    if (userId === 'guest-local') return;
     const client = supabase;
     if (!client) return;
     const channel = client.channel(`journal-${userId}`)

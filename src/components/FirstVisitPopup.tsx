@@ -46,7 +46,7 @@ export const FirstVisitPopup: React.FC<FirstVisitPopupProps> = ({ onClose }) => 
 
         <h1 id="first-visit-title" className="font-headline-lg text-2xl font-semibold tracking-tight sm:text-3xl">Hey, thanks for stopping by!</h1>
         <div className="mt-4 space-y-4 font-body-md text-sm leading-6 text-on-surface-variant sm:text-base sm:leading-7">
-          <p>I built Xecutd to give us a fast, clutter-free space to track trades and protect our risk.</p>
+          <p>I built Xecutd to give us a user-friendly space to track trades and protect our risk. Unfortunately, it’s a passion project, so I couldn’t add a real-time broker connection. Maybe I will in the future.</p>
           <p>Take a look around, test out Raku, and make yourself at home. If anything breaks or you have ideas, hit me up anytime at <a href="mailto:xecutddev03@gmail.com" className="font-semibold text-on-surface underline decoration-primary underline-offset-4">xecutddev03@gmail.com</a>.</p>
         </div>
 

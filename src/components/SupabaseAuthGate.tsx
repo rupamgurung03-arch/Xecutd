@@ -17,7 +17,8 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
   const [session, setSession] = useState<Session | null>(null);
   const [legacyChoiceRequired, setLegacyChoiceRequired] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
-  const [view, setView] = useState<AuthView>('sign-in');
+  const [view, setView] = useState<AuthView>('sign-up');
+  const [guestMode, setGuestMode] = useState(false);
   const [accountName, setAccountName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -215,6 +216,10 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
     );
   }
 
+  if (guestMode) {
+    return <>{children('guest-local', async () => { setGuestMode(false); setView('sign-up'); }, 'daily', 'Guest', '')}</>;
+  }
+
   if (session && view !== 'update-password') {
     if (!legacyChoiceRequired) {
       const metadataName = session.user.user_metadata?.display_name;
@@ -260,11 +265,13 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
         <div className="mb-7 flex h-11 w-11 items-center justify-center border border-outline-variant bg-surface-container-low text-on-surface">
           {view === 'sign-up' ? <UserPlus size={20} aria-hidden="true" /> : view === 'reset-password' ? <MailCheck size={20} aria-hidden="true" /> : <ShieldCheck size={20} aria-hidden="true" />}
         </div>
-        <p className="mb-2 font-caption-mono text-caption-mono uppercase tracking-[.16em] text-tertiary">Xecutd Journal · Private access</p>
+        <p className="mb-2 font-caption-mono text-caption-mono uppercase tracking-[.16em] text-tertiary">Xecutd Journal · Your trading workspace</p>
         <h1 id="login-title" className="font-headline-lg text-headline-lg font-semibold tracking-tight text-on-surface">{titles[view]}</h1>
         <p className="mt-2 font-body-sm text-body-sm text-tertiary">
-          {view === 'sign-up' ? 'Create an account with a username, email address, and password.' : view === 'reset-password' ? 'We’ll email you a secure link to reset your password.' : view === 'update-password' ? 'Your reset link is verified. Enter a new password below.' : 'Use the email and password for your journal account.'}
+          {view === 'sign-up' ? 'Create an account to keep your journal synced across devices.' : view === 'reset-password' ? 'We’ll email you a secure link to reset your password.' : view === 'update-password' ? 'Your reset link is verified. Enter a new password below.' : 'Use the email and password for your journal account.'}
         </p>
+
+        {view === 'sign-up' && <button type="button" onClick={() => setGuestMode(true)} className="mt-6 min-h-11 w-full border border-outline-variant bg-surface-container-low px-4 py-2 font-caption-mono text-caption-mono font-semibold uppercase tracking-wider text-on-surface transition hover:bg-surface-container">Continue as a guest</button>}
 
         {!hasSupabaseConfig ? (
           <div className="mt-6 border border-secondary/40 bg-error-container/30 p-4 font-body-sm text-on-surface" role="alert">
@@ -299,7 +306,7 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
             {view !== 'update-password' && (
               <label className="flex flex-col gap-1.5 font-caption-mono text-caption-mono uppercase tracking-wider text-tertiary">
                 Email address
-                <input type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="min-h-11 border border-outline-variant bg-surface-container-low px-3 font-body-md text-on-surface outline-none focus:border-on-surface" placeholder="you@example.com" />
+                <input id="login-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="min-h-11 border border-outline-variant bg-surface-container-low px-3 font-body-md text-on-surface outline-none focus:border-on-surface" placeholder="you@example.com" />
               </label>
             )}
             {(view === 'sign-in' || view === 'sign-up') && (

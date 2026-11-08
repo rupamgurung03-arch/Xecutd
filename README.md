@@ -31,3 +31,4 @@ The Worker verifies each Supabase access token before using Gemini or the econom
 ## Install as an app
 
 The site includes a web app manifest, icons, and a service worker. Once deployed over HTTPS, Chrome can install Xecutd Journal as a standalone app from the browser’s install option. The service worker caches the app shell only; API requests and journal data continue to use their network services.
+
