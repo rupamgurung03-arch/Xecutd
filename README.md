@@ -11,7 +11,7 @@ A private trading journal with Supabase email authentication, account-isolated j
 
 ## Supabase setup
 
-Run [`supabase/migrations/20261104_user_journals.sql`](supabase/migrations/20261104_user_journals.sql) in the Supabase SQL Editor. It creates the account-scoped journal table with row-level security and Realtime updates.
+Run [`supabase/migrations/20261104_user_journals.sql`](supabase/migrations/20261104_user_journals.sql) and [`supabase/migrations/20261108_account_deletion_feedback.sql`](supabase/migrations/20261108_account_deletion_feedback.sql) in the Supabase SQL Editor. They create the account-scoped journal table and private deletion-feedback table.
 
 Configure Supabase Auth URL settings with the deployed site URL and the local development URL as allowed redirects. The browser uses only the project URL and public publishable/anon key; never use a service-role or secret key in a `VITE_` variable.
 
@@ -23,6 +23,7 @@ Set the browser values `VITE_SUPABASE_URL` and either `VITE_SUPABASE_PUBLISHABLE
 
 - `SUPABASE_URL` — the Supabase project URL.
 - `SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_ANON_KEY` — the same project's public key used by the browser.
+- `SUPABASE_SERVICE_ROLE_KEY` — required server-only secret for account deletion. Add it only in the Worker Secrets settings and local `.env.local`; never expose it to the browser.
 - `GEMINI_API_KEY` — an optional server-side provider secret. Gemini remains available in the Worker's AI provider chain when configured.
 - `FINANCE_CALENDAR_API_KEY` — optional server-side secret for the economic calendar.
 

@@ -18,6 +18,7 @@ type Env = {
   SUPABASE_URL?: string;
   SUPABASE_PUBLISHABLE_KEY?: string;
   SUPABASE_ANON_KEY?: string;
+  SUPABASE_SERVICE_ROLE_KEY?: string;
   VITE_SUPABASE_URL?: string;
   VITE_SUPABASE_PUBLISHABLE_KEY?: string;
   VITE_SUPABASE_ANON_KEY?: string;
@@ -406,7 +407,7 @@ async function generateWithFallback(env: Env, messages: AiMessage[]): Promise<Pr
   return null;
 }
 
-async function verifyAccountSession(request: Request, env: Env): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
+async function verifyAccountSession(request: Request, env: Env): Promise<{ ok: true; userId: string } | { ok: false; status: number; error: string }> {
   const url = (env.SUPABASE_URL || env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
   const key = env.SUPABASE_PUBLISHABLE_KEY
     || env.SUPABASE_ANON_KEY
@@ -420,10 +421,12 @@ async function verifyAccountSession(request: Request, env: Env): Promise<{ ok: t
     error: 'Supabase Worker settings are missing. Add SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY or SUPABASE_ANON_KEY as runtime variables.',
   };
   try {
-    const response = await fetch(`${url}/auth/v1/user`, { headers: { apikey: key, Authorization: authorization } });
-    return response.ok
-      ? { ok: true as const }
-      : { ok: false as const, status: 401, error: 'Your session has expired. Sign in again.' };
+      const response = await fetch(`${url}/auth/v1/user`, { headers: { apikey: key, Authorization: authorization } });
+      if (!response.ok) return { ok: false as const, status: 401, error: 'Your session has expired. Sign in again.' };
+      const user = await response.json() as { id?: unknown };
+      return typeof user.id === 'string'
+        ? { ok: true as const, userId: user.id }
+        : { ok: false as const, status: 401, error: 'Could not verify your account.' };
   } catch {
     return { ok: false as const, status: 503, error: 'Could not verify your Supabase session.' };
   }
@@ -477,6 +480,40 @@ function heuristicChat(message: string, context: Record<string, unknown> = {}) {
 
 export async function onRequest({ request, env }: PagesContext) {
   const url = new URL(request.url);
+
+  if (request.method === 'POST' && url.pathname === '/api/account/delete') {
+    const auth = await verifyAccountSession(request, env);
+    if (!auth.ok) return json({ error: auth.error }, auth.status);
+    const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
+    const projectUrl = (env.SUPABASE_URL || env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
+    if (!serviceKey || !projectUrl) return json({ error: 'Account deletion is not configured on the server.' }, 503);
+
+    let body: { reason?: unknown; details?: unknown };
+    try { body = await request.json() as typeof body; }
+    catch { return json({ error: 'Invalid request.' }, 400); }
+    const allowedReasons = ['not-using', 'missing-features', 'broker-connection', 'difficult-to-use', 'switching', 'privacy', 'other'];
+    const reason = typeof body.reason === 'string' ? body.reason : '';
+    const details = typeof body.details === 'string' ? body.details.trim().slice(0, 2000) : '';
+    if (!allowedReasons.includes(reason)) return json({ error: 'Choose a reason before deleting your account.' }, 400);
+    if (reason === 'other' && !details) return json({ error: 'Please tell us your reason.' }, 400);
+
+    try {
+      const feedbackResponse = await fetch(`${projectUrl}/rest/v1/account_deletion_feedback`, {
+        method: 'POST',
+        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ user_id: auth.userId, reason, details: details || null }),
+      });
+      if (!feedbackResponse.ok) return json({ error: 'Could not save your feedback. Your account has not been deleted.' }, 502);
+
+      const deleteResponse = await fetch(`${projectUrl}/auth/v1/admin/users/${encodeURIComponent(auth.userId)}`, {
+        method: 'DELETE', headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+      });
+      if (!deleteResponse.ok) return json({ error: 'Could not delete your account. Please try again or contact support.' }, 502);
+      return json({ deleted: true });
+    } catch {
+      return json({ error: 'Account deletion could not be completed. Please try again.' }, 502);
+    }
+  }
 
   if (request.method === 'GET' && url.pathname === '/api/economic-calendar') {
     const auth = await verifyAccountSession(request, env);

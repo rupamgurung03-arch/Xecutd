@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { ArrowRight, Eye, EyeOff, KeyRound, LoaderCircle, MailCheck, ShieldCheck, UserPlus } from 'lucide-react';
-import { hasSupabaseConfig, supabase } from '../lib/supabaseClient';
+import { getJournalAuthHeaders, hasSupabaseConfig, supabase } from '../lib/supabaseClient';
 import { dismissLegacyImportForUser, importLegacyDataForUser, needsLegacyImport } from '../utils/userStorage';
 
 type AuthView = 'sign-in' | 'sign-up' | 'reset-password' | 'update-password';
@@ -10,7 +10,7 @@ export type WelcomeKind = 'new' | 'daily' | 'returning';
 const localDayKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 interface SupabaseAuthGateProps {
-  children: (userId: string, onSignOut: () => Promise<void>, welcomeKind: WelcomeKind, accountName: string, accountEmail: string) => React.ReactNode;
+  children: (userId: string, onSignOut: () => Promise<void>, onDeleteAccount: (reason: string, details: string) => Promise<void>, welcomeKind: WelcomeKind, accountName: string, accountEmail: string) => React.ReactNode;
 }
 
 export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) => {
@@ -206,6 +206,21 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
     if (signOutError) setError(signOutError.message);
   };
 
+  const handleDeleteAccount = async (reason: string, details: string) => {
+    const headers = await getJournalAuthHeaders();
+    const response = await fetch('/api/account/delete', {
+      method: 'POST', headers,
+      body: JSON.stringify({ reason, details }),
+    });
+    const result = await response.json() as { error?: string; deleted?: boolean };
+    if (!response.ok || !result.deleted) throw new Error(result.error || 'Could not delete your account.');
+    if (supabase) {
+      await supabase.auth.signOut({ scope: 'local' });
+      setSession(null);
+      setView('sign-up');
+    }
+  };
+
   if (checkingSession) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4 text-on-surface">
@@ -217,14 +232,14 @@ export const SupabaseAuthGate: React.FC<SupabaseAuthGateProps> = ({ children }) 
   }
 
   if (guestMode) {
-    return <>{children('guest-local', async () => { setGuestMode(false); setView('sign-up'); }, 'daily', 'Guest', '')}</>;
+    return <>{children('guest-local', async () => { setGuestMode(false); setView('sign-up'); }, async () => { setGuestMode(false); }, 'daily', 'Guest', '')}</>;
   }
 
   if (session && view !== 'update-password') {
     if (!legacyChoiceRequired) {
       const metadataName = session.user.user_metadata?.display_name;
       const accountName = typeof metadataName === 'string' ? metadataName.trim() : '';
-      return <>{children(session.user.id, handleSignOut, welcomeKind, accountName, session.user.email || '')}</>;
+      return <>{children(session.user.id, handleSignOut, handleDeleteAccount, welcomeKind, accountName, session.user.email || '')}</>;
     }
 
     return (

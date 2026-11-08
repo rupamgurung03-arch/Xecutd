@@ -12,6 +12,40 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
+app.post('/api/account/delete', async (req, res) => {
+  const projectUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
+  const publicKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const authorization = req.header('Authorization');
+  if (!projectUrl || !publicKey || !serviceKey) return res.status(503).json({ error: 'Account deletion is not configured on the server.' });
+  if (!authorization?.startsWith('Bearer ')) return res.status(401).json({ error: 'Sign in to continue.' });
+
+  try {
+    const userResponse = await fetch(`${projectUrl}/auth/v1/user`, { headers: { apikey: publicKey, Authorization: authorization } });
+    if (!userResponse.ok) return res.status(401).json({ error: 'Your session has expired. Sign in again.' });
+    const user = await userResponse.json() as { id?: unknown };
+    const allowedReasons = ['not-using', 'missing-features', 'broker-connection', 'difficult-to-use', 'switching', 'privacy', 'other'];
+    const reason = typeof req.body?.reason === 'string' ? req.body.reason : '';
+    const details = typeof req.body?.details === 'string' ? req.body.details.trim().slice(0, 2000) : '';
+    if (typeof user.id !== 'string') return res.status(401).json({ error: 'Could not verify your account.' });
+    if (!allowedReasons.includes(reason)) return res.status(400).json({ error: 'Choose a reason before deleting your account.' });
+    if (reason === 'other' && !details) return res.status(400).json({ error: 'Please tell us your reason.' });
+
+    const feedbackResponse = await fetch(`${projectUrl}/rest/v1/account_deletion_feedback`, {
+      method: 'POST', headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ user_id: user.id, reason, details: details || null }),
+    });
+    if (!feedbackResponse.ok) return res.status(502).json({ error: 'Could not save your feedback. Your account has not been deleted.' });
+    const deleteResponse = await fetch(`${projectUrl}/auth/v1/admin/users/${encodeURIComponent(user.id)}`, {
+      method: 'DELETE', headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    });
+    if (!deleteResponse.ok) return res.status(502).json({ error: 'Could not delete your account. Please try again or contact support.' });
+    return res.json({ deleted: true });
+  } catch {
+    return res.status(502).json({ error: 'Account deletion could not be completed. Please try again.' });
+  }
+});
+
 const calendarCacheMaxAgeMs = 15 * 60 * 1000;
 let calendarCache: { fetchedAt: number; events: unknown[] } | null = null;
 let calendarFetchInFlight: Promise<{ events: unknown[]; fetchedAt: number }> | null = null;

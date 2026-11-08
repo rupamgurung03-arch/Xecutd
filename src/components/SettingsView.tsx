@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Download, Sun, Moon, Upload, Check, LogOut, X, Mail, Bug, MessageSquareText, FileSpreadsheet } from 'lucide-react';
+import { Download, Sun, Moon, Upload, Check, LogOut, X, Mail, Bug, MessageSquareText, FileSpreadsheet, Trash2 } from 'lucide-react';
 import packageInfo from '../../package.json';
 import { UserSettings, Trade } from '../types/trade';
 import { AVATAR_PRESETS, ProfileAvatar } from './ProfileAvatar';
@@ -10,6 +10,7 @@ interface SettingsViewProps {
   trades: Trade[];
   onImportTrades: (imported: Trade[]) => void;
   onSignOut: () => Promise<void>;
+  onDeleteAccount: (reason: string, details: string) => Promise<void>;
   accountEmail: string;
 }
 
@@ -128,10 +129,22 @@ const createTradesWorkbook = (trades: Trade[]) => {
   return new Blob([makeStoredZip(files)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 };
 
-export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSettings, trades, onImportTrades, onSignOut, accountEmail }) => {
+export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSettings, trades, onImportTrades, onSignOut, onDeleteAccount, accountEmail }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deletionReason, setDeletionReason] = useState('');
+  const [deletionDetails, setDeletionDetails] = useState('');
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deletionError, setDeletionError] = useState('');
+  const submitAccountDeletion = async () => {
+    setDeletingAccount(true);
+    setDeletionError('');
+    try { await onDeleteAccount(deletionReason, deletionDetails); }
+    catch (error) { setDeletionError(error instanceof Error ? error.message : 'Could not delete your account. Please try again.'); }
+    finally { setDeletingAccount(false); }
+  };
   const bugReportHref = `mailto:xecutddev03@gmail.com?subject=${encodeURIComponent('Xecutd bug report')}&body=${encodeURIComponent(`App version: ${packageInfo.version}\nPage: ${window.location.pathname}\n\nWhat happened?\n\nSteps to reproduce:\n\nExpected result:\n\nActual result:`)}`;
   const feedbackHref = `mailto:xecutddev03@gmail.com?subject=${encodeURIComponent('Feedback for Xecutd')}`;
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -300,10 +313,41 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSetting
           <h2 id="account-heading" className="font-headline-md text-headline-md font-semibold text-on-surface">Account</h2>
           <p className="mt-1 font-body-sm text-body-sm text-tertiary">{accountEmail || 'Signed-in account'} · Sign out of this journal on this device.</p>
         </div>
-        <button type="button" onClick={() => { void onSignOut(); }} className="inline-flex min-h-11 items-center justify-center gap-2 border border-outline-variant bg-surface-container-low px-4 py-2 font-body-sm text-body-sm font-semibold text-on-surface transition hover:bg-surface-container">
-          <LogOut size={16} aria-hidden="true" /> Sign out
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => { void onSignOut(); }} className="inline-flex min-h-11 items-center justify-center gap-2 border border-outline-variant bg-surface-container-low px-4 py-2 font-body-sm text-body-sm font-semibold text-on-surface transition hover:bg-surface-container">
+            <LogOut size={16} aria-hidden="true" /> Sign out
+          </button>
+          {accountEmail && <button type="button" onClick={() => { setDeletionError(''); setShowDeleteAccount(true); }} className="inline-flex min-h-11 items-center justify-center gap-2 border border-error/50 bg-error-container/30 px-4 py-2 font-body-sm text-body-sm font-semibold text-on-surface transition hover:bg-error-container/60">
+            <Trash2 size={16} aria-hidden="true" /> Delete account
+          </button>}
+        </div>
       </section>
+      {showDeleteAccount && <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm" onMouseDown={(event) => { if (event.target === event.currentTarget && !deletingAccount) setShowDeleteAccount(false); }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="delete-account-title" className="my-auto w-full max-w-lg border border-outline-variant bg-surface-container-lowest p-6 text-on-surface shadow-2xl sm:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div><p className="font-caption-mono text-[10px] uppercase tracking-[.16em] text-error">This cannot be undone</p><h2 id="delete-account-title" className="mt-2 font-headline-lg text-2xl font-semibold">Delete your account?</h2></div>
+            <button type="button" onClick={() => setShowDeleteAccount(false)} disabled={deletingAccount} aria-label="Close" className="inline-flex h-9 w-9 items-center justify-center border border-outline-variant text-tertiary hover:bg-surface-container-low disabled:opacity-50"><X size={17} /></button>
+          </div>
+          <p className="mt-3 font-body-sm text-body-sm text-tertiary">Your account and its cloud journal will be permanently deleted. Before you go, what’s the main reason?</p>
+          <fieldset className="mt-5 space-y-2">
+            <legend className="mb-2 font-caption-mono text-[10px] uppercase tracking-wider text-tertiary">Choose a reason</legend>
+            {[
+              ['not-using', 'I’m not using it enough'], ['missing-features', 'It’s missing features I need'], ['broker-connection', 'I need a real-time broker connection'],
+              ['difficult-to-use', 'It’s difficult to use'], ['switching', 'I’m switching to another tool'], ['privacy', 'Privacy or data concerns'], ['other', 'Something else'],
+            ].map(([value, label]) => <label key={value} className="flex cursor-pointer items-center gap-3 border border-outline-variant bg-surface-container-low px-3 py-2.5 font-body-sm text-on-surface hover:bg-surface-container">
+              <input type="radio" name="account-deletion-reason" value={value} checked={deletionReason === value} onChange={() => setDeletionReason(value)} className="accent-primary" />{label}
+            </label>)}
+          </fieldset>
+          <label className="mt-4 block font-caption-mono text-[10px] uppercase tracking-wider text-tertiary">Anything else you’d like us to know? <span className="normal-case tracking-normal">{deletionReason === 'other' ? '(required for “Something else”)' : '(optional)'}</span>
+            <textarea value={deletionDetails} onChange={(event) => setDeletionDetails(event.target.value)} maxLength={2000} rows={3} placeholder={deletionReason === 'other' ? 'Tell us in your own words (required for “Something else”)' : 'Share a little more, if you like'} className="mt-2 w-full resize-y border border-outline-variant bg-surface-container-low p-3 font-body-sm text-on-surface outline-none focus:border-on-surface" />
+          </label>
+          {deletionError && <p role="alert" className="mt-3 border border-error/40 bg-error-container/30 p-3 font-body-sm text-on-surface">{deletionError}</p>}
+          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <button type="button" disabled={deletingAccount} onClick={() => setShowDeleteAccount(false)} className="min-h-11 border border-outline-variant px-4 py-2 font-caption-mono text-[10px] font-semibold uppercase tracking-wider text-on-surface disabled:opacity-50">Keep my account</button>
+            <button type="button" disabled={deletingAccount || !deletionReason || (deletionReason === 'other' && !deletionDetails.trim())} onClick={() => { void submitAccountDeletion(); }} className="inline-flex min-h-11 items-center justify-center gap-2 bg-error px-4 py-2 font-caption-mono text-[10px] font-semibold uppercase tracking-wider text-white disabled:cursor-not-allowed disabled:opacity-50"><Trash2 size={14} />{deletingAccount ? 'Deleting…' : 'Delete account permanently'}</button>
+          </div>
+        </section>
+      </div>}
       <section className="flex flex-col gap-4 rounded-2xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="support-heading">
         <div>
           <h2 id="support-heading" className="font-headline-md text-headline-md font-semibold text-on-surface">Support</h2>
